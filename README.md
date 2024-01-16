@@ -44,3 +44,5 @@
     - Lombok
     - MySQL Driver
     - Spring Data JPA
+- swagger 아이디 : irecipe
+- swagger 비밀번호 : irecipe
