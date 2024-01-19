@@ -1,0 +1,26 @@
+spring:
+  config:
+    activate:
+      on-profile: local # 환경 이름 설정
+  datasource:
+    url: jdbc:mysql://localhost:3306/irecipe
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: never
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: create
+        default_batch_fetch_size: 1000
+  security:
+    user:
+      name: irecipe
+      password: irecipe
