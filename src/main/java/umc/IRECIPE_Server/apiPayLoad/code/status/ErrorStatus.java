@@ -34,6 +34,18 @@ public enum ErrorStatus implements BaseErrorCode {
     //카테고리 관련 에러
     FOOD_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "FOOD4001", "음식 카테고리가 없습니다"),
 
+    //레시피 카테고리 관련 에
+    COOKING_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "COOKING4002", "요리 종류를 정해야 합니다"),
+    DIFFICULTY_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "DIFFICULTY4002", "난이도를 정해야 합니다"),
+
+    //레시피 글쓰기 관련 에러
+    TITLE_NOT_EXIST(HttpStatus.BAD_REQUEST, "POST4001", "제목은 필수 입니다."),
+    SUBTITLE_NOT_EXIST(HttpStatus.BAD_REQUEST, "POST4002", "소제목은 필수 입니다."),
+    CONTENT_NOT_EXIST(HttpStatus.BAD_REQUEST, "POST4003", "내용은 필수 입니다."),
+
+    //커뮤니티 관련 에러
+    POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST4003", "게시글을 찾을 수 없습니다."),
+
     //지역 관련 에러
     REGION_NOT_FOUND(HttpStatus.BAD_REQUEST, "REGION4001", "그런 지역은 없는뎁쇼"),
 
