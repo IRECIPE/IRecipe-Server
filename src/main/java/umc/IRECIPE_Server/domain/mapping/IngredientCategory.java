@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 import umc.IRECIPE_Server.common.BaseEntity;
 import umc.IRECIPE_Server.domain.enums.Type;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Builder
@@ -32,5 +34,6 @@ public class IngredientCategory extends BaseEntity {
     @Column(columnDefinition = "VARCHAR(15)")
     private Type type;
 
-    private Long expiryDate;
+    private LocalDate expiryDate;
+
 }
