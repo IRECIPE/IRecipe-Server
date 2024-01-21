@@ -28,6 +28,7 @@ public class IngredientConverter {
         return Ingredient.builder()
                 .name(request.getName())
                 .image(request.getImage())
+                .memo(request.getMemo())
                 .ingredientCategory(category)
                 .build();
     }

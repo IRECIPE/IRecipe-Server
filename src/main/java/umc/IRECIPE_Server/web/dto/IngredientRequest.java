@@ -19,6 +19,7 @@ public class IngredientRequest {
         String name;
         String image;
         String category;
+        String memo;
         Type type;
         LocalDate expiryDate;
     }

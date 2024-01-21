@@ -24,6 +24,9 @@ public class Ingredient extends BaseEntity {
     @Column(length = 254)
     private String image;
 
+    @Column(length = 254)
+    private String memo;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private IngredientCategory ingredientCategory;
