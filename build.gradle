@@ -41,3 +41,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// aws elastic beanstalk
+jar {
+	enabled = false
+}
