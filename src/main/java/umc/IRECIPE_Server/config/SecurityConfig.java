@@ -16,7 +16,7 @@ public class SecurityConfig {
                 // 리소스 접근 권한 설정
                 .authorizeHttpRequests((auth) -> auth
 
-                        .requestMatchers("/health").permitAll()
+                        .requestMatchers("/", "/health").permitAll()
                         .anyRequest().authenticated()
                 );
 
