@@ -32,4 +32,16 @@ public class IngredientConverter {
                 .ingredientCategory(category)
                 .build();
     }
+
+    public static IngredientResponse.findOneResultDTO toFindOneResultDTO(Ingredient ingredient) {
+        return IngredientResponse.findOneResultDTO.builder()
+                .name(ingredient.getName())
+                .image(ingredient.getImage())
+                .memo(ingredient.getMemo())
+                .category(ingredient.getIngredientCategory().getName())
+                .type(ingredient.getIngredientCategory().getType())
+                .expiryDate(ingredient.getIngredientCategory().getExpiryDate())
+                .build();
+
+    }
 }

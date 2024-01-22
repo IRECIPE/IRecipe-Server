@@ -23,4 +23,6 @@ public class IngredientRequest {
         Type type;
         LocalDate expiryDate;
     }
+
+
 }
