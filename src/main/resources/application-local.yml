@@ -24,3 +24,15 @@ spring:
     user:
       name: irecipe
       password: irecipe
+cloud:
+  aws:
+    s3:
+      bucket: irecipebucket
+    credentials:
+      access-key: AKIAZQ3DTNPO2J3M4O54
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
