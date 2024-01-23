@@ -2,12 +2,10 @@ package umc.IRECIPE_Server.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.converter.ChatGptConverter;
+import umc.IRECIPE_Server.dto.ChatGptButtonResponseDTO;
 import umc.IRECIPE_Server.dto.ChatGptResponseDTO;
 import umc.IRECIPE_Server.dto.UserChatGptRequestDTO;
 import umc.IRECIPE_Server.dto.UserChatGptResponseDTO;
@@ -19,7 +17,11 @@ import umc.IRECIPE_Server.service.ChatGptService;
 public class ChatGptController {
     private final ChatGptService chatGPTService;
 
-    // 사용자가 ChatGPT 에 처음 접속했을 때 반환할 메세지
+    // 사용자가 ChatGPT 에 처음 접속했을 때 반환할 버튼 메세지
+    @GetMapping()
+    public ApiResponse<ChatGptButtonResponseDTO.buttonResponseDTO> buttonMessages() {
+        return ApiResponse.onSuccess(ChatGptConverter.tobuttonResponseDTO());
+    }
 
 
     // 사용자가 ChatGPT 에 랜덤 레시피 요청 or 직접 입력

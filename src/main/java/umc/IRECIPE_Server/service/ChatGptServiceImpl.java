@@ -65,12 +65,7 @@ public class ChatGptServiceImpl implements ChatGptService {
 
         return this.getResponse(
                 this.buildHttpEntity(
-                        new ChatGptRequestDTO(
-                                messages,
-                                ChatGptConfig.MODEL,
-                                ChatGptConfig.MAX_TOKEN,
-                                ChatGptConfig.TEMPERATURE
-                        )
+                        new ChatGptRequestDTO(messages, ChatGptConfig.MODEL)
                 )
         );
     }
