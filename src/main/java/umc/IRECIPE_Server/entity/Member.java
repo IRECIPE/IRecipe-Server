@@ -66,6 +66,15 @@ public class Member extends BaseEntity implements UserDetails {
     // 프로필 사진
     private String profileImage;
 
+    // 중요 알림 온오프여부
+    private Boolean important;
+
+    // 활동 알림 온오프여부
+    private Boolean activity;
+
+    // 이벤트 알림 온오프여부
+    private Boolean event;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberAllergy> memberAllergyList = new ArrayList<>();
 
