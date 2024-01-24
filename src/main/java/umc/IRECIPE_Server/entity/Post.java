@@ -25,9 +25,7 @@ import umc.IRECIPE_Server.common.enums.Status;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,12 +44,15 @@ public class Post extends BaseEntity {
     // 게시글 좋아요 수
     private Long likes;
 
+    // 카테고리
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    // 난이도
     @Enumerated(EnumType.STRING)
     private Level level;
 
+    // 임시저장, 등록
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -66,4 +67,16 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostImage> postImageList = new ArrayList<>();
+
+    @Builder
+    public Post(Member member, String title, String content, Long likes, Category category, Level level, Status status, Float score) {
+        this.member = member;
+        this.title = title;
+        this.content = content;
+        this.likes = likes;
+        this.category = category;
+        this.level = level;
+        this.status = status;
+        this.score = score;
+    }
 }

@@ -34,8 +34,9 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(updatable = false, unique = true, nullable = false)
-    private String loginId;
+    // 회원 고유 id
+    @Column(nullable = false)
+    private String personalId;
 
     @Column(nullable = false)
     private String password;
@@ -59,9 +60,6 @@ public class Member extends BaseEntity implements UserDetails {
 
     // 토큰
     private Long token;
-
-    // 회원 고유 id
-    private Long personalId;
 
     // 프로필 사진
     private String profileImage;
