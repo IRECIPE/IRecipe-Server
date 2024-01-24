@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.jwt.JwtTokenProvider;
 import umc.IRECIPE_Server.repository.MemberRepository;
-import umc.IRECIPE_Server.web.dto.TokenDTO;
+import umc.IRECIPE_Server.dto.TokenDto;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,7 +20,7 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public TokenDTO login(String id, String password){
+    public TokenDto login(String id, String password){
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, password);
@@ -30,7 +30,7 @@ public class MemberService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        TokenDTO tokenDTO = jwtTokenProvider.generateToken(authentication);
+        TokenDto tokenDTO = jwtTokenProvider.generateToken(authentication);
 
         return tokenDTO;
 
