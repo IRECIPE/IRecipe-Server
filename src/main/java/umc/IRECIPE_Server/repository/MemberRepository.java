@@ -6,5 +6,5 @@ import umc.IRECIPE_Server.entity.Member;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Optional<Member> findByLoginId(String username);
+    Optional<Member> findById(String username);
 }
