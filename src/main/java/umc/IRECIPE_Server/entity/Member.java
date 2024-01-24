@@ -30,13 +30,8 @@ import umc.IRECIPE_Server.common.enums.Gender;
 public class Member extends BaseEntity implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
-    private Long id;
-
-    // 회원 고유 id
-    @Column(nullable = false)
-    private String personalId;
+    @Column(updatable = false, unique = true, nullable = false)
+    private String id;
 
     @Column(nullable = false)
     private String password;
@@ -97,7 +92,7 @@ public class Member extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() { // 인증수단
-        return loginId;
+        return id;
     }
 
     @Override
