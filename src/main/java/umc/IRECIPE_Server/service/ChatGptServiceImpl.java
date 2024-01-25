@@ -13,8 +13,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import umc.IRECIPE_Server.config.ChatGptConfig;
-import umc.IRECIPE_Server.domain.mapping.Member;
-import umc.IRECIPE_Server.domain.mapping.StoredRecipe;
 import umc.IRECIPE_Server.dto.*;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.StoredRecipeRepository;
