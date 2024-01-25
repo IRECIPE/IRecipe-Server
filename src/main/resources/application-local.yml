@@ -37,5 +37,8 @@ cloud:
     stack:
       auto: false
 
+jwt:
+  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+
 chatgpt:
   api-key: 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 #your chatgpt-api-key
