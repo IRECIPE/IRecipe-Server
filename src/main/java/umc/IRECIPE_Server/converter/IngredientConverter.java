@@ -51,4 +51,10 @@ public class IngredientConverter {
                 .build();
 
     }
+    public static IngredientResponse.updateResultDTO toUpdateResultDTO(Ingredient ingredient) {
+        return IngredientResponse.updateResultDTO.builder()
+                .ingredientId(ingredient.getId())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
 }

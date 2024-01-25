@@ -29,4 +29,6 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
         Ingredient ingredient = findOne(ingredientId);
         ingredientRepository.delete(ingredient);
     }
+
+
 }

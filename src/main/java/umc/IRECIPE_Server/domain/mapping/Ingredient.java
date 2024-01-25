@@ -31,5 +31,10 @@ public class Ingredient extends BaseEntity {
     @JoinColumn(name = "category_id")
     private IngredientCategory ingredientCategory;
 
+    public void updateIngredient(String name, String image, String memo) {
+        this.name = name;
+        this.image = image;
+        this.memo = memo;
 
+    }
 }

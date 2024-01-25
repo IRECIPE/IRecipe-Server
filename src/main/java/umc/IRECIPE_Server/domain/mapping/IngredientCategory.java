@@ -36,4 +36,10 @@ public class IngredientCategory extends BaseEntity {
 
     private LocalDate expiryDate;
 
+    public void updateIngredientCategory(String name, Type type, LocalDate expiryDate) {
+        this.name = name;
+        this.type = type;
+        this.expiryDate = expiryDate;
+    }
+
 }

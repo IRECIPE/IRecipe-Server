@@ -31,6 +31,14 @@ public class IngredientResponse {
         Type type;
         LocalDate expiryDate;
     }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class updateResultDTO{
+        Long ingredientId;
+        LocalDateTime updatedAt;
+    }
 
     @Builder
     @Getter

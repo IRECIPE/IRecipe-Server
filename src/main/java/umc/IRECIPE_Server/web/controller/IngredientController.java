@@ -37,7 +37,7 @@ public class IngredientController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH004", description = "acess 토큰 만료",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH006", description = "acess 토큰 모양이 이상함",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
     })
-    public ApiResponse<IngredientResponse.addResultDTO> add(@RequestBody @Valid IngredientRequest.addDTO request) {
+    public ApiResponse<IngredientResponse.addResultDTO> addIngredient(@RequestBody @Valid IngredientRequest.addDTO request) {
         Ingredient ingredient = ingredientCommandService.addIngredient(request);
         return ApiResponse.onSuccess(IngredientConverter.toaddResultDTO(ingredient));
     }
@@ -69,8 +69,26 @@ public class IngredientController {
     @Parameters({
             @Parameter(name = "ingredientId", description = "재료의 아이디, path variable 입니다")
     })
-    public ApiResponse<IngredientResponse.deleteResultDTO> delete(@PathVariable(name = "ingredientId") Long ingredientId) {
+    public ApiResponse<IngredientResponse.deleteResultDTO> deleteIngredient(@PathVariable(name = "ingredientId") Long ingredientId) {
         ingredientQueryService.delete(ingredientId);
         return ApiResponse.onSuccess(IngredientConverter.toDeleteResultDTO());
+    }
+
+    @PatchMapping("/{ingredientId}")
+    @Operation(summary = "재료 정보 수정 API",description = "냉장고에서 재료의 정보를를 수정하는 API입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH003", description = "access 토큰을 주세요!",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH004", description = "acess 토큰 만료",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH006", description = "acess 토큰 모양이 이상함",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+    })
+    @Parameters({
+            @Parameter(name = "ingredientId", description = "재료의 아이디, path variable 입니다")
+    })
+    public ApiResponse<IngredientResponse.updateResultDTO> updateIngredient(
+            @RequestBody @Valid IngredientRequest.updateDTO request,
+            @PathVariable(name = "ingredientId") Long ingredientId) {
+        Ingredient ingredient  = ingredientCommandService.updateById(request, ingredientId);
+        return ApiResponse.onSuccess(IngredientConverter.toUpdateResultDTO(ingredient));
     }
 }

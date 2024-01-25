@@ -25,5 +25,18 @@ public class IngredientRequest {
         LocalDate expiryDate;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class updateDTO{
+        String name;
+        String image;
+        String category;
+        String memo;
+        Type type;
+        LocalDate expiryDate;
+    }
+
 
 }

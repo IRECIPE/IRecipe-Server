@@ -5,4 +5,5 @@ import umc.IRECIPE_Server.web.dto.IngredientRequest;
 
 public interface IngredientCommandService {
     Ingredient addIngredient(IngredientRequest.addDTO request);
+    Ingredient updateById(IngredientRequest.updateDTO request, Long ingredientId);
 }
