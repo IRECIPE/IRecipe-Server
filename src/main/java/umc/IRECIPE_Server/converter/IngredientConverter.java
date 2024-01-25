@@ -44,4 +44,11 @@ public class IngredientConverter {
                 .build();
 
     }
+
+    public static IngredientResponse.deleteResultDTO toDeleteResultDTO() {
+        return IngredientResponse.deleteResultDTO.builder()
+                .message("재료가 삭제되었습니다.")
+                .build();
+
+    }
 }

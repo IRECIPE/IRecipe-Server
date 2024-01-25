@@ -32,4 +32,12 @@ public class IngredientResponse {
         LocalDate expiryDate;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class deleteResultDTO{
+        String message;
+    }
+
 }

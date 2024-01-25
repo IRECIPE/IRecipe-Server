@@ -22,4 +22,11 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
                 .orElseThrow(() -> new IngredientHandler(ErrorStatus.INGREDIENT_NOT_FOUND));
         return ingredient;
     }
+
+    @Override
+    @Transactional
+    public void delete(Long ingredientId) {
+        Ingredient ingredient = findOne(ingredientId);
+        ingredientRepository.delete(ingredient);
+    }
 }
