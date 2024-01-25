@@ -1,5 +1,6 @@
 package umc.IRECIPE_Server.service.ingredientService;
 
+import org.springframework.data.domain.Page;
 import umc.IRECIPE_Server.domain.mapping.Ingredient;
 import umc.IRECIPE_Server.web.dto.IngredientRequest;
 
@@ -10,5 +11,5 @@ public interface IngredientQueryService {
 
     void delete(Long ingredientId);
 
-
+    Page<Ingredient> getIngredientList(Long memberId, Integer page);
 }

@@ -1,11 +1,14 @@
 package umc.IRECIPE_Server.converter;
 
+import org.springframework.data.domain.Page;
 import umc.IRECIPE_Server.domain.mapping.Ingredient;
 import umc.IRECIPE_Server.domain.mapping.IngredientCategory;
 import umc.IRECIPE_Server.web.dto.IngredientRequest;
 import umc.IRECIPE_Server.web.dto.IngredientResponse;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class IngredientConverter {
 
@@ -34,6 +37,7 @@ public class IngredientConverter {
     }
 
     public static IngredientResponse.findOneResultDTO toFindOneResultDTO(Ingredient ingredient) {
+
         return IngredientResponse.findOneResultDTO.builder()
                 .name(ingredient.getName())
                 .image(ingredient.getImage())
@@ -43,6 +47,36 @@ public class IngredientConverter {
                 .expiryDate(ingredient.getIngredientCategory().getExpiryDate())
                 .build();
 
+    }
+
+    public static IngredientResponse.findAllResultListDTO toFindAllResultListDTO(Page<Ingredient> ingredientList) {
+        List<IngredientResponse.findIngredientResultDTO> ingredientResultDTOList = ingredientList.getContent().stream()
+                .map(IngredientConverter::toFindIngredientResultDTO)
+                .collect(Collectors.toList());
+
+        ingredientResultDTOList.forEach(resultDTO ->
+                System.out.println("Ingredient name: " + resultDTO.getName()));
+
+        return IngredientResponse.findAllResultListDTO.builder()
+                .isLast(ingredientList.isLast())
+                .isFirst(ingredientList.isFirst())
+                .totalPage(ingredientList.getTotalPages())
+                .totalElements(ingredientList.getTotalElements())
+                .listSize(ingredientResultDTOList.size())
+                .ingredientList(ingredientResultDTOList)
+                .build();
+    }
+
+    private static IngredientResponse.findIngredientResultDTO toFindIngredientResultDTO(Ingredient ingredient) {
+
+        return IngredientResponse.findIngredientResultDTO.builder()
+                .name(ingredient.getName())
+                .image(ingredient.getImage())
+                .memo(ingredient.getMemo())
+                .category(ingredient.getIngredientCategory().getName())
+                .type(ingredient.getIngredientCategory().getType())
+                .expiryDate(ingredient.getIngredientCategory().getExpiryDate())
+                .build();
     }
 
     public static IngredientResponse.deleteResultDTO toDeleteResultDTO() {
@@ -57,4 +91,6 @@ public class IngredientConverter {
                 .updatedAt(LocalDateTime.now())
                 .build();
     }
+
+
 }

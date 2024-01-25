@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
@@ -18,6 +19,7 @@ import umc.IRECIPE_Server.service.ingredientService.IngredientQueryService;
 import umc.IRECIPE_Server.web.dto.IngredientRequest;
 import umc.IRECIPE_Server.web.dto.IngredientResponse;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -90,5 +92,24 @@ public class IngredientController {
             @PathVariable(name = "ingredientId") Long ingredientId) {
         Ingredient ingredient  = ingredientCommandService.updateById(request, ingredientId);
         return ApiResponse.onSuccess(IngredientConverter.toUpdateResultDTO(ingredient));
+    }
+
+    @GetMapping("")
+    @Operation(summary = "재료 전체 조회 API", description = "냉장고에 존재하는 재료들을 전부 조회하는 API입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH003", description = "access 토큰을 주세요!", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH004", description = "acess 토큰 만료", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH006", description = "acess 토큰 모양이 이상함", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+    })
+    @Parameters({
+            @Parameter(name = "memberId", description = "회원의 아이디, request param 입니다!"),
+            @Parameter(name = "page", description = "페이지 번호, 0번이 1 페이지 입니다."),
+    })
+    public ApiResponse<IngredientResponse.findAllResultListDTO> findAll(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
+        Page<Ingredient> ingredientList = ingredientQueryService.getIngredientList(memberId, page);
+        ingredientList.forEach(ingredient ->
+                System.out.println("Controller Ingredient name: " + ingredient.getName()));
+        return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
     }
 }

@@ -8,6 +8,8 @@ import umc.IRECIPE_Server.domain.enums.Type;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IngredientResponse {
 
@@ -31,6 +33,7 @@ public class IngredientResponse {
         Type type;
         LocalDate expiryDate;
     }
+
     @Builder
     @Getter
     @NoArgsConstructor
@@ -47,5 +50,32 @@ public class IngredientResponse {
     public static class deleteResultDTO{
         String message;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class findIngredientResultDTO{
+        String name;
+        String image;
+        String category;
+        String memo;
+        Type type;
+        LocalDate expiryDate;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class findAllResultListDTO{
+        List<findIngredientResultDTO> ingredientList;
+        Integer listSize;
+        Integer totalPage;
+        Long totalElements;
+        Boolean isFirst;
+        Boolean isLast;
+    }
+
 
 }

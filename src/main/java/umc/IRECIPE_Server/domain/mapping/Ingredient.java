@@ -31,6 +31,10 @@ public class Ingredient extends BaseEntity {
     @JoinColumn(name = "category_id")
     private IngredientCategory ingredientCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     public void updateIngredient(String name, String image, String memo) {
         this.name = name;
         this.image = image;
