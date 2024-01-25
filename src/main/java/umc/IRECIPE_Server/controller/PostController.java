@@ -16,13 +16,13 @@ public class PostController {
 
 
     // 게시글 등록하는 컨트롤러
-    @PostMapping("")
-    public ApiResponse<?> posting(@RequestBody PostRequestDto postRequestDto){
-
-        // 현재 토큰을 사용중인 유저 고유 id 조회
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
-
-        return ApiResponse.onSuccess();
-    }
+//    @PostMapping("")
+//    public ApiResponse<?> posting(@RequestBody PostRequestDto postRequestDto){
+//
+//        // 현재 토큰을 사용중인 유저 고유 id 조회
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String userId = authentication.getName();
+//
+//        return ApiResponse.onSuccess();
+//    }
 }

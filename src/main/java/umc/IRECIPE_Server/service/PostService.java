@@ -15,13 +15,13 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    // requestDto 를 받아 게시글 저장 후 responseDto 생성해서 반환하는 메소드.
-    public PostResponseDto posting(PostRequestDto postRequestDto){
-
-
-
-
-
-
-    }
+//    // requestDto 를 받아 게시글 저장 후 responseDto 생성해서 반환하는 메소드.
+//    public PostResponseDto posting(PostRequestDto postRequestDto){
+//
+//
+//
+//
+//
+//
+//    }
 }
