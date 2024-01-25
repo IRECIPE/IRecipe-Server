@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.dto;
+package umc.IRECIPE_Server.dto.request;
 
 import lombok.Data;
 

@@ -1,10 +1,7 @@
 package umc.IRECIPE_Server.converter;
 
-import umc.IRECIPE_Server.domain.mapping.Query;
-import umc.IRECIPE_Server.dto.ChatGptButtonResponseDTO;
-import umc.IRECIPE_Server.dto.UserChatGptResponseDTO;
-
-import java.util.List;
+import umc.IRECIPE_Server.dto.response.ChatGptButtonResponseDTO;
+import umc.IRECIPE_Server.dto.response.UserChatGptResponseDTO;
 
 public class ChatGptConverter {
 

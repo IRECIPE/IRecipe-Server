@@ -1,6 +1,5 @@
-package umc.IRECIPE_Server.dto;
+package umc.IRECIPE_Server.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

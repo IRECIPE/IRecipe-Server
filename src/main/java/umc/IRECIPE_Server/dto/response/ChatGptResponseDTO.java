@@ -1,7 +1,8 @@
-package umc.IRECIPE_Server.dto;
+package umc.IRECIPE_Server.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import umc.IRECIPE_Server.dto.request.ChatGptMessageDto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
