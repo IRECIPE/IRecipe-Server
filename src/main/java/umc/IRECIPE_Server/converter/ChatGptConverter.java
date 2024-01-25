@@ -23,4 +23,5 @@ public class ChatGptConverter {
                 .gptResponse(gptResponse)
                 .build();
     }
+
 }

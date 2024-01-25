@@ -1,6 +1,7 @@
 package umc.IRECIPE_Server.service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,10 +13,11 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import umc.IRECIPE_Server.config.ChatGptConfig;
-import umc.IRECIPE_Server.dto.ChatGptMessageDto;
-import umc.IRECIPE_Server.dto.ChatGptRequestDTO;
-import umc.IRECIPE_Server.dto.ChatGptResponseDTO;
-import umc.IRECIPE_Server.dto.UserChatGptRequestDTO;
+import umc.IRECIPE_Server.domain.mapping.Member;
+import umc.IRECIPE_Server.domain.mapping.StoredRecipe;
+import umc.IRECIPE_Server.dto.*;
+import umc.IRECIPE_Server.repository.MemberRepository;
+import umc.IRECIPE_Server.repository.StoredRecipeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,9 @@ import java.util.List;
 @Transactional
 @Slf4j
 public class ChatGptServiceImpl implements ChatGptService {
+
+    private final MemberRepository memberRepository;
+    private final StoredRecipeRepository storedRecipeRepository;
     private static RestTemplate restTemplate = new RestTemplate();
 
     @Value("${chatgpt.api-key}")
@@ -69,4 +74,17 @@ public class ChatGptServiceImpl implements ChatGptService {
                 )
         );
     }
+
+    // ChatGPT 에게 추천받은 레시피 저장하기
+    @Override
+    public void saveRecipe(Long memberId, ChatGptRecipeSaveRequestDTO.@Valid RecipeSaveRequestDTO recipe) {
+        Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+        StoredRecipe storedRecipe = StoredRecipe.builder()
+                .member(member)
+                .body(recipe.getBody())
+                .build();
+        storedRecipeRepository.save(storedRecipe);
+    }
+
+
 }
