@@ -38,6 +38,9 @@ public class Post extends BaseEntity {
     // 게시글 제목
     private String title;
 
+    // 게시글 소제목
+    private String subhead;
+
     // 게시글 내용
     private String content;
 
@@ -69,9 +72,11 @@ public class Post extends BaseEntity {
     private List<PostImage> postImageList = new ArrayList<>();
 
     @Builder
-    public Post(Member member, String title, String content, Long likes, Category category, Level level, Status status, Float score) {
+    public Post(Long id, Member member, String title, String subhead, String content, Long likes, Category category, Level level, Status status, Float score) {
+        this.id = id;
         this.member = member;
         this.title = title;
+        this.subhead = subhead;
         this.content = content;
         this.likes = likes;
         this.category = category;
