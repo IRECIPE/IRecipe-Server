@@ -18,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import umc.IRECIPE_Server.common.BaseEntity;
+import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
 
 @Entity
@@ -51,7 +52,7 @@ public class Member extends BaseEntity implements UserDetails {
     private Gender gender;
 
     // 나이
-    private Long age;
+    private Age age;
 
     // 토큰
     private Long token;
