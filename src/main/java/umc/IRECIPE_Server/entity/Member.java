@@ -56,9 +56,6 @@ public class Member extends BaseEntity implements UserDetails {
     // 토큰
     private Long token;
 
-    // 회원 고유 id
-    private Long personalId;
-
     // 프로필 사진
     private String profileImage;
 
