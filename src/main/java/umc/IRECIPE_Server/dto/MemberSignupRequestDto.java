@@ -12,7 +12,6 @@ public class MemberSignupRequestDto {
         Integer age;
         String nickname;
         List<Long> allergyList;
-        String profileImage;
         String personalId;
     }
 }

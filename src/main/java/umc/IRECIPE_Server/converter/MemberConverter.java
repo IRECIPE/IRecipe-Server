@@ -42,7 +42,6 @@ public class MemberConverter {
                 .name(request.getName())
                 .gender(gender)
                 .nickname(request.getNickname())
-                .profileImage(request.getProfileImage())
                 .memberAllergyList(new ArrayList<>())
                 .age(age)
                 .personalId(request.getPersonalId())

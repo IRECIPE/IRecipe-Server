@@ -1,12 +1,15 @@
 package umc.IRECIPE_Server.controller;
 
+import io.jsonwebtoken.io.IOException;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
@@ -29,9 +32,17 @@ public class MemberController {
         return "Success";
     }
 
-    @PostMapping("/signup")
-    public ApiResponse<MemberSignupResponseDto.JoinResultDTO> join(@RequestBody @Valid MemberSignupRequestDto.JoinDto request){
+    @PostMapping(value = "/signup", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<MemberSignupResponseDto.JoinResultDTO> join(
+            @RequestPart("request") MemberSignupRequestDto.JoinDto request,
+            @RequestPart("file") MultipartFile file
+    )throws IOException {
+        log.info(request.getName());
+
         Member response = memberService.login(request);
+
+        log.info(request.getName(), file);
+
         return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(response, jwtProvider));
     }
 }
