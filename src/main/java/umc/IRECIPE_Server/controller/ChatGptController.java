@@ -1,6 +1,7 @@
 package umc.IRECIPE_Server.controller;
 
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
@@ -36,13 +37,18 @@ public class ChatGptController {
     }
 
     // 사용자 냉장고 재료 기반 레시피 요청
-    @PostMapping("/{memberId}/refri")
+    @GetMapping("/{memberId}/refri")
     public ApiResponse<UserChatGptResponseDTO.UserGptResponseDTO> getRefriRecipeResponse(@PathVariable("memberId") String memberId) {
         String response = chatGPTService.askRefriQuestion(memberId).getChoices().get(0).getMessage().getContent();
         return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
     }
 
-
+    // 사용자 냉장고 재료 유통기한 기반 레시피 요청
+    @GetMapping("/{memberId}/expiry")
+    public ApiResponse<UserChatGptResponseDTO.UserGptResponseDTO> getBeforeExpiredRecipeResponse(@PathVariable("memberId") String memberId) {
+        String response = chatGPTService.askExpiryIngredientsQuestion(memberId).getChoices().get(0).getMessage().getContent();
+        return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
+    }
 
     // 레시피 저장
     @PostMapping("/{memberId}/save")

@@ -86,7 +86,15 @@ public class ChatGptServiceImpl implements ChatGptService {
     @Override
     public ChatGptResponseDTO askRefriQuestion(String memberId) {
         List<String> myIngredientList = ingredientRepository.findNamesByMemberId(memberId);
-        String question = myIngredientList + "이 재료를 이용하여 만들 수 있는 레시피를 알려줘";
+        String question = myIngredientList + "주어진 재료를 활용하여 만들 수 있는 레시피(조리 방법)를 알려줘";
+        return askQuestion(question);
+    }
+
+    // ChatGPT API 요청하기 - 냉장고 재료 유통기한 기반
+    @Override
+    public ChatGptResponseDTO askExpiryIngredientsQuestion(String memberId) {
+        List<String> myExpiryIngredientList = ingredientRepository.findIngredientsNameOrderByExpiryDate(memberId);
+        String question = myExpiryIngredientList + "이건 유통기한이 짧은 순서인데, 가능하다면 앞 순서부터 주어진 재료를 활용하여 만들 수 있는 레시피(조리 방법)를 알려줘";
         return askQuestion(question);
     }
 
