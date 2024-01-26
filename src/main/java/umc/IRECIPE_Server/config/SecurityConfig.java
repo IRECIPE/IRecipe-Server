@@ -15,15 +15,11 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.ForwardedHeaderFilter;
-import umc.IRECIPE_Server.jwt.JwtAuthenticationFilter;
-import umc.IRECIPE_Server.jwt.JwtTokenProvider;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig{
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,8 +34,7 @@ public class SecurityConfig{
                                 .requestMatchers("/members/login").permitAll()
                                 .requestMatchers("/members/test").hasRole("USER")
                                 .anyRequest().permitAll()
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                );
         return http.build();
     }
 

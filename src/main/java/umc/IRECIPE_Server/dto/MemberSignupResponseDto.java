@@ -13,7 +13,7 @@ public class MemberSignupResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class JoinResultDTO{
-        String memberId; // refresh token or access token일듯?
+        Long memberId;
         LocalDateTime createdAt;
     }
 }

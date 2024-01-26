@@ -20,26 +20,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import umc.IRECIPE_Server.common.BaseEntity;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
+import umc.IRECIPE_Server.common.enums.Role;
 
 @Entity
 @Getter
-@DynamicUpdate
-@DynamicInsert
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Member extends BaseEntity implements UserDetails {
+public class Member extends BaseEntity {
 
     @Id
-    @Column(updatable = false, unique = true, nullable = false)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(nullable = false)
-    private String password;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
+    //권한
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     // 이름
     private String name;
@@ -52,13 +48,12 @@ public class Member extends BaseEntity implements UserDetails {
     private Gender gender;
 
     // 나이
+    @Enumerated(EnumType.STRING)
     private Age age;
 
-    // 토큰
-    private Long token;
-
     // 회원 고유 id
-    private Long personalId;
+    @Column(updatable = false, unique = true)//nullable false 설정 필요
+    private String personalId;
 
     // 프로필 사진
     private String profileImage;
@@ -86,40 +81,4 @@ public class Member extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<StoredRecipe> recipeList = new ArrayList<>();
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getUsername() { // 인증수단
-        return id;
-    }
-
-    @Override
-    public String getPassword(){
-        return password;
-    }
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

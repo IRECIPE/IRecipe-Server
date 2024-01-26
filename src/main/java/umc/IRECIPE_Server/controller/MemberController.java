@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
+import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
+import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.service.MemberService;
 import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.dto.TokenDto;
@@ -21,20 +23,15 @@ import umc.IRECIPE_Server.dto.TokenDto;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("/login")
-    public TokenDto login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
-        String nickname = memberLoginRequestDto.getNickname();
-        String password = memberLoginRequestDto.getPassword();
-        TokenDto tokenDTO = memberService.login(nickname, password);
-        return tokenDTO;
-    }
 
     @PostMapping("/test")
     public String test(){
         return "Success";
     }
 
+    @PostMapping("/signup")
     public ApiResponse<MemberSignupResponseDto.JoinResultDTO> join(@RequestBody @Valid MemberSignupRequestDto.JoinDto request){
-        return null;
+        Member member= memberService.joinMember(request);
+        return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(member));
     }
 }
