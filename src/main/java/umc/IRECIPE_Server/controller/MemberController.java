@@ -12,9 +12,8 @@ import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Member;
+import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.service.MemberService;
-import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
-import umc.IRECIPE_Server.dto.TokenDto;
 
 @Slf4j
 @RestController
@@ -22,6 +21,7 @@ import umc.IRECIPE_Server.dto.TokenDto;
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
+    private final JwtProvider jwtProvider;
 
 
     @PostMapping("/test")
@@ -31,7 +31,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ApiResponse<MemberSignupResponseDto.JoinResultDTO> join(@RequestBody @Valid MemberSignupRequestDto.JoinDto request){
-        Member member= memberService.joinMember(request);
-        return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(member));
+        Member response = memberService.login(request);
+        return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(response, jwtProvider));
     }
 }

@@ -13,5 +13,6 @@ public class MemberSignupRequestDto {
         String nickname;
         List<Long> allergyList;
         String profileImage;
+        String personalId;
     }
 }

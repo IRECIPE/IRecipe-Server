@@ -10,10 +10,11 @@ import java.time.LocalDateTime;
 public class MemberSignupResponseDto {
     @Builder
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class JoinResultDTO{
-        Long memberId;
-        LocalDateTime createdAt;
+        private final String grantType;
+        private final String accessToken;
+        private final String refreshToken;
+        private final Long accessTokenExpiresIn;
     }
 }

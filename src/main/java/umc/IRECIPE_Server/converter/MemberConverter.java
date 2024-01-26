@@ -1,20 +1,20 @@
 package umc.IRECIPE_Server.converter;
 
+import lombok.RequiredArgsConstructor;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
+import umc.IRECIPE_Server.common.enums.Role;
 import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Member;
+import umc.IRECIPE_Server.jwt.JwtProvider;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MemberConverter {
-    public static MemberSignupResponseDto.JoinResultDTO toJoinResultDTO(Member member){
-        return MemberSignupResponseDto.JoinResultDTO.builder()
-                .memberId(member.getId())
-                .createdAt(LocalDateTime.now())
-                .build();
+    public static MemberSignupResponseDto.JoinResultDTO toJoinResultDTO(Member member, JwtProvider jwtProvider){
+        return jwtProvider.generateTokenDto(member.getPersonalId());
     }
 
     public static Member toMember(MemberSignupRequestDto.JoinDto request){
@@ -45,6 +45,8 @@ public class MemberConverter {
                 .profileImage(request.getProfileImage())
                 .memberAllergyList(new ArrayList<>())
                 .age(age)
+                .personalId(request.getPersonalId())
+                .role(Role.USER)
                 .build();
     }
 }

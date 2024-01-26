@@ -44,13 +44,10 @@ public enum ErrorStatus implements BaseErrorCode {
     CONTENT_NOT_EXIST(HttpStatus.BAD_REQUEST, "POST4003", "내용은 필수 입니다."),
 
     //커뮤니티 관련 에러
-    POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST4003", "게시글을 찾을 수 없습니다."),
+    POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST4011", "게시글을 찾을 수 없습니다."),
 
-    //지역 관련 에러
-    REGION_NOT_FOUND(HttpStatus.BAD_REQUEST, "REGION4001", "그런 지역은 없는뎁쇼"),
-
-    //스토어 관련 에러
-    STORE_NOT_FOUND(HttpStatus.BAD_REQUEST, "STORE4001", "그런 가게는 없는뎁쇼");
+    //알러지 관련 에러
+    ALLERGY_NOT_FOUND(HttpStatus.BAD_REQUEST, "ALLERGY4001", "알러지를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

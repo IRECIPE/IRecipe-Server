@@ -24,6 +24,11 @@ spring:
     user:
       name: irecipe
       password: irecipe
+    oauth2:
+      client:
+        registration:
+          naver:
+
 cloud:
   aws:
     s3:
@@ -37,4 +42,4 @@ cloud:
     stack:
       auto: false
 jwt:
-  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHJVDkdjsnCMdscmFJmfkslMGLDjVMdnckdcSDnakcmjwlJNmdlskJdscJ
