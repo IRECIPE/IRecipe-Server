@@ -3,6 +3,8 @@ package umc.IRECIPE_Server.controller;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.converter.ChatGptConverter;
@@ -37,24 +39,29 @@ public class ChatGptController {
     }
 
     // 사용자 냉장고 재료 기반 레시피 요청
-    @GetMapping("/{memberId}/refri")
-    public ApiResponse<UserChatGptResponseDTO.UserGptResponseDTO> getRefriRecipeResponse(@PathVariable("memberId") String memberId) {
+    @GetMapping("/refri")
+    public ApiResponse<UserChatGptResponseDTO.UserGptResponseDTO> getRefriRecipeResponse() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
         String response = chatGPTService.askRefriQuestion(memberId).getChoices().get(0).getMessage().getContent();
         return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
     }
 
     // 사용자 냉장고 재료 유통기한 기반 레시피 요청
-    @GetMapping("/{memberId}/expiry")
-    public ApiResponse<UserChatGptResponseDTO.UserGptResponseDTO> getBeforeExpiredRecipeResponse(@PathVariable("memberId") String memberId) {
+    @GetMapping("/expiry")
+    public ApiResponse<UserChatGptResponseDTO.UserGptResponseDTO> getBeforeExpiredRecipeResponse() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
         String response = chatGPTService.askExpiryIngredientsQuestion(memberId).getChoices().get(0).getMessage().getContent();
         return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
     }
 
     // 레시피 저장
-    @PostMapping("/{memberId}/save")
-    public ApiResponse<Void> saveRecipe(@PathVariable("memberId") String memberId,
-                                    @RequestBody @Valid ChatGptRecipeSaveRequestDTO.RecipeSaveRequestDTO request) {
-
+    @PostMapping("/save")
+    public ApiResponse<Void> saveRecipe(@RequestBody @Valid ChatGptRecipeSaveRequestDTO.RecipeSaveRequestDTO request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
+        System.out.println(memberId);
         chatGPTService.saveRecipe(memberId, request);
         return ApiResponse.onSuccess(null);
     }
