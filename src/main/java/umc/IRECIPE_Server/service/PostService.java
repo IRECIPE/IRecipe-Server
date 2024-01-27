@@ -8,6 +8,7 @@ import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.ExceptionAdvice;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.PostRequestDTO;
 import umc.IRECIPE_Server.dto.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
@@ -44,7 +45,7 @@ public class PostService {
 
         // 게시글 객체 생성
         Post post = Post.builder()
-                //.member(member)
+                .member(member)
                 .title(postRequestDto.getTitle())
                 .subhead(postRequestDto.getSubhead())
                 .category(postRequestDto.getCategory())
@@ -64,13 +65,8 @@ public class PostService {
         // 게시글 사진 저장
         postImageRepository.save(postImage);
 
-        // responseDTO 생성
-        PostResponseDTO postResponseDTO = PostResponseDTO.builder()
-                .postId(post.getId())
-                .build();
-
         // 응답 반환.
-        return ApiResponse.onSuccess(postResponseDTO);
+        return ApiResponse.onSuccess(PostConverter.toPostResponseDTO(post));
     }
 
     // 게시글 단일 조회 (Read)
@@ -107,23 +103,7 @@ public class PostService {
         }
         member = memberOptional.get();
 
-        // PostResponseDTO 생성
-        PostResponseDTO postResponseDTO = PostResponseDTO.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
-                .subhead(post.getSubhead())
-                .category(post.getCategory())
-                .content(post.getContent())
-                .level(post.getLevel())
-                .likes(post.getLikes())
-                .score(post.getScore())
-                .status(post.getStatus())
-                .imageUrl(imageUrl)
-                .writerImage(member.getProfileImage())
-                .writerNickName(member.getNickname())
-                .build();
-
-        return ApiResponse.onSuccess(postResponseDTO);
+        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, member, imageUrl));
 
     }
 
@@ -171,21 +151,7 @@ public class PostService {
         postRepository.save(post);
         postImageRepository.save(postImage);
 
-        // postResponseDTO 에 정보 모두 담아서 반환.
-        PostResponseDTO postResponseDTO = PostResponseDTO.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
-                .subhead(post.getSubhead())
-                .content(post.getContent())
-                .category(post.getCategory())
-                .level(post.getLevel())
-                .status(post.getStatus())
-                .score(post.getScore())
-                .likes(post.getLikes())
-                .imageUrl(postImage.getImageUrl())
-                .build();
-
-        return ApiResponse.onSuccess(postResponseDTO);
+        return ApiResponse.onSuccess(PostConverter.toUpdateResponseDTO(post, postImage));
 
     }
 
