@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
+import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.ExceptionAdvice;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.dto.PostRequestDTO;
@@ -16,6 +17,7 @@ import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostImageRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,7 +44,7 @@ public class PostService {
 
         // 게시글 객체 생성
         Post post = Post.builder()
-                .member(member)
+                //.member(member)
                 .title(postRequestDto.getTitle())
                 .subhead(postRequestDto.getSubhead())
                 .category(postRequestDto.getCategory())
@@ -72,7 +74,7 @@ public class PostService {
     }
 
     // 게시글 단일 조회 (Read)
-    public ApiResponse<?> getPost(Long postId){
+    public ApiResponse<?> getPost(Long postId, String userId){
 
         // 리포지토리에서 게시글 찾기. 없으면 에러 출력.
         Optional<Post> postOptional = postRepository.findById(postId);
@@ -96,6 +98,15 @@ public class PostService {
             imageUrl = postImage.getImageUrl();
         }
 
+        // userId 로 유저 찾아서 member 객체에 담기
+        Optional<Member> memberOptional = memberRepository.findById(userId);
+        Member member;
+
+        if (memberOptional.isEmpty()){
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        member = memberOptional.get();
+
         // PostResponseDTO 생성
         PostResponseDTO postResponseDTO = PostResponseDTO.builder()
                 .postId(post.getId())
@@ -107,10 +118,91 @@ public class PostService {
                 .likes(post.getLikes())
                 .score(post.getScore())
                 .status(post.getStatus())
-                .url(imageUrl)
+                .imageUrl(imageUrl)
+                .writerImage(member.getProfileImage())
+                .writerNickName(member.getNickname())
                 .build();
 
         return ApiResponse.onSuccess(postResponseDTO);
 
+    }
+
+    // 게시글 수정 후 저장.
+    @Transactional
+    public ApiResponse<?> updatePost(Long postId, PostRequestDTO postRequestDTO){
+
+        // 리포지토리에서 게시글 찾기. 없으면 에러 출력.
+        Optional<Post> postOptional = postRepository.findById(postId);
+        Post post;
+
+        if(postOptional.isEmpty()){
+            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+        }
+        post = postOptional.get();
+
+        // postImage 찾기
+        Optional<PostImage> postImageOptional = postImageRepository.findByPost(post);
+        PostImage postImage = postImageOptional.get();
+
+        // postRequestDTO 안의 내용이 null 이 아니면 수정
+        if(postRequestDTO.getTitle() != null){
+            post.updateTitle(postRequestDTO.getTitle());
+        }
+        if(postRequestDTO.getSubhead() != null){
+            post.updateSubhead(postRequestDTO.getSubhead());
+        }
+        if(postRequestDTO.getContent() != null){
+            post.updateContent(postRequestDTO.getContent());
+        }
+        if(postRequestDTO.getCategory() != null){
+            post.updateCategory(postRequestDTO.getCategory());
+        }
+        if(postRequestDTO.getLevel() != null){
+            post.updateLevel(postRequestDTO.getLevel());
+        }
+        if(postRequestDTO.getStatus() != null){
+            post.updateStatus(postRequestDTO.getStatus());
+        }
+        if(postRequestDTO.getImageUrl() != null){
+            postImage.updateImage(postRequestDTO.getImageUrl());
+        }
+
+        // 게시글, 사진 수정 후 저장
+        postRepository.save(post);
+        postImageRepository.save(postImage);
+
+        // postResponseDTO 에 정보 모두 담아서 반환.
+        PostResponseDTO postResponseDTO = PostResponseDTO.builder()
+                .postId(post.getId())
+                .title(post.getTitle())
+                .subhead(post.getSubhead())
+                .content(post.getContent())
+                .category(post.getCategory())
+                .level(post.getLevel())
+                .status(post.getStatus())
+                .score(post.getScore())
+                .likes(post.getLikes())
+                .imageUrl(postImage.getImageUrl())
+                .build();
+
+        return ApiResponse.onSuccess(postResponseDTO);
+
+    }
+
+    // 게시글 삭제
+    @Transactional
+    public ApiResponse<?> deletePost(Long postId){
+
+        Optional<Post> postOptional = postRepository.findById(postId);
+        Post post;
+
+        if(postOptional.isEmpty()){
+            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+        }
+        post = postOptional.get();
+
+        postRepository.delete(post);
+
+        return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 }

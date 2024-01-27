@@ -42,5 +42,11 @@ public class PostResponseDTO {
     private Float score;
 
     // 게시글 사진 (일단 단일 사진만 구현)
-    private String url;
+    private String imageUrl;
+
+    // 작성자 이름
+    private String writerNickName;
+
+    // 작성자 프로필 사진
+    private String writerImage;
 }

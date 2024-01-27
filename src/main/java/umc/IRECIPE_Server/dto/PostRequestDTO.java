@@ -25,5 +25,5 @@ public class PostRequestDTO {
 
     private String content;
 
-    private List<String> imageUrl;
+    private String imageUrl;
 }

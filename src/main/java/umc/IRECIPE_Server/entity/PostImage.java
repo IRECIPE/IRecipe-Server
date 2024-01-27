@@ -23,4 +23,9 @@ public class PostImage extends BaseEntity {
     private Post post;
 
     private String imageUrl;
+
+    // 이미지 수정
+    public void updateImage(String umageUrl){
+        this.imageUrl = imageUrl;
+    }
 }
