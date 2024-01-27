@@ -50,7 +50,7 @@ public class PostService {
                 .status(postRequestDto.getStatus())
                 .build();
 
-        // 게시글 사진 객제 생성
+        // 게시글 사진 객체 생성
         PostImage postImage = PostImage.builder()
                 .post(post)
                 .imageUrl(url)

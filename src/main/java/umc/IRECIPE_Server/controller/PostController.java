@@ -35,9 +35,22 @@ public class PostController {
         return postService.posting(userId, postRequestDto, url);
     }
 
+    // 게시글 단일 조회 컨트롤러
     @GetMapping("/{postId}")
     public ApiResponse<?> getPost(@PathVariable Long postId){
 
         return postService.getPost(postId);
+    }
+
+    @PatchMapping("/{postId}")
+    public ApiResponse<?> updatePost(@PathVariable Long postId){
+
+        return null;
+    }
+
+    @DeleteMapping("/{postId}")
+    public ApiResponse<?> deletePost(@PathVariable Long postId){
+
+        return null;
     }
 }
