@@ -99,11 +99,11 @@ public class PostResponseDTO {
         private Long likes;
     }
 
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AllPostResponseDTO{
-
-    }
+//    @Builder
+//    @Getter
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class AllPostResponseDTO{
+//
+//    }
 }

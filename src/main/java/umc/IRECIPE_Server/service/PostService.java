@@ -48,6 +48,7 @@ public class PostService {
                 .member(member)
                 .title(postRequestDto.getTitle())
                 .subhead(postRequestDto.getSubhead())
+                .content(postRequestDto.getContent())
                 .category(postRequestDto.getCategory())
                 .level(postRequestDto.getLevel())
                 .status(postRequestDto.getStatus())
@@ -109,7 +110,7 @@ public class PostService {
 
     // 게시글 수정 후 저장.
     @Transactional
-    public ApiResponse<?> updatePost(Long postId, PostRequestDTO postRequestDTO){
+    public ApiResponse<?> updatePost(Long postId, PostRequestDTO postRequestDTO, String url){
 
         // 리포지토리에서 게시글 찾기. 없으면 에러 출력.
         Optional<Post> postOptional = postRepository.findById(postId);
@@ -143,9 +144,10 @@ public class PostService {
         if(postRequestDTO.getStatus() != null){
             post.updateStatus(postRequestDTO.getStatus());
         }
-        if(postRequestDTO.getImageUrl() != null){
-            postImage.updateImage(postRequestDTO.getImageUrl());
+        if(url != null){
+            postImage.updateImage(url);
         }
+
 
         // 게시글, 사진 수정 후 저장
         postRepository.save(post);
