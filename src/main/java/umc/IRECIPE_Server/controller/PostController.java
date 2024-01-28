@@ -10,7 +10,7 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.common.S3.S3Service;
-import umc.IRECIPE_Server.dto.PostRequestDTO;
+import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.service.PostService;
 
 import java.io.IOException;

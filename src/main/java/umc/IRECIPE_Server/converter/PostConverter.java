@@ -1,6 +1,7 @@
 package umc.IRECIPE_Server.converter;
 
-import umc.IRECIPE_Server.dto.PostResponseDTO;
+
+import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.entity.PostImage;
