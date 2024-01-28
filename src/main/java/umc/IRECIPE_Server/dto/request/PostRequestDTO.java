@@ -1,8 +1,6 @@
 package umc.IRECIPE_Server.dto.request;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 import umc.IRECIPE_Server.common.enums.Category;
 import umc.IRECIPE_Server.common.enums.Level;
 import umc.IRECIPE_Server.common.enums.Status;
@@ -24,5 +22,23 @@ public class PostRequestDTO {
     private Status status;
 
     private String content;
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class updateRequestDTO{
+        private String title;
+
+        private String subhead;
+
+        private Category category;
+
+        private Level level;
+
+        private Status status;
+
+        private String content;
+    }
 
 }

@@ -55,7 +55,8 @@ public class PostController {
     }
 
     // 게시글 수정 컨트롤러
-    @PatchMapping(value = "/{postId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PatchMapping(value = "/{postId}",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ApiResponse<?> updatePost(@PathVariable Long postId, @RequestPart("postRequestDTO") PostRequestDTO postRequestDTO, @RequestPart("file") MultipartFile file) throws IOException {
 
         String url;
