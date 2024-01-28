@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.dto;
+package umc.IRECIPE_Server.dto.response;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
