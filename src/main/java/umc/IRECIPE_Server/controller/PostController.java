@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.common.S3.S3Service;
-import umc.IRECIPE_Server.dto.PostRequestDTO;
+import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.service.PostService;
 
 import java.io.IOException;

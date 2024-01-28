@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import umc.IRECIPE_Server.service.MemberService;
-import umc.IRECIPE_Server.dto.MemberLoginRequestDTO;
+import umc.IRECIPE_Server.dto.request.MemberLoginRequestDTO;
 import umc.IRECIPE_Server.dto.TokenDTO;
 
 @Slf4j

@@ -23,5 +23,6 @@ public class StoredRecipe {
     private Member member;
 
     // 레시피 내용
+    @Column(columnDefinition = "TEXT")
     private String body;
 }
