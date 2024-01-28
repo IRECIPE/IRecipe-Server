@@ -1,5 +1,6 @@
 package umc.IRECIPE_Server.service;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +8,7 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
+import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
@@ -110,6 +112,13 @@ public class PostService {
                 .build();
 
         return ApiResponse.onSuccess(postResponseDTO);
+
+    }
+
+    // 게시글 리뷰 등록
+    @Transactional
+    public ApiResponse<Void> addReview(Long memberId, ReviewRequestDTO.@Valid addReviewDTO request, String imageUrl) {
+
 
     }
 }

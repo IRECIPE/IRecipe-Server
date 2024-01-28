@@ -9,7 +9,7 @@ public class UserChatGptRequestDTO implements Serializable {
 
     @Getter
     public static class UserGptRequestDTO {
-        String question;
+        private String question;
     }
 
 }
