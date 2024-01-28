@@ -1,7 +1,9 @@
 package umc.IRECIPE_Server.service.ingredientService;
 
-import umc.IRECIPE_Server.domain.mapping.Ingredient;
-import umc.IRECIPE_Server.web.dto.IngredientRequest;
+
+import umc.IRECIPE_Server.dto.IngredientRequest;
+import umc.IRECIPE_Server.entity.Ingredient;
+
 
 public interface IngredientCommandService {
     Ingredient addIngredient(IngredientRequest.addDTO request);

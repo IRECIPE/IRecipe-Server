@@ -12,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import umc.IRECIPE_Server.web.dto.TokenDTO;
+import umc.IRECIPE_Server.dto.TokenDTO;
 import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;

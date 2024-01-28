@@ -1,8 +1,8 @@
 package umc.IRECIPE_Server.service.ingredientService;
 
 import org.springframework.data.domain.Page;
-import umc.IRECIPE_Server.domain.mapping.Ingredient;
-import umc.IRECIPE_Server.web.dto.IngredientRequest;
+import umc.IRECIPE_Server.entity.Ingredient;
+
 
 import java.util.Optional;
 

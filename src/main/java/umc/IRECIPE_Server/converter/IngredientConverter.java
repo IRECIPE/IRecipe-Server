@@ -1,9 +1,9 @@
 package umc.IRECIPE_Server.converter;
 
+
 import org.springframework.data.domain.Page;
-import umc.IRECIPE_Server.domain.mapping.Ingredient;
-import umc.IRECIPE_Server.domain.mapping.IngredientCategory;
-import umc.IRECIPE_Server.web.dto.IngredientRequest;
+import umc.IRECIPE_Server.dto.IngredientRequest;
+import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.web.dto.IngredientResponse;
 
 import java.time.LocalDateTime;
@@ -14,25 +14,19 @@ public class IngredientConverter {
 
     public static IngredientResponse.addResultDTO toaddResultDTO(Ingredient ingredient) {
         return IngredientResponse.addResultDTO.builder()
-                .ingredientId(ingredient.getId())
+                .ingredientId(ingredient.getIngredientId())
                 .createdAt(LocalDateTime.now())
                 .build();
     }
 
     public static Ingredient toIngredient(IngredientRequest.addDTO request) {
 
-        IngredientCategory category = IngredientCategory.builder()
-                .name(request.getCategory())
-                .type(request.getType())
-                .expiryDate(request.getExpiryDate())
-                .build();
-
-
         return Ingredient.builder()
                 .name(request.getName())
-                .image(request.getImage())
                 .memo(request.getMemo())
-                .ingredientCategory(category)
+                .category(request.getCategory())
+                .type(request.getType())
+                .expiry_date(request.getExpiryDate())
                 .build();
     }
 
@@ -40,11 +34,10 @@ public class IngredientConverter {
 
         return IngredientResponse.findOneResultDTO.builder()
                 .name(ingredient.getName())
-                .image(ingredient.getImage())
                 .memo(ingredient.getMemo())
-                .category(ingredient.getIngredientCategory().getName())
-                .type(ingredient.getIngredientCategory().getType())
-                .expiryDate(ingredient.getIngredientCategory().getExpiryDate())
+                .category(ingredient.getCategory())
+                .type(ingredient.getType())
+                .expiryDate(ingredient.getExpiry_date())
                 .build();
 
     }
@@ -71,11 +64,10 @@ public class IngredientConverter {
 
         return IngredientResponse.findIngredientResultDTO.builder()
                 .name(ingredient.getName())
-                .image(ingredient.getImage())
                 .memo(ingredient.getMemo())
-                .category(ingredient.getIngredientCategory().getName())
-                .type(ingredient.getIngredientCategory().getType())
-                .expiryDate(ingredient.getIngredientCategory().getExpiryDate())
+                .category(ingredient.getCategory())
+                .type(ingredient.getType())
+                .expiryDate(ingredient.getExpiry_date())
                 .build();
     }
 
@@ -87,7 +79,7 @@ public class IngredientConverter {
     }
     public static IngredientResponse.updateResultDTO toUpdateResultDTO(Ingredient ingredient) {
         return IngredientResponse.updateResultDTO.builder()
-                .ingredientId(ingredient.getId())
+                .ingredientId(ingredient.getIngredientId())
                 .updatedAt(LocalDateTime.now())
                 .build();
     }

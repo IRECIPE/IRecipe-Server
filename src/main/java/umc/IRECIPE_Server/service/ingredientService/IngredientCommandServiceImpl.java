@@ -6,11 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
 import umc.IRECIPE_Server.converter.IngredientConverter;
-import umc.IRECIPE_Server.domain.enums.Type;
-import umc.IRECIPE_Server.domain.mapping.Ingredient;
-import umc.IRECIPE_Server.domain.mapping.IngredientCategory;
+
+import umc.IRECIPE_Server.dto.IngredientRequest;
+import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.repository.IngredientRepository;
-import umc.IRECIPE_Server.web.dto.IngredientRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +30,7 @@ public class IngredientCommandServiceImpl implements IngredientCommandService {
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new IngredientHandler(ErrorStatus.INGREDIENT_NOT_FOUND));
 
-        ingredient.updateIngredient(request.getName(), request.getImage(), request.getMemo());
-        ingredient.getIngredientCategory().updateIngredientCategory(request.getCategory(), request.getType(), request.getExpiryDate());
+        ingredient.updateIngredient(request.getName(), request.getCategory(), request.getType(), request.getExpiryDate(), request.getMemo());
         return ingredientRepository.save(ingredient);
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.jwt.JwtTokenProvider;
 import umc.IRECIPE_Server.repository.MemberRepository;
-import umc.IRECIPE_Server.web.dto.TokenDTO;
+import umc.IRECIPE_Server.dto.TokenDTO;
 
 @Service
 @Transactional(readOnly = true)

@@ -1,6 +1,6 @@
 package umc.IRECIPE_Server.converter;
 
-import umc.IRECIPE_Server.web.dto.TempResponse;
+import umc.IRECIPE_Server.dto.TempResponse;
 
 public class TempConverter {
     public static TempResponse.TempTestDTO toTempTestDTO(){
