@@ -32,7 +32,7 @@ public class PostService {
     public ApiResponse<?> posting(String userId, PostRequestDTO postRequestDto, String url){
 
         // 리포지토리에서 멤버 찾기.
-        Optional<Member> memberOptional = memberRepository.findById(userId);
+        Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
         Member member;
         if(memberOptional.isEmpty()){
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);

@@ -13,9 +13,6 @@ import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.service.MemberService;
-<<<<<<< HEAD
-=======
->>>>>>> 32eec6c691e713bf3022877fcf5225892be6f0e1
 
 @Slf4j
 @RestController

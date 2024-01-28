@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
@@ -43,6 +44,7 @@ public class ChatGptServiceImpl implements ChatGptService {
     private String apiKey;
 
     // ChatGPT 에 요청할 때 포함해야 하는 값 세팅하기
+    @Transactional
     public HttpEntity<ChatGptRequestDTO> buildHttpEntity(ChatGptRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(ChatGptConfig.MEDIA_TYPE));
@@ -51,6 +53,7 @@ public class ChatGptServiceImpl implements ChatGptService {
     }
 
     // ChatGPT API 응답 반환 받기
+    @Transactional
     public ChatGptResponseDTO getResponse(HttpEntity<ChatGptRequestDTO> chatGptRequestDTOHttpEntity) {
         // 답변 길어질 시 Timeout Error : 1분 설정 60sec * 10000ms
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
@@ -101,7 +104,7 @@ public class ChatGptServiceImpl implements ChatGptService {
     // ChatGPT 에게 추천받은 레시피 저장하기
     @Override
     public void saveRecipe(String memberId, ChatGptRecipeSaveRequestDTO.@Valid RecipeSaveRequestDTO recipe) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        Member member = memberRepository.findByPersonalId(memberId).orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
         StoredRecipe storedRecipe = StoredRecipe.builder()
                 .member(member)
                 .body(recipe.getBody())
