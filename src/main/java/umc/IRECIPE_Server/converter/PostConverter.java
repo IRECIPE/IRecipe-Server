@@ -29,6 +29,7 @@ public class PostConverter {
                 .category(post.getCategory())
                 .status(post.getStatus())
                 .likes(post.getLikes())
+                .level(post.getLevel())
                 .score(post.getScore())
                 .imageUrl(postImage)
                 .writerNickName(member.getNickname())
