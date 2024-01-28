@@ -24,11 +24,6 @@ spring:
     user:
       name: irecipe
       password: irecipe
-    oauth2:
-      client:
-        registration:
-          naver:
-
 cloud:
   aws:
     s3:

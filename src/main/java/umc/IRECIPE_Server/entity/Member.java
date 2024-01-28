@@ -3,10 +3,7 @@ package umc.IRECIPE_Server.entity;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,9 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import umc.IRECIPE_Server.common.BaseEntity;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
@@ -25,6 +19,8 @@ import umc.IRECIPE_Server.common.enums.Role;
 @Entity
 @Getter
 @Builder
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Member extends BaseEntity {
@@ -52,7 +48,7 @@ public class Member extends BaseEntity {
     private Age age;
 
     // 회원 고유 id
-    @Column(updatable = false, unique = true)//nullable false 설정 필요
+    @Column(updatable = false, unique = true, nullable = false)
     private String personalId;
 
     // 프로필 사진
