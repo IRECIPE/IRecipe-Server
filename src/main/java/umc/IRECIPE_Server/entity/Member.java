@@ -51,9 +51,6 @@ public class Member extends BaseEntity {
     @Column(updatable = false, unique = true, nullable = false)
     private String personalId;
 
-    // 프로필 사진
-    private String profileImage;
-
     // 중요 알림 온오프여부
     private Boolean important;
 
@@ -77,4 +74,6 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<StoredRecipe> recipeList = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Ingredient> ingredientList = new ArrayList<>();
 }

@@ -22,6 +22,10 @@ public class Ingredient extends BaseEntity {
     @Column(name = "ingredient_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     // 음식 이름
     private String name;
 

@@ -1,12 +1,8 @@
 package umc.IRECIPE_Server.controller;
 
 import io.jsonwebtoken.io.IOException;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +13,9 @@ import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.service.MemberService;
+<<<<<<< HEAD
+=======
+>>>>>>> 32eec6c691e713bf3022877fcf5225892be6f0e1
 
 @Slf4j
 @RestController
@@ -25,7 +24,6 @@ import umc.IRECIPE_Server.service.MemberService;
 public class MemberController {
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
-
 
     @PostMapping("/test")
     public String test(){

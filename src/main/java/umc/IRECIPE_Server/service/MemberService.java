@@ -3,7 +3,6 @@ package umc.IRECIPE_Server.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.Token;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
@@ -20,7 +19,6 @@ import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.AllergyRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.TokenRepository;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,9 +39,7 @@ public class MemberService {
                 .map(allergy -> {
                     return allergyRepository.findById(allergy).orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
                 }).collect(Collectors.toList());
-
         List<MemberAllergy> memberAllergyList = MemberAllergyConverter.toMemberAllergyList(allergyList);
-
         memberAllergyList.forEach(memberAllergy -> {memberAllergy.setMember(newMem);});
 
         return memberRepository.save(newMem);
