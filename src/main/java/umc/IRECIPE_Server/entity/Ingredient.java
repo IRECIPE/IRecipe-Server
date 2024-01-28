@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Ingredient extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ingredient_id")
@@ -41,10 +40,6 @@ public class Ingredient extends BaseEntity {
     private LocalDate expiry_date;
 
     private String memo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
 
     public void updateIngredient(String name, String category, Type type, LocalDate expiry_date, String memo) {
         this.name = name;

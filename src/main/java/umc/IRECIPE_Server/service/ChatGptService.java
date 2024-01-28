@@ -1,6 +1,8 @@
 package umc.IRECIPE_Server.service;
 
 import jakarta.validation.Valid;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import umc.IRECIPE_Server.dto.request.ChatGptRecipeSaveRequestDTO;
 import umc.IRECIPE_Server.dto.response.ChatGptResponseDTO;
 

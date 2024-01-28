@@ -1,38 +1,71 @@
 package umc.IRECIPE_Server.service;
 
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.IRECIPE_Server.jwt.JwtTokenProvider;
+import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.AllergyHandler;
+import umc.IRECIPE_Server.converter.MemberAllergyConverter;
+import umc.IRECIPE_Server.converter.MemberConverter;
+import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
+import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
+import umc.IRECIPE_Server.entity.Allergy;
+import umc.IRECIPE_Server.entity.Member;
+import umc.IRECIPE_Server.entity.MemberAllergy;
+import umc.IRECIPE_Server.entity.RefreshToken;
+import umc.IRECIPE_Server.jwt.JwtProvider;
+import umc.IRECIPE_Server.repository.AllergyRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
-import umc.IRECIPE_Server.dto.TokenDTO;
+import umc.IRECIPE_Server.repository.TokenRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AllergyRepository allergyRepository;
+    private final TokenRepository tokenRepository;
+    private final JwtProvider jwtProvider;
 
     @Transactional
-    public TokenDTO login(String id, String password){
-        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, password);
+    public Member joinMember(MemberSignupRequestDto.JoinDto request){
+        Member newMem = MemberConverter.toMember(request);
+        List<Allergy> allergyList = request.getAllergyList().stream()
+                .map(allergy -> {
+                    return allergyRepository.findById(allergy).orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
+                }).collect(Collectors.toList());
+        List<MemberAllergy> memberAllergyList = MemberAllergyConverter.toMemberAllergyList(allergyList);
+        memberAllergyList.forEach(memberAllergy -> {memberAllergy.setMember(newMem);});
 
-        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        TokenDTO tokenDTO = jwtTokenProvider.generateToken(authentication);
-
-        return tokenDTO;
-
+        return memberRepository.save(newMem);
     }
+
+    @Transactional
+    public Member login(MemberSignupRequestDto.JoinDto request) {
+        //Optional<Member> tmpMember = memberRepository.findByPersonalId(request.getPersonalId());
+        Member member = memberRepository.findByPersonalId(request.getPersonalId());
+        if (member == null) { // 최초 회원가입
+            member = this.joinMember(request);
+        }
+
+        log.info("[login] 계정을 찾았습니다. " + member);
+
+        MemberSignupResponseDto.JoinResultDTO tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .id(member.getId())
+                .token(tokenDto.getRefreshToken())
+                .build();
+        tokenRepository.save(refreshToken);
+
+        return member;
+    }
+
+
 }

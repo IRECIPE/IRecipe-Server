@@ -32,12 +32,12 @@ public class PostService {
     public ApiResponse<?> posting(String userId, PostRequestDTO postRequestDto, String url){
 
         // 리포지토리에서 멤버 찾기.
-        Optional<Member> memberOptional = memberRepository.findById(userId);
-        Member member;
-        if(memberOptional.isEmpty()){
+        //Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
+
+        Member member = memberRepository.findByPersonalId(userId);
+        if(member == null){
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
-        member = memberOptional.get();
 
         // 게시글 객체 생성
         Post post = Post.builder()

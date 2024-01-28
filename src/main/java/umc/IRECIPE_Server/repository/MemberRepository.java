@@ -8,5 +8,7 @@ import umc.IRECIPE_Server.entity.Member;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Optional<Member> findById(String username);
+    Member findByPersonalId(String personalId);
+    //Optional<Member> findByPersonalId(String personalId);
+
 }
