@@ -38,3 +38,5 @@ cloud:
       auto: false
 jwt:
   secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHJVDkdjsnCMdscmFJmfkslMGLDjVMdnckdcSDnakcmjwlJNmdlskJdscJ
+chatgpt:
+  api-key: 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

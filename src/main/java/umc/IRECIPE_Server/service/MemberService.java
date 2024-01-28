@@ -48,12 +48,11 @@ public class MemberService {
 
     @Transactional
     public Member login(MemberSignupRequestDto.JoinDto request) {
-        Optional<Member> tmpMember = memberRepository.findByPersonalId(request.getPersonalId());
-        Member member;
-        if (tmpMember.isEmpty()) { // 최초 회원가입
+        //Optional<Member> tmpMember = memberRepository.findByPersonalId(request.getPersonalId());
+        Member member = memberRepository.findByPersonalId(request.getPersonalId());
+        if (member == null) { // 최초 회원가입
             member = this.joinMember(request);
         }
-        member = tmpMember.get();
 
         log.info("[login] 계정을 찾았습니다. " + member);
 

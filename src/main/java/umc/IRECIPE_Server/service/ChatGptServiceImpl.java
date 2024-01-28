@@ -104,7 +104,11 @@ public class ChatGptServiceImpl implements ChatGptService {
     // ChatGPT 에게 추천받은 레시피 저장하기
     @Override
     public void saveRecipe(String memberId, ChatGptRecipeSaveRequestDTO.@Valid RecipeSaveRequestDTO recipe) {
-        Member member = memberRepository.findByPersonalId(memberId).orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Member member = memberRepository.findByPersonalId(memberId);
+        if(member == null){
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
         StoredRecipe storedRecipe = StoredRecipe.builder()
                 .member(member)
                 .body(recipe.getBody())
