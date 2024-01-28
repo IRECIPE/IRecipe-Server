@@ -42,5 +42,5 @@ out/
 ### git ###
 .DS_Store
 
-**/application-local.yml
-**/application-dev.yml
+application-local.yml
+application-dev.yml

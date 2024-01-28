@@ -29,13 +29,25 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final PostImageRepository postImageRepository;
 
+    // postId 로 Post 찾고 Null 이면 예외 출력하는 메소드.
+    public Post findByPostId(Long postId){
+        Optional<Post> postOptional = postRepository.findById(postId);
+
+        // 만약 멤버가 존재하지 않으면 ErrorStatus.POST_NOT_FOUND 반환.
+        return postOptional.orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+    }
+
+    public PostImage findImageByPost(Post post){
+        Optional<PostImage> postImageOptional = postImageRepository.findByPost(post);
+
+        // null 이면 그냥 Null 인대로 반환
+        return postImageOptional.get();
+    }
+
     // PostRequestDto 를 받아 DB에 게시글 저장 후 PostResponseDto 생성해서 반환하는 메소드.
     // 게시글 생성 (Create)
     @Transactional // Read only 해제
     public ApiResponse<?> posting(String userId, PostRequestDTO postRequestDto, String url){
-
-        // 리포지토리에서 멤버 찾기.
-        //Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
 
         Member member = memberRepository.findByPersonalId(userId);
         if(member == null){
@@ -72,14 +84,7 @@ public class PostService {
     // 게시글 단일 조회 (Read)
     public ApiResponse<?> getPost(Long postId, String userId){
 
-        // 리포지토리에서 게시글 찾기. 없으면 에러 출력.
-        Optional<Post> postOptional = postRepository.findById(postId);
-        Post post;
-
-        if(postOptional.isEmpty()){
-            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
-        }
-        post = postOptional.get();
+        Post post = findByPostId(postId);
 
         // post 객체로 postImage 찾기
         Optional<PostImage> postImageOptional = postImageRepository.findByPost(post);
@@ -109,18 +114,9 @@ public class PostService {
     @Transactional
     public ApiResponse<?> updatePost(Long postId, PostRequestDTO postRequestDTO, String url){
 
-        // 리포지토리에서 게시글 찾기. 없으면 에러 출력.
-        Optional<Post> postOptional = postRepository.findById(postId);
-        Post post;
+        Post post = findByPostId(postId);
 
-        if(postOptional.isEmpty()){
-            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
-        }
-        post = postOptional.get();
-
-        // postImage 찾기
-        Optional<PostImage> postImageOptional = postImageRepository.findByPost(post);
-        PostImage postImage = postImageOptional.get();
+        PostImage postImage = findImageByPost(post);
 
         // postRequestDTO 안의 내용이 null 이 아니면 수정
         if(postRequestDTO.getTitle() != null){
@@ -145,7 +141,6 @@ public class PostService {
             postImage.updateImage(url);
         }
 
-
         // 게시글, 사진 수정 후 저장
         postRepository.save(post);
         postImageRepository.save(postImage);
@@ -158,13 +153,7 @@ public class PostService {
     @Transactional
     public ApiResponse<?> deletePost(Long postId){
 
-        Optional<Post> postOptional = postRepository.findById(postId);
-        Post post;
-
-        if(postOptional.isEmpty()){
-            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
-        }
-        post = postOptional.get();
+        Post post = findByPostId(postId);
 
         postRepository.delete(post);
 

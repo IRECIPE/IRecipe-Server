@@ -47,7 +47,7 @@ public class Post extends BaseEntity {
     private String content;
 
     // 게시글 좋아요 수
-    private Long likes;
+    private int likes;
 
     // 카테고리
     @Enumerated(EnumType.STRING)
@@ -103,5 +103,11 @@ public class Post extends BaseEntity {
     public void updateStatus(Status status){
         this.status = status;
     }
+
+    // 좋아요 수정
+    public void updateLikes(int likes) { this.likes = likes; }
+
+    // 평균 별점 수정
+    public void updateScore(Float score) { this.score = score; }
 
 }

@@ -8,8 +8,8 @@ import umc.IRECIPE_Server.entity.PostImage;
 
 public class PostConverter {
 
-    public static PostResponseDTO.postResponseDTO toPostResponseDTO(Post post){
-        return PostResponseDTO.postResponseDTO.builder()
+    public static PostResponseDTO.postDTO toPostResponseDTO(Post post){
+        return PostResponseDTO.postDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .subhead(post.getSubhead())
@@ -20,8 +20,8 @@ public class PostConverter {
                 .build();
     }
 
-    public static PostResponseDTO.getResponseDTO toGetResponseDTO(Post post, Member member, String postImage){
-        return PostResponseDTO.getResponseDTO.builder()
+    public static PostResponseDTO.getDTO toGetResponseDTO(Post post, Member member, String postImage){
+        return PostResponseDTO.getDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .subhead(post.getSubhead())
@@ -36,8 +36,8 @@ public class PostConverter {
                 .build();
     }
 
-    public static PostResponseDTO.updateResponseDTO toUpdateResponseDTO(Post post, PostImage postImage){
-        return PostResponseDTO.updateResponseDTO.builder()
+    public static PostResponseDTO.updateDTO toUpdateResponseDTO(Post post, PostImage postImage){
+        return PostResponseDTO.updateDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .subhead(post.getSubhead())

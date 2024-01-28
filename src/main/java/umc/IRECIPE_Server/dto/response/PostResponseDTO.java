@@ -13,7 +13,7 @@ public class PostResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class postResponseDTO{
+    public static class postDTO{
         // 게시글 id
         private Long postId;
         // 게시글 제목
@@ -34,7 +34,7 @@ public class PostResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class getResponseDTO{
+    public static class getDTO{
         // 게시글 id
         private Long postId;
         // 게시글 제목
@@ -44,7 +44,7 @@ public class PostResponseDTO {
         // 게시글 내용
         private String content;
         // 게시글 좋아요 수
-        private Long likes;
+        private int likes;
         // 카테고리
         private Category category;
         // 난이도
@@ -65,7 +65,7 @@ public class PostResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class updateResponseDTO{
+    public static class updateDTO{
         // 게시글 id
         private Long postId;
         // 게시글 제목
@@ -80,10 +80,10 @@ public class PostResponseDTO {
         private Level level;
         // 임시저장, 등록
         private Status status;
+        // 좋아요 수
+        private int likes;
         // 평균 별점
         private Float score;
-        // 게시글 좋아요 수
-        private Long likes;
         // 게시글 사진
         private String imageUrl;
     }
@@ -92,7 +92,7 @@ public class PostResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class likeResponseDTO{
+    public static class likeDTO{
         // 게시글 id
         private Long postId;
         // 게시글 좋아요 수
@@ -103,7 +103,7 @@ public class PostResponseDTO {
 //    @Getter
 //    @NoArgsConstructor
 //    @AllArgsConstructor
-//    public static class AllPostResponseDTO{
+//    public static class getAllDTO{
 //
 //    }
 }
