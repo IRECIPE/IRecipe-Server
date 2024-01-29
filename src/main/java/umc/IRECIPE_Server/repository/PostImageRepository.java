@@ -10,4 +10,5 @@ public interface PostImageRepository extends JpaRepository<PostImage, Long> {
 
     // post 객체로 postImage 찾기
     Optional<PostImage> findByPost(Post post);
+
 }

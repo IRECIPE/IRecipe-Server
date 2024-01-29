@@ -25,6 +25,8 @@ import umc.IRECIPE_Server.common.enums.Status;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
     @Id
@@ -45,7 +47,7 @@ public class Post extends BaseEntity {
     private String content;
 
     // 게시글 좋아요 수
-    private Long likes;
+    private int likes;
 
     // 카테고리
     @Enumerated(EnumType.STRING)
@@ -71,17 +73,41 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostImage> postImageList = new ArrayList<>();
 
-    @Builder
-    public Post(Long id, Member member, String title, String subhead, String content, Long likes, Category category, Level level, Status status, Float score) {
-        this.id = id;
-        this.member = member;
+
+    // 게시글 제목 수정
+    public void updateTitle(String title){
         this.title = title;
-        this.subhead = subhead;
-        this.content = content;
-        this.likes = likes;
-        this.category = category;
-        this.level = level;
-        this.status = status;
-        this.score = score;
     }
+
+    // 게시글 소제목 수정
+    public void updateSubhead(String subhead){
+        this.subhead = subhead;
+    }
+
+    // 게시글 내용 수정.
+    public void updateContent(String content){
+        this.content = content;
+    }
+
+    // 카테고리 수정.
+    public void updateCategory(Category category){
+        this.category = category;
+    }
+
+    // 난이도 수정.
+    public void updateLevel(Level level){
+        this.level = level;
+    }
+
+    // 상태 수정
+    public void updateStatus(Status status){
+        this.status = status;
+    }
+
+    // 좋아요 수정
+    public void updateLikes(int likes) { this.likes = likes; }
+
+    // 평균 별점 수정
+    public void updateScore(Float score) { this.score = score; }
+
 }
