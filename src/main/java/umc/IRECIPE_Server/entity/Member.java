@@ -51,6 +51,8 @@ public class Member extends BaseEntity {
     @Column(updatable = false, unique = true, nullable = false)
     private String personalId;
 
+    private String imageUrl;
+
     // 중요 알림 온오프여부
     private Boolean important;
 

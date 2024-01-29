@@ -1,13 +1,16 @@
 package umc.IRECIPE_Server.controller;
 
 import io.jsonwebtoken.io.IOException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
+import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.MemberConverter;
+import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Member;
@@ -21,6 +24,7 @@ import umc.IRECIPE_Server.service.MemberService;
 public class MemberController {
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
+    private final S3Service s3Service;
 
     @PostMapping("/test")
     public String test(){
@@ -31,13 +35,23 @@ public class MemberController {
     public ApiResponse<MemberSignupResponseDto.JoinResultDTO> join(
             @RequestPart("request") MemberSignupRequestDto.JoinDto request,
             @RequestPart("file") MultipartFile file
-    )throws IOException {
-        log.info(request.getName());
+    ) throws IOException, java.io.IOException {
+        String dir = "profile";
+        String url = s3Service.saveFile(file, dir);
 
-        Member response = memberService.login(request);
-
-        log.info(request.getName(), file);
+        Member response = memberService.signup(request, url);
 
         return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(response, jwtProvider));
     }
+
+    @PostMapping(value = "/login")
+    public ApiResponse<MemberSignupResponseDto.JoinResultDTO> loginJoin(
+            @RequestParam @Valid MemberLoginRequestDto.JoinDto request
+    ){
+        Member response = memberService.login(request);
+
+
+        return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(response, jwtProvider));
+    }
+
 }

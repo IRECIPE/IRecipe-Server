@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.BaseErrorCode;
 import umc.IRECIPE_Server.apiPayLoad.code.ErrorReasonDTO;
+
 @Getter
 @AllArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {

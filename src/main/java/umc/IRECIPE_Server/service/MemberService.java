@@ -10,6 +10,7 @@ import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.AllergyHandler;
 import umc.IRECIPE_Server.converter.MemberAllergyConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
+import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Allergy;
@@ -34,8 +35,8 @@ public class MemberService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public Member joinMember(MemberSignupRequestDto.JoinDto request){
-        Member newMem = MemberConverter.toMember(request);
+    public Member joinMember(MemberSignupRequestDto.JoinDto request, String url){
+        Member newMem = MemberConverter.toMember(request, url);
         List<Allergy> allergyList = request.getAllergyList().stream()
                 .map(allergy -> {
                     return allergyRepository.findById(allergy).orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
@@ -47,15 +48,14 @@ public class MemberService {
     }
 
     @Transactional
-    public Member login(MemberSignupRequestDto.JoinDto request) {
-        //Optional<Member> tmpMember = memberRepository.findByPersonalId(request.getPersonalId());
+    public Member signup(MemberSignupRequestDto.JoinDto request, String url) {
         Member member = memberRepository.findByPersonalId(request.getPersonalId());
         if (member == null) { // 최초 회원가입
-            member = this.joinMember(request);
+            member = this.joinMember(request, url);
+            log.info("[signup] 회원가입을 완료했습니다. " + member);
         }
 
-        log.info("[login] 계정을 찾았습니다. " + member);
-
+        //토큰 발급
         MemberSignupResponseDto.JoinResultDTO tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
         RefreshToken refreshToken = RefreshToken.builder()
@@ -65,6 +65,25 @@ public class MemberService {
         tokenRepository.save(refreshToken);
 
         return member;
+    }
+
+    @Transactional
+    public Member login(MemberLoginRequestDto.JoinDto request){
+        Member newMember = memberRepository.findByPersonalId(request.getPersonalId());
+
+        log.info("[login] 로그인을 완료했습니다. " + newMember);
+
+        //토큰 발급
+        MemberSignupResponseDto.JoinResultDTO tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .id(newMember.getId())
+                .token(tokenDto.getRefreshToken())
+                .build();
+        tokenRepository.save(refreshToken);
+
+        return newMember;
+
     }
 
 
