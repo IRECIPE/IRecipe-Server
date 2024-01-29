@@ -43,6 +43,10 @@ public enum ErrorStatus implements BaseErrorCode {
     SUBTITLE_NOT_EXIST(HttpStatus.BAD_REQUEST, "POST4002", "소제목은 필수 입니다."),
     CONTENT_NOT_EXIST(HttpStatus.BAD_REQUEST, "POST4003", "내용은 필수 입니다."),
 
+    //재료 관련 에러
+    INGREDIENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "INGREDIENT4001", "재료를 찾을 수 없습니다."),
+    INGREDIENT_TYPE_NOT_FOUND(HttpStatus.BAD_REQUEST, "INGREDIENT4002", "재료 타입이 맞지 않습니다."),
+
     //커뮤니티 관련 에러
     POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST4011", "게시글을 찾을 수 없습니다."),
 

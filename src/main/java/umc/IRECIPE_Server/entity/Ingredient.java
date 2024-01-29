@@ -20,7 +20,7 @@ public class Ingredient extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ingredient_id")
-    private Long id;
+    private Long ingredientId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -39,5 +39,13 @@ public class Ingredient extends BaseEntity {
     // 유통 기한
     private LocalDate expiry_date;
 
+    private String memo;
 
+    public void updateIngredient(String name, String category, Type type, LocalDate expiry_date, String memo) {
+        this.name = name;
+        this.category = category;
+        this.type = type;
+        this.expiry_date = expiry_date;
+        this.memo = memo;
+    }
 }

@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.IRECIPE_Server.common.BaseEntity;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Builder
@@ -25,5 +27,4 @@ public class Allergy extends BaseEntity {
 
     // 알러지 이름
     private String name;
-
 }
