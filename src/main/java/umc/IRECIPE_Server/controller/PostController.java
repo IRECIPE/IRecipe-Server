@@ -82,4 +82,9 @@ public class PostController {
 
         return postService.deletePost(postId);
     }
+
+    @GetMapping("/paging")
+    public ApiResponse<?> postPaging(){
+        return null;
+    }
 }

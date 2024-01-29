@@ -99,11 +99,21 @@ public class PostResponseDTO {
         private Long likes;
     }
 
-//    @Builder
-//    @Getter
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class getAllDTO{
-//
-//    }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getAllDTO{
+        // 게시글 id
+        private Long postId;
+        // 게시글 제목
+        private String title;
+        // 게시글 소제목
+        private String subhead;
+        // 사용자 별명
+        private String nickName;
+        // 사용자 사진
+        private String memberImage;
+
+    }
 }
