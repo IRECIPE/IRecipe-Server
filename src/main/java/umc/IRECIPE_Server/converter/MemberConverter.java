@@ -8,6 +8,7 @@ import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.jwt.JwtProvider;
+import umc.IRECIPE_Server.repository.TokenRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -50,7 +50,4 @@ public class MemberController {
         Member response = memberService.login(request);
         return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(response, jwtProvider));
     }
-
-
-
 }

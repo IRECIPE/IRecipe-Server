@@ -52,14 +52,13 @@ public class MemberService {
 
     @Transactional
     public Member signup(MemberSignupRequestDto.JoinDto request, String url) {
-        //Optional<Member> tmpMember = memberRepository.findByPersonalId(request.getPersonalId());
         Member member = memberRepository.findByPersonalId(request.getPersonalId());
         if (member == null) { // 최초 회원가입
             member = this.joinMember(request, url);
+            log.info("[signup] 회원가입을 완료했습니다. " + member);
         }
 
-        log.info("[login] 계정을 찾았습니다. " + member);
-
+        //토큰 발급
         MemberSignupResponseDto.JoinResultDTO tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
         RefreshToken refreshToken = RefreshToken.builder()
