@@ -7,15 +7,18 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.converter.ReviewConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.entity.PostImage;
+import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostImageRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
+import umc.IRECIPE_Server.repository.ReviewRepository;
 
 import java.util.Optional;
 
@@ -27,6 +30,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final PostImageRepository postImageRepository;
+    private final ReviewRepository reviewRepository;
 
     // PostRequestDto 를 받아 DB에 게시글 저장 후 PostResponseDto 생성해서 반환하는 메소드.
     // 게시글 생성 (Create)
@@ -117,8 +121,15 @@ public class PostService {
 
     // 게시글 리뷰 등록
     @Transactional
-    public ApiResponse<Void> addReview(Long memberId, ReviewRequestDTO.@Valid addReviewDTO request, String imageUrl) {
+    public void addReview(String memberId, Long postId, ReviewRequestDTO.@Valid addReviewDTO request, String imageUrl) {
 
+        Member member = memberRepository.findByPersonalId(memberId);
+        if(member == null){
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
 
+        Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        Review review = ReviewConverter.addReview(member, post, request, imageUrl);
+        reviewRepository.save(review);
     }
 }

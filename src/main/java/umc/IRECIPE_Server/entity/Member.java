@@ -29,7 +29,7 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //권한
+    // 권한
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -59,6 +59,9 @@ public class Member extends BaseEntity {
 
     // 이벤트 알림 온오프여부
     private Boolean event;
+
+    // 프로필 사진
+    private String profileImage;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberAllergy> memberAllergyList = new ArrayList<>();

@@ -44,21 +44,21 @@ public class PostController {
     }
 
     // 게시글 리뷰 등록
-    @PostMapping(value = "/{postId}/review", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/{postId}/review", consumes = "multipart/form-data")
     public ApiResponse<Void> addReview(@PathVariable("postId") Long postId,
-                                       @RequestBody @Valid ReviewRequestDTO.addReviewDTO request,
-                                       @RequestPart MultipartFile file) throws IOException {
+                                       @RequestPart(required = false) ReviewRequestDTO.addReviewDTO request,
+                                       @RequestPart(required = false) MultipartFile file) throws IOException {
         // memberId 값 세팅
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
-        Long userIdLong = Long.parseLong(userId);
 
         // 이미지 경로값 세팅
         String url = null;
-        if (!request.getImageUrl().isEmpty()) {
+        if (file != null) {
             url = s3Service.saveFile(file, "images");
         }
 
-        return postService.addReview(userIdLong, request, url);
+        postService.addReview(userId, postId, request, url);
+        return ApiResponse.onSuccess(null);
     }
 }

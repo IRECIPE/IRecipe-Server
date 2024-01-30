@@ -11,6 +11,5 @@ public class ReviewRequestDTO {
     public static class addReviewDTO {
         private String context;
         private Float score;
-        private List<String> imageUrl;
     }
 }
