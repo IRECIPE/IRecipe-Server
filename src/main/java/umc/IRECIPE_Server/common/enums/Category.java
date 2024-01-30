@@ -1,5 +1,5 @@
 package umc.IRECIPE_Server.common.enums;
 
 public enum Category {
-    WESTERN, JAPANESE, CHINESE, KOREAN
+    WESTERN, JAPANESE, CHINESE, KOREAN, UNIQUE, SIMPLE, ADVANCED
 }

@@ -7,6 +7,7 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
@@ -77,7 +78,7 @@ public class PostService {
         // 게시글 사진 저장
         postImageRepository.save(postImage);
 
-        // 응답 반환.
+        // 응답 반환
         return ApiResponse.onSuccess(PostConverter.toPostResponseDTO(post));
     }
 
