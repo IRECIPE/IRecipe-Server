@@ -18,20 +18,7 @@ public class PostResponseDTO {
     public static class postDTO{
         // 게시글 id
         private Long postId;
-        // 게시글 제목
-        private String title;
-        // 게시글 소제목
-        private String subhead;
-        // 게시글 내용
-        private String content;
-        // 카테고리
-        private Category category;
-        // 난이도
-        private Level level;
-        // 임시저장, 등록
-        private Status status;
-        // 게시글 이미지
-        private List<String> imageUrl;
+
     }
 
     @Builder
@@ -54,7 +41,7 @@ public class PostResponseDTO {
         // 임시저장, 등록
         private Status status;
         // 게시글 이미지
-        private List<String> imageUrl;
+        private List<String> imageUrls;
     }
 
     @Builder
@@ -95,24 +82,6 @@ public class PostResponseDTO {
     public static class updateDTO{
         // 게시글 id
         private Long postId;
-        // 게시글 제목
-        private String title;
-        // 게시글 소제목
-        private String subhead;
-        // 게시글 내용
-        private String content;
-        // 카테고리
-        private Category category;
-        // 난이도
-        private Level level;
-        // 임시저장, 등록
-        private Status status;
-        // 좋아요 수
-        private int likes;
-        // 평균 별점
-        private Float score;
-        // 게시글 사진 -> 바뀐 사진의 url
-        private List<String> imageUrl;
     }
 
     @Builder

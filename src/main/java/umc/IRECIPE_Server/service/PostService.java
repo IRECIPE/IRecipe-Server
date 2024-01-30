@@ -7,10 +7,10 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
-import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.entity.PostImage;
@@ -31,7 +31,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final PostImageRepository postImageRepository;
 
-    // postId 로 Post 찾고 Null 이면 예외 출력하는 메소드.
+    // postId 로 Post 찾고 Null 이면 예외 출력하는 메소드
     public Post findByPostId(Long postId){
         Optional<Post> postOptional = postRepository.findById(postId);
 
@@ -39,9 +39,14 @@ public class PostService {
         return postOptional.orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
     }
 
-    // PostRequestDto 를 받아 DB에 게시글 저장 후 PostResponseDto 생성해서 반환하는 메소드.
+    public List<PostImage> findpostImages(Long postId){
+        Post post = findByPostId(postId);
+        return post.getPostImageList();
+    }
+
+    // PostRequestDto를 받아 DB에 게시글 저장 후 PostResponseDto 생성해서 반환하는 메소드.
     // 게시글 생성 (Create)
-    public ApiResponse<?> posting(String userId, PostRequestDTO postRequestDto, List<String> urls){
+    public ApiResponse<?> posting(String userId, PostRequestDTO.newRequestDTO postRequestDto, List<String> urls){
 
         Member member = memberRepository.findByPersonalId(userId);
         if(member == null){
@@ -133,20 +138,38 @@ public class PostService {
     }
 
     // 게시글 수정 후 저장.
-    public ApiResponse<?> updatePost(Long postId, PostRequestDTO postRequestDTO, List<String> newUrls){
+    public ApiResponse<?> updatePost(Long postId, PostRequestDTO.patchRequestDTO postRequestDTO, List<String> newUrls){
 
+        // 해당 게시글 찾음.
         Post post = findByPostId(postId);
 
         // 게시글에 해당하는 사진 객체 리스트
         List<PostImage> postImageList = post.getPostImageList();
+        List<String> oldUrls = postRequestDTO.getOldUrls();
 
-        if(newUrls != null){
-            for (PostImage postImage : postImageList) {
+        // 삭제 할 url 과 postImage 테이블의 url 비교해서 일치하면 삭제하는 로직.
+        for (PostImage postImage : postImageList) {
+            for (String oldUrl : oldUrls) {
 
+                if(postImage.getImageUrl().equals(oldUrl)){
+                    // postImage 엔티티 삭제
+                    postImageRepository.delete(postImage);
+                }
             }
         }
 
-        // postRequestDTO 안의 내용이 null 이 아니면 수정
+        // 게시글 사진 객체 생성 하고 저장.
+        for (String url : newUrls) {
+            PostImage postImage = PostImage.builder()
+                    .post(post)
+                    .imageUrl(url)
+                    .build();
+
+            // 새로운 사진 저장
+            postImageRepository.save(postImage);
+        }
+
+        // 게시글 수정
         post.updateTitle(postRequestDTO.getTitle());
 
         post.updateSubhead(postRequestDTO.getSubhead());
@@ -160,11 +183,10 @@ public class PostService {
         post.updateStatus(postRequestDTO.getStatus());
 
 
-        // 게시글, 사진 수정 후 저장
+        // 게시글 수정 후 저장
         postRepository.save(post);
-        postImageRepository.save(postImage);
 
-        return ApiResponse.onSuccess(PostConverter.toUpdateResponseDTO(post, postImage));
+        return ApiResponse.onSuccess(PostConverter.toUpdateResponseDTO(post));
 
     }
 
@@ -172,6 +194,8 @@ public class PostService {
     public ApiResponse<?> deletePost(Long postId){
 
         Post post = findByPostId(postId);
+
+        List<PostImage> postImageList = post.getPostImageList();
 
         postRepository.delete(post);
 

@@ -1,6 +1,7 @@
 package umc.IRECIPE_Server.converter;
 
 
+import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
@@ -24,7 +25,7 @@ public class PostConverter {
                 .category(post.getCategory())
                 .content(post.getContent())
                 .level(post.getLevel())
-                .imageUrl(urls)
+                .imageUrls(urls)
                 .status(post.getStatus())
                 .build();
     }
@@ -48,19 +49,9 @@ public class PostConverter {
                 .build();
     }
 
-    public static PostResponseDTO.updateDTO toUpdateResponseDTO(Post post, PostImage postImage){
+    public static PostResponseDTO.updateDTO toUpdateResponseDTO(Post post){
         return PostResponseDTO.updateDTO.builder()
                 .postId(post.getId())
-                .title(post.getTitle())
-                .subhead(post.getSubhead())
-                .content(post.getContent())
-                .category(post.getCategory())
-                .level(post.getLevel())
-                .status(post.getStatus())
-                .score(post.getScore())
-                .likes(post.getLikes())
-                .imageUrl(postImage.getImageUrl())
                 .build();
-
     }
 }
