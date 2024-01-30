@@ -7,6 +7,8 @@ import umc.IRECIPE_Server.common.enums.Category;
 import umc.IRECIPE_Server.common.enums.Level;
 import umc.IRECIPE_Server.common.enums.Status;
 
+import java.util.List;
+
 @Data
 public class PostResponseDTO {
     @Builder
@@ -28,6 +30,31 @@ public class PostResponseDTO {
         private Level level;
         // 임시저장, 등록
         private Status status;
+        // 게시글 이미지
+        private List<String> imageUrl;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getTempDTO{
+        // 게시글 id
+        private Long postId;
+        // 게시글 제목
+        private String title;
+        // 게시글 소제목
+        private String subhead;
+        // 게시글 내용
+        private String content;
+        // 카테고리
+        private Category category;
+        // 난이도
+        private Level level;
+        // 임시저장, 등록
+        private Status status;
+        // 게시글 이미지
+        private List<String> imageUrl;
     }
 
     @Builder
@@ -53,8 +80,8 @@ public class PostResponseDTO {
         private Status status;
         // 평균 별점
         private Float score;
-        // 게시글 사진 (일단 단일 사진만 구현)
-        private String imageUrl;
+        // 게시글 사진
+        private List<String> urls;
         // 작성자 이름
         private String writerNickName;
         // 작성자 프로필 사진
@@ -84,8 +111,8 @@ public class PostResponseDTO {
         private int likes;
         // 평균 별점
         private Float score;
-        // 게시글 사진
-        private String imageUrl;
+        // 게시글 사진 -> 바뀐 사진의 url
+        private List<String> imageUrl;
     }
 
     @Builder
@@ -103,7 +130,7 @@ public class PostResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class getAllDTO{
+    public static class getAllPostDTO{
         // 게시글 id
         private Long postId;
         // 게시글 제목
