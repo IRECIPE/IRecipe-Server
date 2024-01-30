@@ -17,7 +17,7 @@ public class MemberConverter {
         return jwtProvider.generateTokenDto(member.getPersonalId());
     }
 
-    public static Member toMember(MemberSignupRequestDto.JoinDto request){
+    public static Member toMember(MemberSignupRequestDto.JoinDto request, String url){
 
         Gender gender = null;
         Age age = null;
@@ -44,6 +44,7 @@ public class MemberConverter {
                 .nickname(request.getNickname())
                 .memberAllergyList(new ArrayList<>())
                 .age(age)
+                .imageUrl(url)
                 .personalId(request.getPersonalId())
                 .role(Role.USER)
                 .build();
