@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.common.S3.S3Service;
+import umc.IRECIPE_Server.converter.ReviewConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
+import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
 import umc.IRECIPE_Server.service.PostService;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
@@ -45,7 +48,7 @@ public class PostController {
 
     // 게시글 리뷰 등록
     @PostMapping(value = "/{postId}/review", consumes = "multipart/form-data")
-    public ApiResponse<Void> addReview(@PathVariable("postId") Long postId,
+    public ApiResponse<?> addPostReview(@PathVariable("postId") Long postId,
                                        @RequestPart(required = false) ReviewRequestDTO.addReviewDTO request,
                                        @RequestPart(required = false) MultipartFile file) throws IOException {
         // memberId 값 세팅
@@ -58,7 +61,14 @@ public class PostController {
             url = s3Service.saveFile(file, "images");
         }
 
-        postService.addReview(userId, postId, request, url);
-        return ApiResponse.onSuccess(null);
+         return postService.addReview(userId, postId, request, url);
     }
+
+    // 게시글 리뷰 조회 (0번 페이지부터 10개씩 최신순으로 조회)
+    @GetMapping("/{postId}/review")
+    public ApiResponse<List<ReviewResponseDTO.getReviewResponseDTO>> getPostReview(@PathVariable("postId") Long postId,
+                                                                                   @RequestParam(value="page", defaultValue="0") int page) {
+        return postService.getPostReview(postId, page);
+    }
+
 }

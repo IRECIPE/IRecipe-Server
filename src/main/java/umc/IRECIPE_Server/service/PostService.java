@@ -2,15 +2,21 @@ package umc.IRECIPE_Server.service;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
+import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.converter.ReviewConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
+import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.entity.PostImage;
@@ -20,6 +26,8 @@ import umc.IRECIPE_Server.repository.PostImageRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
 import umc.IRECIPE_Server.repository.ReviewRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -121,7 +129,7 @@ public class PostService {
 
     // 게시글 리뷰 등록
     @Transactional
-    public void addReview(String memberId, Long postId, ReviewRequestDTO.@Valid addReviewDTO request, String imageUrl) {
+    public ApiResponse<?> addReview(String memberId, Long postId, ReviewRequestDTO.@Valid addReviewDTO request, String imageUrl) {
 
         Member member = memberRepository.findByPersonalId(memberId);
         if(member == null){
@@ -131,5 +139,22 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
         Review review = ReviewConverter.addReview(member, post, request, imageUrl);
         reviewRepository.save(review);
+
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
+    // 게시글 리뷰 조회
+    public ApiResponse<List<ReviewResponseDTO.getReviewResponseDTO>> getPostReview(Long postId, int page) {
+
+        // 게시글 조회
+        Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        // 게시글 id 를 가진 리뷰 조회 (+ 페이지네이션)
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createdAt"));
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+        Page<Review> reviewList = reviewRepository.findAllByPost(post, pageable);
+
+        return ApiResponse.onSuccess(ReviewConverter.getReview(reviewList));
     }
 }
