@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/irecipe
     username: root
-    password: eldnj521!
+    password: junhee1202
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
