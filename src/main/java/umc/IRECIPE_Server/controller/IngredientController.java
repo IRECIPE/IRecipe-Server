@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.converter.IngredientConverter;
 import umc.IRECIPE_Server.dto.IngredientRequest;
+import umc.IRECIPE_Server.dto.IngredientResponse;
 import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.service.ingredientService.IngredientCommandService;
 import umc.IRECIPE_Server.service.ingredientService.IngredientQueryService;
-import umc.IRECIPE_Server.web.dto.IngredientResponse;
 
 
 @RestController

@@ -1,12 +1,17 @@
 package umc.IRECIPE_Server.converter;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
 import umc.IRECIPE_Server.common.enums.Role;
+import umc.IRECIPE_Server.dto.IngredientResponse;
+import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
+import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
+import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 
 import java.time.LocalDateTime;
@@ -46,6 +51,32 @@ public class MemberConverter {
                 .age(age)
                 .personalId(request.getPersonalId())
                 .role(Role.USER)
+                .build();
+    }
+
+    public static MemberResponse.getMemberResultDto getMemberResultDTO(Member member){
+        List<MemberAllergy> allergyList = member.getMemberAllergyList();
+
+        List<Long> allergyIds = allergyList.stream()
+                .map(MemberAllergy::getId)
+                .toList();
+
+        return MemberResponse.getMemberResultDto.builder()
+                .name(member.getName())
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .age(member.getAge())
+                .activity(member.getActivity())
+                .important(member.getImportant())
+                .event(member.getEvent())
+                .allergyList(allergyIds)
+                .build();
+    }
+
+    public static MemberResponse.updateMemberResultDto updateMemberResultDto(Member member){
+        return MemberResponse.updateMemberResultDto.builder()
+                .memberId(member.getId())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 }

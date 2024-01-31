@@ -7,7 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
+import umc.IRECIPE_Server.converter.IngredientConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
+import umc.IRECIPE_Server.dto.MemberRequest;
+import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Member;
@@ -29,8 +32,8 @@ public class MemberController {
 
     @PostMapping(value = "/signup", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<MemberSignupResponseDto.JoinResultDTO> join(
-            @RequestPart("request") MemberSignupRequestDto.JoinDto request,
-            @RequestPart("file") MultipartFile file
+            @RequestPart(value = "request") MemberSignupRequestDto.JoinDto request,
+            @RequestPart(value = "file", required = false) MultipartFile file
     )throws IOException {
         log.info(request.getName());
 
@@ -39,5 +42,19 @@ public class MemberController {
         log.info(request.getName(), file);
 
         return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(response, jwtProvider));
+    }
+
+    @GetMapping(value = "/{member_id}")
+    public ApiResponse<MemberResponse.getMemberResultDto> findOne(@PathVariable(name = "member_id") Long memberId) {
+        Member member = memberService.findMember(memberId);
+        return ApiResponse.onSuccess(MemberConverter.getMemberResultDTO(member));
+    }
+
+    @PatchMapping(value = "/{member_id}")
+    public ApiResponse<MemberResponse.updateMemberResultDto> fixMember(
+            @PathVariable(name = "member_id") Long memberId,
+            @RequestBody MemberRequest.fixMemberInfoDto request){
+        Member member = memberService.updateMemberById(request, memberId);
+        return ApiResponse.onSuccess(MemberConverter.updateMemberResultDto(member));
     }
 }
