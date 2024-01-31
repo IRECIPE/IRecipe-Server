@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MemberConverter {
-    public static MemberSignupResponseDto.JoinResultDTO toJoinResultDTO(Member member, JwtProvider jwtProvider){
+    public static MemberSignupResponseDto.JoinResultDTO toJoinResult(Member member, JwtProvider jwtProvider){
         return jwtProvider.generateTokenDto(member.getPersonalId());
     }
 
@@ -54,7 +54,7 @@ public class MemberConverter {
                 .build();
     }
 
-    public static MemberResponse.getMemberResultDto getMemberResultDTO(Member member){
+    public static MemberResponse.getMemberResultDto getMemberResult(Member member){
         List<MemberAllergy> allergyList = member.getMemberAllergyList();
 
         List<Long> allergyIds = allergyList.stream()
@@ -73,14 +73,14 @@ public class MemberConverter {
                 .build();
     }
 
-    public static MemberResponse.updateMemberResultDto updateMemberResultDto(Member member){
+    public static MemberResponse.updateMemberResultDto updateMemberResult(Member member){
         return MemberResponse.updateMemberResultDto.builder()
                 .memberId(member.getId())
                 .updatedAt(LocalDateTime.now())
                 .build();
     }
 
-    public static MemberResponse.updateNicknameResultDto updateNicknameResultDto(){
+    public static MemberResponse.updateNicknameResultDto updateNicknameResult(){
         return MemberResponse.updateNicknameResultDto.builder()
                 .str("사용 가능한 닉네임 입니다.")
                 .build();

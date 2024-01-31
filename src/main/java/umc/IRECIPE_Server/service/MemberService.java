@@ -46,13 +46,18 @@ public class MemberService {
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
-    public Member checkNickname(String nickname) {
+    public void checkNickname(String nickname) {
         Member member = memberRepository.findByNickname(nickname);
-        if (member == null){
-            return member;
-        }
-        else
+        if (member != null)
             throw new MemberHandler(ErrorStatus.NICKNAME_ALREADY_EXIST);
+    }
+
+    public Member findMemberId(String personalId){
+        Member member = memberRepository.findByPersonalId(personalId);
+        if(member == null){
+            throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 
     public MemberAllergy findMemberAllergy(Long memberId, Long allergyId){

@@ -36,4 +36,13 @@ public class MemberRequest {
         @NotNull
         String nickname;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class findMemberIdDto{
+        @NotNull
+        String personalId;
+    }
 }

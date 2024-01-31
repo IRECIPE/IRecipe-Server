@@ -39,7 +39,7 @@ public class MemberController {
 
         log.info(request.getName(), file);
 
-        return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(response, jwtProvider));
+        return ApiResponse.onSuccess(MemberConverter.toJoinResult(response, jwtProvider));
     }
 
     @PatchMapping(value = "/{member_id}/profile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -48,14 +48,14 @@ public class MemberController {
             @RequestPart(value = "file") MultipartFile file
     ) throws java.io.IOException {
         Member member = memberService.updateProfileById(file, memberId);
-        return ApiResponse.onSuccess(MemberConverter.updateMemberResultDto(member));
+        return ApiResponse.onSuccess(MemberConverter.updateMemberResult(member));
     }
 
     @GetMapping(value = "/{member_id}")
     public ApiResponse<MemberResponse.getMemberResultDto> findOne(
             @PathVariable(name = "member_id") Long memberId) {
         Member member = memberService.findMember(memberId);
-        return ApiResponse.onSuccess(MemberConverter.getMemberResultDTO(member));
+        return ApiResponse.onSuccess(MemberConverter.getMemberResult(member));
     }
 
     @PatchMapping(value = "/{member_id}")
@@ -63,7 +63,7 @@ public class MemberController {
             @PathVariable(name = "member_id") Long memberId,
             @RequestBody MemberRequest.fixMemberInfoDto request){
         Member member = memberService.updateMemberById(request, memberId);
-        return ApiResponse.onSuccess(MemberConverter.updateMemberResultDto(member));
+        return ApiResponse.onSuccess(MemberConverter.updateMemberResult(member));
     }
 
     @GetMapping(value = "/nickname")
@@ -71,6 +71,15 @@ public class MemberController {
             @RequestParam("nickname") String nickname
     ){
         memberService.checkNickname(nickname);
-        return ApiResponse.onSuccess(MemberConverter.updateNicknameResultDto());
+        return ApiResponse.onSuccess(MemberConverter.updateNicknameResult());
+    }
+
+    @GetMapping(value = "/")
+    public ApiResponse<MemberResponse.updateMemberResultDto> getMemberId(
+            @RequestParam("personalId") String personalId
+    ){
+        Member member = memberService.findMemberId(personalId);
+        return ApiResponse.onSuccess(MemberConverter.updateMemberResult(member));
+
     }
 }
