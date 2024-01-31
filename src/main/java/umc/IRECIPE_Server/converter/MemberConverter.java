@@ -1,15 +1,11 @@
 package umc.IRECIPE_Server.converter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
 import umc.IRECIPE_Server.common.enums.Role;
-import umc.IRECIPE_Server.dto.IngredientResponse;
+import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberResponse;
-import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
-import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
-import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.jwt.JwtProvider;
@@ -18,11 +14,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MemberConverter {
-    public static MemberSignupResponseDto.JoinResultDTO toJoinResult(Member member, JwtProvider jwtProvider){
+    public static MemberResponse.JoinResultDto toJoinResult(Member member, JwtProvider jwtProvider){
         return jwtProvider.generateTokenDto(member.getPersonalId());
     }
 
-    public static Member toMember(MemberSignupRequestDto.JoinDto request){
+    public static Member toMember(MemberRequest.JoinDto request){
 
         Gender gender = null;
         Age age = null;

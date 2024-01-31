@@ -7,12 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
-import umc.IRECIPE_Server.converter.IngredientConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberResponse;
-import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
-import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.service.MemberService;
@@ -31,8 +28,8 @@ public class MemberController {
     }
 
     @PostMapping(value = "/signup", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ApiResponse<MemberSignupResponseDto.JoinResultDTO> join(
-            @RequestPart(value = "request") MemberSignupRequestDto.JoinDto request,
+    public ApiResponse<MemberResponse.JoinResultDto> join(
+            @RequestPart(value = "request") MemberRequest.JoinDto request,
             @RequestPart(value = "file", required = false) MultipartFile file
     )throws IOException {
         Member response = memberService.login(request);

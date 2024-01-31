@@ -45,4 +45,19 @@ public class MemberRequest {
         @NotNull
         String personalId;
     }
+
+    @Getter
+    public static class JoinDto{
+        @NotBlank
+        String name;
+        @NotNull
+        Integer gender;
+        @NotNull
+        Integer age;
+        @NotBlank
+        String nickname;
+        List<Long> allergyList;
+        @NotBlank
+        String personalId;
+    }
 }

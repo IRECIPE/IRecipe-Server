@@ -2,7 +2,6 @@ package umc.IRECIPE_Server.service;
 
 
 import java.io.IOException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,8 +14,7 @@ import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.MemberAllergyConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.dto.MemberRequest;
-import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
-import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
+import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.entity.Allergy;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
@@ -68,7 +66,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Member joinMember(MemberSignupRequestDto.JoinDto request){
+    public Member joinMember(MemberRequest.JoinDto request){
         Member newMem = MemberConverter.toMember(request);
         List<Allergy> allergyList = request.getAllergyList().stream()
                 .map(allergy -> {
@@ -81,7 +79,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Member login(MemberSignupRequestDto.JoinDto request) {
+    public Member login(MemberRequest.JoinDto request) {
         Member member = memberRepository.findByPersonalId(request.getPersonalId());
         if (member == null) { // 최초 회원가입
             member = this.joinMember(request);
@@ -89,10 +87,10 @@ public class MemberService {
 
         log.info("[login] 계정을 찾았습니다. " + member);
 
-        MemberSignupResponseDto.JoinResultDTO tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
+        MemberResponse.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .id(member.getId())
+                .member(member)
                 .token(tokenDto.getRefreshToken())
                 .build();
         tokenRepository.save(refreshToken);

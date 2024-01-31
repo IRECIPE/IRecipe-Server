@@ -43,4 +43,15 @@ public class MemberResponse {
     public static class updateNicknameResultDto{
         String str;
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class JoinResultDto{
+        private final Long memberId;
+        private final String grantType;
+        private final String accessToken;
+        private final String refreshToken;
+        private final Long accessTokenExpiresIn;
+    }
 }
