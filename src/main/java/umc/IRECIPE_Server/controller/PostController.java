@@ -13,6 +13,7 @@ import umc.IRECIPE_Server.converter.ReviewConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
 import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
+import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.service.PostService;
 
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class PostController {
                                        @RequestPart(required = false) MultipartFile file) throws IOException {
         // memberId 값 세팅
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
+        String memberId = authentication.getName();
 
         // 이미지 경로값 세팅
         String url = null;
@@ -61,7 +62,7 @@ public class PostController {
             url = s3Service.saveFile(file, "images");
         }
 
-         return postService.addReview(userId, postId, request, url);
+         return postService.addReview(memberId, postId, request, url);
     }
 
     // 게시글 리뷰 조회 (0번 페이지부터 10개씩 최신순으로 조회)
@@ -69,6 +70,12 @@ public class PostController {
     public ApiResponse<List<ReviewResponseDTO.getReviewResponseDTO>> getPostReview(@PathVariable("postId") Long postId,
                                                                                    @RequestParam(value="page", defaultValue="0") int page) {
         return postService.getPostReview(postId, page);
+    }
+
+    // 게시글 리뷰 삭제
+    @DeleteMapping("/review/{reviewId}")
+    public ApiResponse<?> deletePostReview(@PathVariable("reviewId") Long reviewId) {
+        return postService.deletePostReview(reviewId);
     }
 
 }

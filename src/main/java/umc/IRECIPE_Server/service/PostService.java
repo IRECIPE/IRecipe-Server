@@ -12,6 +12,7 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.ReviewConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
@@ -39,6 +40,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final PostImageRepository postImageRepository;
     private final ReviewRepository reviewRepository;
+    private final S3Service s3Service;
 
     // PostRequestDto 를 받아 DB에 게시글 저장 후 PostResponseDto 생성해서 반환하는 메소드.
     // 게시글 생성 (Create)
@@ -157,4 +159,18 @@ public class PostService {
 
         return ApiResponse.onSuccess(ReviewConverter.getReview(reviewList));
     }
+
+    // 게시글 리뷰 삭제
+    public ApiResponse<?> deletePostReview(Long reviewId) {
+
+        // S3 버킷에 저장된 게시글 리뷰 사진 삭제
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
+        s3Service.deleteImage(review.getImageUrl(), "images");
+
+        // 게시글 리뷰 삭제
+        reviewRepository.deleteById(reviewId);
+
+        return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
 }
+// https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/irecipe_architecture.drawio

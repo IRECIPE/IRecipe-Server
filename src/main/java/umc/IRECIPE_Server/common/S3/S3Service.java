@@ -1,6 +1,7 @@
 package umc.IRECIPE_Server.common.S3;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,5 +33,12 @@ public class S3Service {
         // S3 에 파일 업로드 및 업로드 된 파일의 URL 가져오기
         amazonS3.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
         return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    // 이미지 수정으로 인해 기존 이미지 삭제 메소드
+    public void deleteImage(String fileUrl, String dirName) {
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf(dirName) + dirName.length());
+
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
 }
