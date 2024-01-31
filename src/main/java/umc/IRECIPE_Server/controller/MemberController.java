@@ -35,8 +35,6 @@ public class MemberController {
             @RequestPart(value = "request") MemberSignupRequestDto.JoinDto request,
             @RequestPart(value = "file", required = false) MultipartFile file
     )throws IOException {
-        log.info(request.getName());
-
         Member response = memberService.login(request);
 
         log.info(request.getName(), file);
@@ -44,8 +42,18 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(response, jwtProvider));
     }
 
+    @PatchMapping(value = "/{member_id}/profile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<MemberResponse.updateMemberResultDto> fixMemberProfile(
+            @PathVariable(name = "member_id") Long memberId,
+            @RequestPart(value = "file") MultipartFile file
+    ) throws java.io.IOException {
+        Member member = memberService.updateProfileById(file, memberId);
+        return ApiResponse.onSuccess(MemberConverter.updateMemberResultDto(member));
+    }
+
     @GetMapping(value = "/{member_id}")
-    public ApiResponse<MemberResponse.getMemberResultDto> findOne(@PathVariable(name = "member_id") Long memberId) {
+    public ApiResponse<MemberResponse.getMemberResultDto> findOne(
+            @PathVariable(name = "member_id") Long memberId) {
         Member member = memberService.findMember(memberId);
         return ApiResponse.onSuccess(MemberConverter.getMemberResultDTO(member));
     }

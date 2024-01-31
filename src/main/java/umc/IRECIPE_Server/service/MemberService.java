@@ -1,24 +1,22 @@
 package umc.IRECIPE_Server.service;
 
 
-import java.util.Iterator;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.integration.IntegrationProperties.Error;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.AllergyHandler;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
-import umc.IRECIPE_Server.common.enums.Age;
-import umc.IRECIPE_Server.common.enums.Gender;
+import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.MemberAllergyConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
 import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 import umc.IRECIPE_Server.entity.Allergy;
-import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.entity.RefreshToken;
@@ -40,13 +38,10 @@ public class MemberService {
     private final MemberAllergyRepository memberAllergyRepository;
     private final TokenRepository tokenRepository;
     private final JwtProvider jwtProvider;
+    private final S3Service s3Service;
 
     public Member findMember(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-    }
-
-    public Allergy findAllergy(Long id){
-        return allergyRepository.findById(id).orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
     }
 
     public MemberAllergy findMemberAllergy(Long memberId, Long allergyId){
@@ -70,7 +65,6 @@ public class MemberService {
 
     @Transactional
     public Member login(MemberSignupRequestDto.JoinDto request) {
-        //Optional<Member> tmpMember = memberRepository.findByPersonalId(request.getPersonalId());
         Member member = memberRepository.findByPersonalId(request.getPersonalId());
         if (member == null) { // 최초 회원가입
             member = this.joinMember(request);
@@ -89,6 +83,15 @@ public class MemberService {
         return member;
     }
 
+    @Transactional
+    public Member updateProfileById(MultipartFile file, Long memberId) throws IOException {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        String url = s3Service.saveFile(file, "/members/profiles/{memberId}");
+        member.updateUrl(url);
+        return member;
+
+    }
     @Transactional
     public Member updateMemberById(MemberRequest.fixMemberInfoDto request, Long memberId) {
         Member member = memberRepository.findById(memberId)

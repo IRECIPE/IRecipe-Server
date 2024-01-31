@@ -110,4 +110,7 @@ public class Member extends BaseEntity {
         this.activity = activity;
         this.memberAllergyList = memberAllergyList;
     }
+    public void updateUrl(String url){
+        this.profileImage = url;
+    }
 }
