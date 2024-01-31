@@ -29,24 +29,28 @@ public class IngredientController {
     private final IngredientCommandService ingredientCommandService;
     private final IngredientQueryService ingredientQueryService;
 
+    //재료추가
     @PostMapping("/")
     public ApiResponse<IngredientResponse.addResultDTO> addIngredient(@RequestBody @Valid IngredientRequest.addDTO request) {
         Ingredient ingredient = ingredientCommandService.addIngredient(request);
         return ApiResponse.onSuccess(IngredientConverter.toaddResultDTO(ingredient));
     }
 
+    //재료 상세정보 조회
     @GetMapping("/{ingredientId}")
     public ApiResponse<IngredientResponse.findOneResultDTO> findOne(@PathVariable(name = "ingredientId") Long ingredientId) {
         Ingredient ingredient = ingredientQueryService.findOne(ingredientId);
        return ApiResponse.onSuccess(IngredientConverter.toFindOneResultDTO(ingredient));
     }
 
+    //재료 삭제
     @DeleteMapping("/{ingredientId}")
     public ApiResponse<IngredientResponse.deleteResultDTO> deleteIngredient(@PathVariable(name = "ingredientId") Long ingredientId) {
         ingredientQueryService.delete(ingredientId);
         return ApiResponse.onSuccess(IngredientConverter.toDeleteResultDTO());
     }
 
+    //재료 수정
     @PatchMapping("/{ingredientId}")
     public ApiResponse<IngredientResponse.updateResultDTO> updateIngredient(
             @RequestBody @Valid IngredientRequest.updateDTO request,
@@ -55,11 +59,28 @@ public class IngredientController {
         return ApiResponse.onSuccess(IngredientConverter.toUpdateResultDTO(ingredient));
     }
 
-    @GetMapping("")
+
+    //재료 전체 조회
+    @GetMapping("/")
     public ApiResponse<IngredientResponse.findAllResultListDTO> findAll(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
         Page<Ingredient> ingredientList = ingredientQueryService.getIngredientList(memberId, page);
-        ingredientList.forEach(ingredient ->
-                System.out.println("Controller Ingredient name: " + ingredient.getName()));
+        return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
+    }
+
+    //냉동 보관 재료 리스트 조회
+    @GetMapping("/refrigerated")
+    public ApiResponse<IngredientResponse.findAllResultListDTO> findRefrigeratedList(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
+        Page<Ingredient> ingredientList = ingredientQueryService.getRefrigeratedIngredientList(memberId, page);
+        return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
+    }
+    @GetMapping("/ambient")
+    public ApiResponse<IngredientResponse.findAllResultListDTO> findAmbientList(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
+        Page<Ingredient> ingredientList = ingredientQueryService.getAmbientIngredientList(memberId, page);
+        return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
+    }
+    @GetMapping("/frozen")
+    public ApiResponse<IngredientResponse.findAllResultListDTO> findFrozenList(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
+        Page<Ingredient> ingredientList = ingredientQueryService.getFrozenIngredientList(memberId, page);
         return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
     }
 }

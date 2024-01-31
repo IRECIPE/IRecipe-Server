@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
+import umc.IRECIPE_Server.common.enums.Type;
 import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.repository.IngredientRepository;
@@ -38,13 +39,39 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
     @Override
     public Page<Ingredient> getIngredientList(Long memberId, Integer page) {
         Member member = memberRepository.findById(memberId).get();
-        System.out.println("Fetching ingredient list for member: " + member.getName() + ", id: " + member.getId());
 
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<Ingredient> ingredientPage = ingredientRepository.findAllByMember(member, pageRequest);
 
-        // 추가된 로깅
-        System.out.println("Fetched " + ingredientPage.getContent().size() + " ingredients for member " + member.getName());
+        return ingredientPage;
+    }
+
+    @Override
+    public Page<Ingredient> getRefrigeratedIngredientList(Long memberId, Integer page) {
+        Member member = memberRepository.findById(memberId).get();
+
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndType(member, Type.REFRIGERATED, pageRequest);
+
+        return ingredientPage;
+    }
+
+    @Override
+    public Page<Ingredient> getAmbientIngredientList(Long memberId, Integer page) {
+        Member member = memberRepository.findById(memberId).get();
+
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndType(member, Type.AMBIENT, pageRequest);
+
+        return ingredientPage;
+    }
+
+    @Override
+    public Page<Ingredient> getFrozenIngredientList(Long memberId, Integer page) {
+        Member member = memberRepository.findById(memberId).get();
+
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndType(member, Type.FROZEN, pageRequest);
 
         return ingredientPage;
     }
