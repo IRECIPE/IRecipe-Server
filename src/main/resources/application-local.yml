@@ -3,9 +3,10 @@ spring:
     activate:
       on-profile: local # 환경 이름 설정
   datasource:
-    url: jdbc:mysql://localhost:3306/irecipe
+    # url: jdbc:mysql://localhost:3306/irecipe
+    url: jdbc:mysql://irecipedb.c5qwe0s82tjq.ap-northeast-2.rds.amazonaws.com:3306/irecipe?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
-    password: junhee1202
+    password: irecipedb
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
