@@ -1,13 +1,12 @@
 package umc.IRECIPE_Server.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.IRECIPE_Server.common.enums.Age;
-import umc.IRECIPE_Server.common.enums.Gender;
-import umc.IRECIPE_Server.entity.MemberAllergy;
 
 public class MemberRequest {
     @Builder
@@ -15,15 +14,26 @@ public class MemberRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class fixMemberInfoDto{
+        @NotBlank
         String name;
+        @NotBlank
         String nickname;
+        @NotNull
         Integer gender;
+        @NotNull
         Integer age;
         String imageUrl;
         Boolean important;
         Boolean activity;
         Boolean event;
         List<Long> allergyList;
-
+    }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class checkNicknameIsExist{
+        @NotNull
+        String nickname;
     }
 }

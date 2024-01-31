@@ -79,4 +79,10 @@ public class MemberConverter {
                 .updatedAt(LocalDateTime.now())
                 .build();
     }
+
+    public static MemberResponse.updateNicknameResultDto updateNicknameResultDto(){
+        return MemberResponse.updateNicknameResultDto.builder()
+                .str("사용 가능한 닉네임 입니다.")
+                .build();
+    }
 }

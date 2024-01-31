@@ -65,4 +65,12 @@ public class MemberController {
         Member member = memberService.updateMemberById(request, memberId);
         return ApiResponse.onSuccess(MemberConverter.updateMemberResultDto(member));
     }
+
+    @GetMapping(value = "/nickname")
+    public ApiResponse<MemberResponse.updateNicknameResultDto> fixMember(
+            @RequestParam("nickname") String nickname
+    ){
+        memberService.checkNickname(nickname);
+        return ApiResponse.onSuccess(MemberConverter.updateNicknameResultDto());
+    }
 }

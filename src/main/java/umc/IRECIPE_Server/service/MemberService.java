@@ -2,6 +2,7 @@ package umc.IRECIPE_Server.service;
 
 
 import java.io.IOException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,11 +42,22 @@ public class MemberService {
     private final S3Service s3Service;
 
     public Member findMember(Long id) {
-        return memberRepository.findById(id).orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
+    public Member checkNickname(String nickname) {
+        Member member = memberRepository.findByNickname(nickname);
+        if (member == null){
+            return member;
+        }
+        else
+            throw new MemberHandler(ErrorStatus.NICKNAME_ALREADY_EXIST);
     }
 
     public MemberAllergy findMemberAllergy(Long memberId, Long allergyId){
-        return memberAllergyRepository.findByAllergy_IdAndMember_Id(memberId, allergyId);
+        return memberAllergyRepository
+                .findByAllergy_IdAndMember_Id(memberId, allergyId);
 
 
     }

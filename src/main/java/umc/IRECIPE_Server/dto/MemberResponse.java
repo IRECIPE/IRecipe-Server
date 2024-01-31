@@ -35,4 +35,12 @@ public class MemberResponse {
         Long memberId;
         LocalDateTime updatedAt;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class updateNicknameResultDto{
+        String str;
+    }
 }
