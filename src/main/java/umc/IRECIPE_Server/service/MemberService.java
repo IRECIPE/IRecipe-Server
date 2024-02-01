@@ -2,8 +2,11 @@ package umc.IRECIPE_Server.service;
 
 
 import java.io.IOException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +18,7 @@ import umc.IRECIPE_Server.converter.MemberAllergyConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberResponse;
+import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.entity.Allergy;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
@@ -65,9 +69,10 @@ public class MemberService {
 
     }
 
+
     @Transactional
-    public Member joinMember(MemberRequest.JoinDto request){
-        Member newMem = MemberConverter.toMember(request);
+    public Member joinMember(MemberRequest.JoinDto request, String url){
+        Member newMem = MemberConverter.toMember(request, url);
         List<Allergy> allergyList = request.getAllergyList().stream()
                 .map(allergy -> {
                     return allergyRepository.findById(allergy).orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
@@ -79,14 +84,13 @@ public class MemberService {
     }
 
     @Transactional
-    public Member login(MemberRequest.JoinDto request) {
-        Member member = memberRepository.findByPersonalId(request.getPersonalId());
-        if (member == null) { // 최초 회원가입
-            member = this.joinMember(request);
-        }
+    public Member signup(MemberRequest.JoinDto request, String url) {
+        Member member = memberRepository.findByPersonalId(request.getPersonalId())
+                .orElseGet(() -> this.joinMember(request, url));
 
         log.info("[login] 계정을 찾았습니다. " + member);
 
+        //토큰 발급
         MemberResponse.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
         RefreshToken refreshToken = RefreshToken.builder()
@@ -99,17 +103,18 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateProfileById(MultipartFile file, Long memberId) throws IOException {
-        Member member = memberRepository.findById(memberId)
+    public Member updateProfileById(MultipartFile file, String personalId) throws IOException {
+        Member member = memberRepository.findByPersonalId(personalId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        String url = s3Service.saveFile(file, "/members/profiles/{memberId}");
+        String url = s3Service.saveFile(file, "/members/profiles");
         member.updateUrl(url);
         return member;
 
     }
+
     @Transactional
-    public Member updateMemberById(MemberRequest.fixMemberInfoDto request, Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public Member updateMemberById(MemberRequest.fixMemberInfoDto request, String personalId) {
+        Member member = memberRepository.findByPersonalId(personalId)
                         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         List<MemberAllergy> memberAllergyList = member.getMemberAllergyList();
@@ -122,7 +127,7 @@ public class MemberService {
 
         //원래 있던건 삭제
         for(Long ids : allergyIds){
-            deleteMemberAllergy(memberId, ids);
+            deleteMemberAllergy(member.getId(), ids);
         }
 
         List<Allergy> allergies = allergyList.stream()
@@ -141,6 +146,21 @@ public class MemberService {
     public void deleteMemberAllergy(Long memberId, Long allergyId) {
         MemberAllergy memberAllergy = findMemberAllergy(memberId, allergyId);
         memberAllergyRepository.delete(memberAllergy);
+    }
+
+    public Member login(MemberLoginRequestDto.JoinLoginDto request){
+        Member member = memberRepository.findByPersonalId(request.getPersonalId())
+                        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        log.info("[login] 로그인 했습니다. " + member);
+
+        MemberResponse.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .member(member)
+                .token(tokenDto.getRefreshToken())
+                .build();
+        tokenRepository.save(refreshToken);
+        return member;
     }
 
 }

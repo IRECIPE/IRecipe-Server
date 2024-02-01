@@ -9,6 +9,7 @@ import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.jwt.JwtProvider;
+import umc.IRECIPE_Server.repository.TokenRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class MemberConverter {
         return jwtProvider.generateTokenDto(member.getPersonalId());
     }
 
-    public static Member toMember(MemberRequest.JoinDto request){
+    public static Member toMember(MemberRequest.JoinDto request, String url){
 
         Gender gender = null;
         Age age = null;
@@ -45,6 +46,7 @@ public class MemberConverter {
                 .nickname(request.getNickname())
                 .memberAllergyList(new ArrayList<>())
                 .age(age)
+                .imageUrl(url)
                 .personalId(request.getPersonalId())
                 .role(Role.USER)
                 .build();
