@@ -22,6 +22,7 @@ import java.util.Optional;
 public class IngredientQueryServiceImpl implements IngredientQueryService {
     private final IngredientRepository ingredientRepository;
     private final MemberRepository memberRepository;
+
     @Override
     public Ingredient findOne(Long ingredientId) {
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
@@ -47,31 +48,11 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
     }
 
     @Override
-    public Page<Ingredient> getRefrigeratedIngredientList(Long memberId, Integer page) {
+    public Page<Ingredient> getIngredientListByType(Long memberId, Type type, Integer page) {
         Member member = memberRepository.findById(memberId).get();
 
         PageRequest pageRequest = PageRequest.of(page, 10);
-        Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndType(member, Type.REFRIGERATED, pageRequest);
-
-        return ingredientPage;
-    }
-
-    @Override
-    public Page<Ingredient> getAmbientIngredientList(Long memberId, Integer page) {
-        Member member = memberRepository.findById(memberId).get();
-
-        PageRequest pageRequest = PageRequest.of(page, 10);
-        Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndType(member, Type.AMBIENT, pageRequest);
-
-        return ingredientPage;
-    }
-
-    @Override
-    public Page<Ingredient> getFrozenIngredientList(Long memberId, Integer page) {
-        Member member = memberRepository.findById(memberId).get();
-
-        PageRequest pageRequest = PageRequest.of(page, 10);
-        Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndType(member, Type.FROZEN, pageRequest);
+        Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndType(member, type, pageRequest);
 
         return ingredientPage;
     }

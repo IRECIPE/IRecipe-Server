@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
+import umc.IRECIPE_Server.common.enums.Type;
 import umc.IRECIPE_Server.converter.IngredientConverter;
 import umc.IRECIPE_Server.dto.IngredientRequest;
 import umc.IRECIPE_Server.entity.Ingredient;
@@ -67,20 +68,20 @@ public class IngredientController {
         return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
     }
 
-    //냉동 보관 재료 리스트 조회
-    @GetMapping("/refrigerated")
-    public ApiResponse<IngredientResponse.findAllResultListDTO> findRefrigeratedList(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
-        Page<Ingredient> ingredientList = ingredientQueryService.getRefrigeratedIngredientList(memberId, page);
+    //보관 방법별 재료 리스트 조회
+    @GetMapping("/types")
+    public ApiResponse<IngredientResponse.findAllResultListDTO> findRefrigeratedList(@RequestParam(name = "memberId") Long memberId,
+                                                                                     @RequestParam(name = "page") Integer page,
+                                                                                     @RequestParam(name = "type")Type type
+                                                                                     ) {
+        Page<Ingredient> ingredientList = ingredientQueryService.getIngredientListByType(memberId, type, page);
         return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
     }
-    @GetMapping("/ambient")
-    public ApiResponse<IngredientResponse.findAllResultListDTO> findAmbientList(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
-        Page<Ingredient> ingredientList = ingredientQueryService.getAmbientIngredientList(memberId, page);
-        return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
-    }
-    @GetMapping("/frozen")
-    public ApiResponse<IngredientResponse.findAllResultListDTO> findFrozenList(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
+
+    @GetMapping("/search")
+    public ApiResponse<IngredientResponse.findAllResultListDTO> searchIngredient(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
         Page<Ingredient> ingredientList = ingredientQueryService.getFrozenIngredientList(memberId, page);
         return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
     }
+
 }

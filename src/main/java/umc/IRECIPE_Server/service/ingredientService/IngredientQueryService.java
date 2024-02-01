@@ -1,6 +1,7 @@
 package umc.IRECIPE_Server.service.ingredientService;
 
 import org.springframework.data.domain.Page;
+import umc.IRECIPE_Server.common.enums.Type;
 import umc.IRECIPE_Server.entity.Ingredient;
 
 
@@ -13,9 +14,5 @@ public interface IngredientQueryService {
 
     Page<Ingredient> getIngredientList(Long memberId, Integer page);
 
-    Page<Ingredient> getRefrigeratedIngredientList(Long memberId, Integer page);
-
-    Page<Ingredient> getAmbientIngredientList(Long memberId, Integer page);
-
-    Page<Ingredient> getFrozenIngredientList(Long memberId, Integer page);
+    Page<Ingredient> getIngredientListByType(Long memberId, Type type, Integer page);
 }
