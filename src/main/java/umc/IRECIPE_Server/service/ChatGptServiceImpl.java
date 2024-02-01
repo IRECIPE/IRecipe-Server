@@ -23,6 +23,7 @@ import umc.IRECIPE_Server.dto.request.ChatGptRequestDTO;
 import umc.IRECIPE_Server.dto.request.DislikedFoodRequestDTO;
 import umc.IRECIPE_Server.dto.response.ChatGptResponseDTO;
 import umc.IRECIPE_Server.entity.DislikedFood;
+import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.StoredRecipe;
 import umc.IRECIPE_Server.repository.DislikedFoodRepository;
@@ -30,8 +31,12 @@ import umc.IRECIPE_Server.repository.IngredientRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.StoredRecipeRepository;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +62,33 @@ public class ChatGptServiceImpl implements ChatGptService {
         return new HttpEntity<>(requestDTO, headers);
     }
 
+    // ChatGPT 요청할 때 레시피 요구조건 세팅하기
+    public String setRecipeRequirements(String memberId) {
+
+        String recipeRequirement1 = " 대신, 350ml = 종이컵 1컵 / 1T = 큰 숟가락 반 / 파우더 1g = 큰 숟가락 1/4 = 1티스푼 식으로 계량 측정 방법을 통일하고, ";
+        String recipeRequirement2 = "필수 재료와 선택 재료를 구분하고 ";
+        String recipeRequirements;
+
+        // 현재 사용자 조회
+        Member member = memberRepository.findByPersonalId(memberId);
+        if(member == null){
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+
+        // 사용자가 기피하는 음식 조회 후 질문에 포함하기
+        List<DislikedFood> dislikedFoodList = dislikedFoodRepository.findAllByMember_Id(member.getId());
+        String excludedFoods = dislikedFoodList.stream()
+                .map(DislikedFood::getName)
+                .collect(Collectors.joining(", "));
+        if (dislikedFoodList.isEmpty()) {
+            recipeRequirements = recipeRequirement1 + recipeRequirement2 + "추천해줘";
+        } else {
+            recipeRequirements = recipeRequirement1 + recipeRequirement2 + excludedFoods + "제외해줘";
+        }
+
+        return recipeRequirements;
+    }
+
     // ChatGPT API 응답 반환 받기
     @Transactional
     public ChatGptResponseDTO getResponse(HttpEntity<ChatGptRequestDTO> chatGptRequestDTOHttpEntity) {
@@ -76,11 +108,14 @@ public class ChatGptServiceImpl implements ChatGptService {
 
     // ChatGPT API 요청하기 - 랜덤 레시피 / 일반 채팅
     @Override
-    public ChatGptResponseDTO askQuestion(String question) {
+    public ChatGptResponseDTO askQuestion(String memberId, String question) {
+
+        String recipeRequirements = setRecipeRequirements(memberId);
+
         List<ChatGptMessageDto> messages = new ArrayList<>();
         messages.add(ChatGptMessageDto.builder()
                 .role("user")
-                .content(question)
+                .content(question + recipeRequirements)
                 .build());
 
         return this.getResponse(
@@ -93,17 +128,24 @@ public class ChatGptServiceImpl implements ChatGptService {
     // ChatGPT API 요청하기 - 냉장고 재료 기반
     @Override
     public ChatGptResponseDTO askRefriQuestion(String memberId) {
-        List<String> myIngredientList = ingredientRepository.findNamesByMemberId(memberId);
-        String question = myIngredientList + "주어진 재료를 활용하여 만들 수 있는 레시피(조리 방법)를 알려줘";
-        return askQuestion(question);
+        List<Ingredient> myIngredientList = ingredientRepository.findNamesByMember_PersonalId(memberId);
+        String myIngredient = myIngredientList.stream()
+                .map(Ingredient::getName)
+                .collect(Collectors.joining(", "));
+        String question = myIngredient + "주어진 재료를 활용하여 만들 수 있는 레시피(조리 방법)를 알려줘";
+        return askQuestion(memberId, question);
     }
 
     // ChatGPT API 요청하기 - 냉장고 재료 유통기한 기반
     @Override
     public ChatGptResponseDTO askExpiryIngredientsQuestion(String memberId) {
-        List<String> myExpiryIngredientList = ingredientRepository.findIngredientsNameOrderByExpiryDate(memberId);
-        String question = myExpiryIngredientList + "이건 유통기한이 짧은 순서인데, 가능하다면 앞 순서부터 주어진 재료를 활용하여 만들 수 있는 레시피(조리 방법)를 알려줘";
-        return askQuestion(question);
+        List<Ingredient> myExpiryIngredientList = ingredientRepository.findNamesByMember_PersonalId(memberId);
+        String myExpiryIngredient = myExpiryIngredientList.stream()
+                .sorted(Comparator.comparing(Ingredient::getExpiry_date))
+                .map(Ingredient::getName)
+                .collect(Collectors.joining(", "));
+        String question = myExpiryIngredient + "이건 유통기한이 짧은 순서인데, 가능하다면 앞 순서부터 주어진 재료를 활용하여 만들 수 있는 레시피(조리 방법)를 알려줘";
+        return askQuestion(memberId, question);
     }
 
     // 싫어하는 음식 저장하기

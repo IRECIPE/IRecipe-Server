@@ -38,7 +38,9 @@ public class ChatGptController {
         // 3. chatgptresponse 반환
         // 4. 유저에 response 반환
 
-        String response = chatGPTService.askQuestion(request.getQuestion()).getChoices().get(0).getMessage().getContent();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
+        String response = chatGPTService.askQuestion(memberId, request.getQuestion()).getChoices().get(0).getMessage().getContent();
         return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
     }
 
