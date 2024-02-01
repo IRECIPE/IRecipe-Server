@@ -15,6 +15,7 @@ import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,14 +39,12 @@ public class PostService {
     // 게시글 생성 (Create)
     public ApiResponse<?> posting(String userId, PostRequestDTO.newRequestDTO postRequestDto, String url){
 
-        Member member = memberRepository.findByPersonalId(userId);
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
+        Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
+        memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         // 게시글 객체 생성
         Post post = Post.builder()
-                .member(member)
+                .member(memberOptional.get())
                 .title(postRequestDto.getTitle())
                 .subhead(postRequestDto.getSubhead())
                 .content(postRequestDto.getContent())
@@ -65,15 +64,13 @@ public class PostService {
     // 게시글 임시저장 불러오기
     public ApiResponse<?> newOrTemp(String userId){
         // 멤버 찾기.
-        Member member = memberRepository.findByPersonalId(userId);
+        Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
+        // null 이면 예외 처리 (NosuchElementException)
+        memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // 멤버 못 찾았으면 예외 출력
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
 
         // 멤버에 매핑된 게시글 모두 찾아서 임시저장된 글 있으면 반환.
-        List<Post> posts = postRepository.findAllByMember(member);
+        List<Post> posts = postRepository.findAllByMember(memberOptional.get());
         for (Post post : posts) {
             if(post.getStatus() == Status.TEMP){
                 return ApiResponse.onSuccess(PostConverter.toTempResponseDTO(post));
@@ -89,13 +86,10 @@ public class PostService {
         Post post = findByPostId(postId);
 
         // userId 로 유저 찾아서 member 객체에 담기
-        Member member = memberRepository.findByPersonalId(userId);
+        Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
+        memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        if (member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
-
-        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, member));
+        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, memberOptional.get()));
 
     }
 
@@ -104,6 +98,9 @@ public class PostService {
 
         // 해당 게시글 찾음.
         Post post = findByPostId(postId);
+        if(post == null){
+            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+        }
 
         // 게시글 수정
         post.updateTitle(postRequestDTO.getTitle());

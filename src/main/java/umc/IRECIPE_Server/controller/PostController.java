@@ -39,7 +39,10 @@ public class PostController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userId = authentication.getName();
 
-            String url = s3Service.saveFile(file, "images");
+            String url = null;
+            if(file != null){
+                url = s3Service.saveFile(file, "images");
+            }
 
             return postService.posting(userId, postRequestDto, url);
         }catch(IOException e){
@@ -77,10 +80,15 @@ public class PostController {
                                      @RequestPart(value = "file", required = false) MultipartFile file
     ) throws IOException
     {
-        String newUrl = s3Service.saveFile(file, "images");
+        String newUrl = null;
+        if(file != null){
+            newUrl = s3Service.saveFile(file, "images");
+        }
 
         String oldUrl = postRequestDTO.getOldUrl();
-        s3Service.deleteImage(oldUrl, "images");
+        if(oldUrl != null){
+            s3Service.deleteImage(oldUrl, "images");
+        }
 
         return postService.updatePost(postId, postRequestDTO, newUrl);
     }
