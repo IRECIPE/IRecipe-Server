@@ -1,12 +1,13 @@
 package umc.IRECIPE_Server.converter;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
 import umc.IRECIPE_Server.common.enums.Role;
-import umc.IRECIPE_Server.dto.MemberSignupRequestDto;
-import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
+import umc.IRECIPE_Server.dto.MemberRequest;
+import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.entity.Member;
+import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.TokenRepository;
 
@@ -14,11 +15,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MemberConverter {
-    public static MemberSignupResponseDto.JoinResultDTO toJoinResultDTO(Member member, JwtProvider jwtProvider){
+    public static MemberResponse.JoinResultDto toJoinResult(Member member, JwtProvider jwtProvider){
         return jwtProvider.generateTokenDto(member.getPersonalId());
     }
 
-    public static Member toMember(MemberSignupRequestDto.JoinDto request, String url){
+    public static Member toMember(MemberRequest.JoinDto request, String url){
 
         Gender gender = null;
         Age age = null;
@@ -48,6 +49,38 @@ public class MemberConverter {
                 .imageUrl(url)
                 .personalId(request.getPersonalId())
                 .role(Role.USER)
+                .build();
+    }
+
+    public static MemberResponse.getMemberResultDto getMemberResult(Member member){
+        List<MemberAllergy> allergyList = member.getMemberAllergyList();
+
+        List<Long> allergyIds = allergyList.stream()
+                .map(MemberAllergy::getId)
+                .toList();
+
+        return MemberResponse.getMemberResultDto.builder()
+                .name(member.getName())
+                .nickname(member.getNickname())
+                .gender(member.getGender())
+                .age(member.getAge())
+                .activity(member.getActivity())
+                .important(member.getImportant())
+                .event(member.getEvent())
+                .allergyList(allergyIds)
+                .build();
+    }
+
+    public static MemberResponse.updateMemberResultDto updateMemberResult(Member member){
+        return MemberResponse.updateMemberResultDto.builder()
+                .memberId(member.getId())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static MemberResponse.updateNicknameResultDto updateNicknameResult(){
+        return MemberResponse.updateNicknameResultDto.builder()
+                .str("사용 가능한 닉네임 입니다.")
                 .build();
     }
 }

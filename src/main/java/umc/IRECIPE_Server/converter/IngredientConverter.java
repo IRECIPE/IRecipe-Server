@@ -3,8 +3,8 @@ package umc.IRECIPE_Server.converter;
 
 import org.springframework.data.domain.Page;
 import umc.IRECIPE_Server.dto.IngredientRequest;
+import umc.IRECIPE_Server.dto.IngredientResponse;
 import umc.IRECIPE_Server.entity.Ingredient;
-import umc.IRECIPE_Server.web.dto.IngredientResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;

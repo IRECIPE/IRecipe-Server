@@ -70,13 +70,13 @@ public class ChatGptServiceImpl implements ChatGptService {
         String recipeRequirements;
 
         // 현재 사용자 조회
-        Member member = memberRepository.findByPersonalId(memberId);
-        if(member == null){
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if(member.isEmpty()){
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
 
         // 사용자가 기피하는 음식 조회 후 질문에 포함하기
-        List<DislikedFood> dislikedFoodList = dislikedFoodRepository.findAllByMember_Id(member.getId());
+        List<DislikedFood> dislikedFoodList = dislikedFoodRepository.findAllByMember_Id(member.get().getId());
         String excludedFoods = dislikedFoodList.stream()
                 .map(DislikedFood::getName)
                 .collect(Collectors.joining(", "));
@@ -110,14 +110,17 @@ public class ChatGptServiceImpl implements ChatGptService {
     @Override
     public ChatGptResponseDTO askQuestion(String memberId, String question) {
 
+        // 레시피 요구사항 불러오기
         String recipeRequirements = setRecipeRequirements(memberId);
 
+        // ChatGPT API 사용 시 지켜야 할 DTO 맞추기
         List<ChatGptMessageDto> messages = new ArrayList<>();
         messages.add(ChatGptMessageDto.builder()
                 .role("user")
                 .content(question + recipeRequirements)
                 .build());
 
+        // 응답 반환
         return this.getResponse(
                 this.buildHttpEntity(
                         new ChatGptRequestDTO(messages, ChatGptConfig.MODEL)
@@ -128,10 +131,14 @@ public class ChatGptServiceImpl implements ChatGptService {
     // ChatGPT API 요청하기 - 냉장고 재료 기반
     @Override
     public ChatGptResponseDTO askRefriQuestion(String memberId) {
+
+        // 사용자 재료 조회
         List<Ingredient> myIngredientList = ingredientRepository.findNamesByMember_PersonalId(memberId);
         String myIngredient = myIngredientList.stream()
                 .map(Ingredient::getName)
                 .collect(Collectors.joining(", "));
+
+        // 질문 넘겨주기
         String question = myIngredient + "주어진 재료를 활용하여 만들 수 있는 레시피(조리 방법)를 알려줘";
         return askQuestion(memberId, question);
     }
@@ -139,11 +146,15 @@ public class ChatGptServiceImpl implements ChatGptService {
     // ChatGPT API 요청하기 - 냉장고 재료 유통기한 기반
     @Override
     public ChatGptResponseDTO askExpiryIngredientsQuestion(String memberId) {
+
+        // 유통기한으로 정렬된 사용자 재료 조회
         List<Ingredient> myExpiryIngredientList = ingredientRepository.findNamesByMember_PersonalId(memberId);
         String myExpiryIngredient = myExpiryIngredientList.stream()
                 .sorted(Comparator.comparing(Ingredient::getExpiry_date))
                 .map(Ingredient::getName)
                 .collect(Collectors.joining(", "));
+
+        // 질문 넘겨주기
         String question = myExpiryIngredient + "이건 유통기한이 짧은 순서인데, 가능하다면 앞 순서부터 주어진 재료를 활용하여 만들 수 있는 레시피(조리 방법)를 알려줘";
         return askQuestion(memberId, question);
     }
@@ -152,23 +163,23 @@ public class ChatGptServiceImpl implements ChatGptService {
     @Override
     public void saveDislikedFood(String memberId, DislikedFoodRequestDTO.@Valid saveDislikedFoodRequest dislikedFood) {
 
-        Member member = memberRepository.findByPersonalId(memberId);
-        if(member == null){
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if(member.isEmpty()){
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
 
-        dislikedFoodRepository.save(ChatGptConverter.saveDislikedFood(member, dislikedFood.getDislikedFood()));
+        dislikedFoodRepository.save(ChatGptConverter.saveDislikedFood(member.get(), dislikedFood.getDislikedFood()));
     }
 
     // ChatGPT 에게 추천받은 레시피 저장하기
     @Override
     public void saveRecipe(String memberId, ChatGptRecipeSaveRequestDTO.@Valid RecipeSaveRequestDTO recipe) {
 
-        Member member = memberRepository.findByPersonalId(memberId);
-        if(member == null){
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if(member.isEmpty()){
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
 
-        storedRecipeRepository.save(ChatGptConverter.saveStoredRecipe(member, recipe.getBody()));
+        storedRecipeRepository.save(ChatGptConverter.saveStoredRecipe(member.get(), recipe.getBody()));
     }
 }

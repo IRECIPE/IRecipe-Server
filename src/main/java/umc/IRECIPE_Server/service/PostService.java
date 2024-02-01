@@ -48,14 +48,14 @@ public class PostService {
     // 게시글 생성 (Create)
     public ApiResponse<?> posting(String userId, PostRequestDTO.newRequestDTO postRequestDto, List<String> urls){
 
-        Member member = memberRepository.findByPersonalId(userId);
-        if(member == null){
+        Optional<Member> member = memberRepository.findByPersonalId(userId);
+        if(member.isEmpty()){
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
 
         // 게시글 객체 생성
         Post post = Post.builder()
-                .member(member)
+                .member(member.get())
                 .title(postRequestDto.getTitle())
                 .subhead(postRequestDto.getSubhead())
                 .content(postRequestDto.getContent())
@@ -85,15 +85,15 @@ public class PostService {
     // 게시글 임시저장 불러오기
     public ApiResponse<?> newOrTemp(String userId){
         // 멤버 찾기.
-        Member member = memberRepository.findByPersonalId(userId);
+        Optional<Member> member = memberRepository.findByPersonalId(userId);
 
         // 멤버 못 찾았으면 예외 출력
-        if(member == null){
+        if(member.isEmpty()){
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
 
         // 멤버에 매핑된 게시글 모두 찾아서 임시저장된 글 있으면 반환.
-        List<Post> posts = postRepository.findAllByMember(member);
+        List<Post> posts = postRepository.findAllByMember(member.get());
         for (Post post : posts) {
             if(post.getStatus() == Status.TEMP){
                 // 게시글에 해당하는 사진 객체 리스트
@@ -127,13 +127,12 @@ public class PostService {
         }
 
         // userId 로 유저 찾아서 member 객체에 담기
-        Member member = memberRepository.findByPersonalId(userId);
-
-        if (member == null){
+        Optional<Member> member = memberRepository.findByPersonalId(userId);
+        if(member.isEmpty()){
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
 
-        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, member, urls));
+        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, member.get(), urls));
 
     }
 

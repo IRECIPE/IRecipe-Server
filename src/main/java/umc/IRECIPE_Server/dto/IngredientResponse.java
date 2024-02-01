@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.web.dto;
+package umc.IRECIPE_Server.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
