@@ -3,6 +3,7 @@ package umc.IRECIPE_Server.controller;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -34,6 +35,7 @@ public class MemberController {
         return "Success";
     }
 
+    @Description("유저 회원가입 api")
     @PostMapping(value = "/signup", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<MemberResponse.JoinResultDto> join(
             @RequestPart(value = "request") MemberRequest.JoinDto request,
@@ -46,7 +48,9 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.toJoinResult(response, jwtProvider));
     }
 
-    @PatchMapping(value = "/profile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+
+    @Description("유저 프로필 이미지 변경 api")
+    @PatchMapping(value = "/fix/profile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<MemberResponse.updateMemberResultDto> fixMemberProfile(
             @RequestPart(value = "file") MultipartFile file
     ) throws java.io.IOException {
@@ -57,14 +61,18 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.updateMemberResult(member));
     }
 
-    @GetMapping(value = "/{member_id}")
-    public ApiResponse<MemberResponse.getMemberResultDto> findOne(
-            @PathVariable(name = "member_id") Long memberId) {
-        Member member = memberService.findMember(memberId);
+    @Description("유저 정보 받아오는 api")
+    @GetMapping(value = "/")
+    public ApiResponse<MemberResponse.getMemberResultDto> findOne() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        Member member = memberService.findMember(userId);
         return ApiResponse.onSuccess(MemberConverter.getMemberResult(member));
     }
 
-    @PatchMapping(value = "/fix")
+    @Description("유저 정보 변경 api")
+    @PatchMapping(value = "/fix/info")
     public ApiResponse<MemberResponse.updateMemberResultDto> fixMember(
             @RequestBody MemberRequest.fixMemberInfoDto request) {
 
@@ -75,21 +83,13 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.updateMemberResult(member));
     }
 
+    @Description("닉네임 중복체크 api")
     @GetMapping(value = "/nickname")
-    public ApiResponse<MemberResponse.updateNicknameResultDto> fixMember(
+    public ApiResponse<MemberResponse.updateNicknameResultDto> checkNickName(
             @RequestParam("nickname") String nickname
     ){
         memberService.checkNickname(nickname);
         return ApiResponse.onSuccess(MemberConverter.updateNicknameResult());
-    }
-
-    @GetMapping(value = "/")
-    public ApiResponse<MemberResponse.updateMemberResultDto> getMemberId(
-            @RequestParam("personalId") String personalId
-    ){
-        Member member = memberService.findMemberId(personalId);
-        return ApiResponse.onSuccess(MemberConverter.updateMemberResult(member));
-
     }
 
     @PostMapping(value = "/login")

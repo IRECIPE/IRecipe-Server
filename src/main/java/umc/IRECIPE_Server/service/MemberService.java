@@ -1,12 +1,8 @@
 package umc.IRECIPE_Server.service;
 
-
 import java.io.IOException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,8 +39,8 @@ public class MemberService {
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
 
-    public Member findMember(Long id) {
-        return memberRepository.findById(id)
+    public Member findMember(String personalId) {
+        return memberRepository.findByPersonalId(personalId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
@@ -55,7 +51,8 @@ public class MemberService {
     }
 
     public Member findMemberId(String personalId){
-        Member member = memberRepository.findByPersonalId(personalId);
+        Member member = memberRepository.findByPersonalId(personalId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
         if(member == null){
             throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
         }
@@ -69,13 +66,13 @@ public class MemberService {
 
     }
 
-
     @Transactional
     public Member joinMember(MemberRequest.JoinDto request, String url){
         Member newMem = MemberConverter.toMember(request, url);
         List<Allergy> allergyList = request.getAllergyList().stream()
                 .map(allergy -> {
-                    return allergyRepository.findById(allergy).orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
+                    return allergyRepository.findById(allergy)
+                            .orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
                 }).collect(Collectors.toList());
         List<MemberAllergy> memberAllergyList = MemberAllergyConverter.toMemberAllergyList(allergyList);
         memberAllergyList.forEach(memberAllergy -> {memberAllergy.setMember(newMem);});
