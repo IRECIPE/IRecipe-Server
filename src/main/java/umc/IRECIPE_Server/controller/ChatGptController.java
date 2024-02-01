@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.converter.ChatGptConverter;
 import umc.IRECIPE_Server.dto.request.ChatGptRecipeSaveRequestDTO;
+import umc.IRECIPE_Server.dto.request.DislikedFoodRequestDTO;
 import umc.IRECIPE_Server.dto.request.UserChatGptRequestDTO;
 import umc.IRECIPE_Server.dto.response.ChatGptButtonResponseDTO;
 import umc.IRECIPE_Server.dto.response.UserChatGptResponseDTO;
@@ -59,13 +60,21 @@ public class ChatGptController {
         return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
     }
 
-    // 레시피 저장
-    @PostMapping("/save")
-    public ApiResponse<Void> saveRecipe(@RequestBody @Valid ChatGptRecipeSaveRequestDTO.RecipeSaveRequestDTO request) {
+    // 싫어하는 음식 입력받기
+    @PostMapping("/dislike")
+    public ApiResponse<String> saveDislikedFood(@RequestBody @Valid DislikedFoodRequestDTO.saveDislikedFoodRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberId = authentication.getName();
-        System.out.println(memberId);
+        chatGPTService.saveDislikedFood(memberId, request);
+        return ApiResponse.onSuccess("Disliked Food saved successfully");
+    }
+
+    // 레시피 저장
+    @PostMapping("/save")
+    public ApiResponse<String> saveRecipe(@RequestBody @Valid ChatGptRecipeSaveRequestDTO.RecipeSaveRequestDTO request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
         chatGPTService.saveRecipe(memberId, request);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.onSuccess("Recipe saved successfully");
     }
 }

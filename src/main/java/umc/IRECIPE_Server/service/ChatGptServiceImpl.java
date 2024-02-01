@@ -16,12 +16,16 @@ import org.springframework.web.client.RestTemplate;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.config.ChatGptConfig;
+import umc.IRECIPE_Server.converter.ChatGptConverter;
 import umc.IRECIPE_Server.dto.request.ChatGptMessageDto;
 import umc.IRECIPE_Server.dto.request.ChatGptRecipeSaveRequestDTO;
 import umc.IRECIPE_Server.dto.request.ChatGptRequestDTO;
+import umc.IRECIPE_Server.dto.request.DislikedFoodRequestDTO;
 import umc.IRECIPE_Server.dto.response.ChatGptResponseDTO;
+import umc.IRECIPE_Server.entity.DislikedFood;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.StoredRecipe;
+import umc.IRECIPE_Server.repository.DislikedFoodRepository;
 import umc.IRECIPE_Server.repository.IngredientRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.StoredRecipeRepository;
@@ -37,6 +41,7 @@ public class ChatGptServiceImpl implements ChatGptService {
 
     private final MemberRepository memberRepository;
     private final IngredientRepository ingredientRepository;
+    private final DislikedFoodRepository dislikedFoodRepository;
     private final StoredRecipeRepository storedRecipeRepository;
     private static RestTemplate restTemplate = new RestTemplate();
 
@@ -101,6 +106,18 @@ public class ChatGptServiceImpl implements ChatGptService {
         return askQuestion(question);
     }
 
+    // 싫어하는 음식 저장하기
+    @Override
+    public void saveDislikedFood(String memberId, DislikedFoodRequestDTO.@Valid saveDislikedFoodRequest dislikedFood) {
+
+        Member member = memberRepository.findByPersonalId(memberId);
+        if(member == null){
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+
+        dislikedFoodRepository.save(ChatGptConverter.saveDislikedFood(member, dislikedFood.getDislikedFood()));
+    }
+
     // ChatGPT 에게 추천받은 레시피 저장하기
     @Override
     public void saveRecipe(String memberId, ChatGptRecipeSaveRequestDTO.@Valid RecipeSaveRequestDTO recipe) {
@@ -109,10 +126,7 @@ public class ChatGptServiceImpl implements ChatGptService {
         if(member == null){
             throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
         }
-        StoredRecipe storedRecipe = StoredRecipe.builder()
-                .member(member)
-                .body(recipe.getBody())
-                .build();
-        storedRecipeRepository.save(storedRecipe);
+
+        storedRecipeRepository.save(ChatGptConverter.saveStoredRecipe(member, recipe.getBody()));
     }
 }

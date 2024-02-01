@@ -12,8 +12,9 @@ public class ChatGptButtonResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class buttonResponseDTO{
-        String button1;
-        String button2;
-        String button3;
+        private String button1;
+        private String button2;
+        private String button3;
+        private String button4;
     }
 }
