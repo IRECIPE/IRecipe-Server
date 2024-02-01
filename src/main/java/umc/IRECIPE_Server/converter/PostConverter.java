@@ -1,11 +1,9 @@
 package umc.IRECIPE_Server.converter;
 
 
-import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
-import umc.IRECIPE_Server.entity.PostImage;
 
 import java.util.List;
 
@@ -17,7 +15,7 @@ public class PostConverter {
                     .build();
         }
 
-    public static PostResponseDTO.getTempDTO toTempResponseDTO(Post post, List<String> urls){
+    public static PostResponseDTO.getTempDTO toTempResponseDTO(Post post){
         return PostResponseDTO.getTempDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -25,14 +23,14 @@ public class PostConverter {
                 .category(post.getCategory())
                 .content(post.getContent())
                 .level(post.getLevel())
-                .imageUrls(urls)
+                .imageUrl(post.getImgaeUrl())
                 .status(post.getStatus())
                 .build();
     }
 
 
 
-    public static PostResponseDTO.getDTO toGetResponseDTO(Post post, Member member, List<String> urls){
+    public static PostResponseDTO.getDTO toGetResponseDTO(Post post, Member member){
         return PostResponseDTO.getDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -43,7 +41,7 @@ public class PostConverter {
                 .likes(post.getLikes())
                 .level(post.getLevel())
                 .score(post.getScore())
-                .urls(urls)
+                .imageUrl(post.getImgaeUrl())
                 .writerNickName(member.getNickname())
                 .writerImage(member.getProfileImage())
                 .build();

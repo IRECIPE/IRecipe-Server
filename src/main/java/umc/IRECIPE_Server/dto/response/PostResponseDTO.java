@@ -41,7 +41,7 @@ public class PostResponseDTO {
         // 임시저장, 등록
         private Status status;
         // 게시글 이미지
-        private List<String> imageUrls;
+        private String imageUrl;
     }
 
     @Builder
@@ -68,7 +68,7 @@ public class PostResponseDTO {
         // 평균 별점
         private Float score;
         // 게시글 사진
-        private List<String> urls;
+        private String imageUrl;
         // 작성자 이름
         private String writerNickName;
         // 작성자 프로필 사진
@@ -110,6 +110,5 @@ public class PostResponseDTO {
         private String nickName;
         // 사용자 사진
         private String memberImage;
-
     }
 }
