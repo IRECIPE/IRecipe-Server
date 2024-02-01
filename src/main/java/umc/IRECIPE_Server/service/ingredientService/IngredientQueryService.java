@@ -15,4 +15,6 @@ public interface IngredientQueryService {
     Page<Ingredient> getIngredientList(Long memberId, Integer page);
 
     Page<Ingredient> getIngredientListByType(Long memberId, Type type, Integer page);
+
+    Page<Ingredient> searchIngredientByName(Long memberId, String name, Integer page);
 }

@@ -78,9 +78,12 @@ public class IngredientController {
         return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
     }
 
+    //재료 이름 검색
     @GetMapping("/search")
-    public ApiResponse<IngredientResponse.findAllResultListDTO> searchIngredient(@RequestParam(name = "memberId") Long memberId, @RequestParam(name = "page") Integer page) {
-        Page<Ingredient> ingredientList = ingredientQueryService.getFrozenIngredientList(memberId, page);
+    public ApiResponse<IngredientResponse.findAllResultListDTO> searchIngredient(@RequestParam(name = "memberId") Long memberId,
+                                                                                 @RequestParam(name = "name") String name,
+                                                                                 @RequestParam(name = "page") Integer page) {
+        Page<Ingredient> ingredientList = ingredientQueryService.searchIngredientByName(memberId, name, page);
         return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
     }
 

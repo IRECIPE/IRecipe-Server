@@ -56,4 +56,13 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
 
         return ingredientPage;
     }
+
+    @Override
+    public Page<Ingredient> searchIngredientByName(Long memberId, String name, Integer page) {
+
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndName(memberId, name, pageRequest);
+
+        return ingredientPage;
+    }
 }
