@@ -43,5 +43,5 @@ out/
 .DS_Store
 
 # Ignore application.yml file
-src/main/resources/application.yml
+src/main/resources/application-dev.yml
 src/main/resources/application-local.yml

@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest # (3).OS환경
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
 
     steps:
       - name: Checkout
@@ -19,6 +19,12 @@ jobs:
         with:
           java-version: 17 # (5).자바 설치
           distribution: 'adopt'
+
+      - name: Make Application-dev.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application-dev.yml
+          echo "${{ secrets.APPLICATION_DEV }}" > ./application-dev.yml
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
