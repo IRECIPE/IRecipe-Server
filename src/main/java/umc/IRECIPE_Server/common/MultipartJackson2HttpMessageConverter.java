@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.converter;
+package umc.IRECIPE_Server.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Type;
 
 @Component
-public class MultipartJackson2HttpMessageConverter extends  AbstractJackson2HttpMessageConverter{
+public class MultipartJackson2HttpMessageConverter extends AbstractJackson2HttpMessageConverter {
 
+    /**
+     * "Content-Type: multipart/form-data" 헤더를 지원하는 HTTP 요청 변환기
+     */
     public MultipartJackson2HttpMessageConverter(ObjectMapper objectMapper) {
         super(objectMapper, MediaType.APPLICATION_OCTET_STREAM);
     }

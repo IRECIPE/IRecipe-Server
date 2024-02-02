@@ -13,13 +13,14 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import umc.IRECIPE_Server.common.enums.Role;
-import umc.IRECIPE_Server.dto.MemberSignupResponseDto;
 
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+import umc.IRECIPE_Server.dto.MemberRequest;
+import umc.IRECIPE_Server.dto.MemberResponse;
 
 @Slf4j
 @Component
@@ -36,7 +37,7 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public MemberSignupResponseDto.JoinResultDTO generateTokenDto(String personalId) {
+    public MemberResponse.JoinResultDto generateTokenDto(String personalId) {
 
         long now = (new Date()).getTime();
 
@@ -55,7 +56,7 @@ public class JwtProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        return MemberSignupResponseDto.JoinResultDTO.builder()
+        return MemberResponse.JoinResultDto.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
