@@ -25,8 +25,16 @@ public class ReviewConverter {
                 .build();
     }
 
+    public static ReviewResponseDTO.addReviewResponseDTO addReviewResult(Review review) {
+        return ReviewResponseDTO.addReviewResponseDTO.builder()
+                .score(review.getScore())
+                .context(review.getContext())
+                .imageUrl(review.getImageUrl())
+                .build();
+    }
+
     // 리뷰 조회
-    public static List<ReviewResponseDTO.getReviewResponseDTO> getReview(Page<Review> reviewList) {
+    public static List<ReviewResponseDTO.getReviewResponseDTO> getReviewResult(Page<Review> reviewList) {
         return reviewList.stream()
                 .map(m -> ReviewResponseDTO.getReviewResponseDTO.builder()
                         .reviewId(m.getId())
@@ -38,7 +46,20 @@ public class ReviewConverter {
                         .createdAt(m.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
-
     }
 
+    // 리뷰 수정
+    public static ReviewResponseDTO.updateReviewResponseDTO updateReviewResult(Long reviewId) {
+        return ReviewResponseDTO.updateReviewResponseDTO.builder()
+                .reviewId(reviewId)
+                .message("Review updated successfully")
+                .build();
+    }
+
+    // 리뷰 삭제
+    public static ReviewResponseDTO.deleteReviewResponseDTO deleteReviewResult() {
+        return ReviewResponseDTO.deleteReviewResponseDTO.builder()
+                .message("Review deleted successfully")
+                .build();
+    }
 }

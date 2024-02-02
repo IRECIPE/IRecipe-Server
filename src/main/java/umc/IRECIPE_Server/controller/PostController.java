@@ -125,35 +125,4 @@ public class PostController {
         return null;
     }
 
-    // 게시글 리뷰 등록
-    @PostMapping(value = "/{postId}/review", consumes = "multipart/form-data")
-    public ApiResponse<?> addPostReview(@PathVariable("postId") Long postId,
-                                       @RequestPart(required = false) ReviewRequestDTO.addReviewDTO request,
-                                       @RequestPart(required = false) MultipartFile file) throws IOException {
-        // memberId 값 세팅
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String memberId = authentication.getName();
-
-        // 이미지 경로값 세팅
-        String url = null;
-        if (file != null) {
-            url = s3Service.saveFile(file, "images");
-        }
-
-         return postService.addReview(memberId, postId, request, url);
-    }
-
-    // 게시글 리뷰 조회 (0번 페이지부터 10개씩 최신순으로 조회)
-    @GetMapping("/{postId}/review")
-    public ApiResponse<List<ReviewResponseDTO.getReviewResponseDTO>> getPostReview(@PathVariable("postId") Long postId,
-                                                                                   @RequestParam(value="page", defaultValue="0") int page) {
-        return postService.getPostReview(postId, page);
-    }
-
-    // 게시글 리뷰 삭제
-    @DeleteMapping("/review/{reviewId}")
-    public ApiResponse<?> deletePostReview(@PathVariable("reviewId") Long reviewId) {
-        return postService.deletePostReview(reviewId);
-    }
-
 }

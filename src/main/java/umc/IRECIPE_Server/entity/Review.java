@@ -50,5 +50,9 @@ public class Review extends BaseEntity {
     // 리뷰 사진
     private String imageUrl;
 
-
+    public void updateReview(Float score, String context, String imageUrl) {
+        this.score = score;
+        this.context = context;
+        this.imageUrl = imageUrl;
+    }
 }

@@ -9,6 +9,18 @@ import java.time.LocalDateTime;
 
 public class ReviewResponseDTO {
 
+    // 리뷰 등록
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class addReviewResponseDTO {
+        private Float score;
+        private String context;
+        private String imageUrl;
+    }
+
+    // 리뷰 조회
     @Builder
     @Getter
     @NoArgsConstructor
@@ -21,5 +33,24 @@ public class ReviewResponseDTO {
         private Float score;
         private String imageUrl;
         private LocalDateTime createdAt;
+    }
+
+    // 리뷰 수정
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class updateReviewResponseDTO {
+        private Long reviewId;
+        private String message;
+    }
+
+    // 리뷰 삭제
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class deleteReviewResponseDTO {
+        private String message;
     }
 }

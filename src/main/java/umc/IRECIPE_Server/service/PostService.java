@@ -1,36 +1,20 @@
 package umc.IRECIPE_Server.service;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
-import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
-import umc.IRECIPE_Server.common.S3.S3Service;
-import umc.IRECIPE_Server.converter.ReviewConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
-import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
-import umc.IRECIPE_Server.dto.response.PostResponseDTO;
-import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
-import umc.IRECIPE_Server.entity.PostImage;
-import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.repository.MemberRepository;
-import umc.IRECIPE_Server.repository.PostImageRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
-import umc.IRECIPE_Server.repository.ReviewRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,9 +25,6 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final PostImageRepository postImageRepository;
-    private final ReviewRepository reviewRepository;
-    private final S3Service s3Service;
 
     // postId 로 Post 찾고 Null 이면 예외 출력하는 메소드
     public Post findByPostId(Long postId){
@@ -53,41 +34,24 @@ public class PostService {
         return postOptional.orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
     }
 
-    public List<PostImage> findpostImages(Long postId){
-        Post post = findByPostId(postId);
-        return post.getPostImageList();
-    }
-
     // PostRequestDto를 받아 DB에 게시글 저장 후 PostResponseDto 생성해서 반환하는 메소드.
     // 게시글 생성 (Create)
-    public ApiResponse<?> posting(String userId, PostRequestDTO.newRequestDTO postRequestDto, List<String> urls){
+    public ApiResponse<?> posting(String userId, PostRequestDTO.newRequestDTO postRequestDto, String url){
 
-        Member member = memberRepository.findByPersonalId(userId);
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
+        Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
+        memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         // 게시글 객체 생성
         Post post = Post.builder()
-                .member(member)
+                .member(memberOptional.get())
                 .title(postRequestDto.getTitle())
                 .subhead(postRequestDto.getSubhead())
                 .content(postRequestDto.getContent())
                 .category(postRequestDto.getCategory())
                 .level(postRequestDto.getLevel())
+                .imageUrl(url)
                 .status(postRequestDto.getStatus())
                 .build();
-
-        // 게시글 사진 객체 생성
-        for (String url : urls) {
-            PostImage postImage = PostImage.builder()
-                    .post(post)
-                    .imageUrl(url)
-                    .build();
-
-            // 게시글 사진 저장
-            postImageRepository.save(postImage);
-        }
 
         // 게시글 저장
         postRepository.save(post);
@@ -99,27 +63,16 @@ public class PostService {
     // 게시글 임시저장 불러오기
     public ApiResponse<?> newOrTemp(String userId){
         // 멤버 찾기.
-        Member member = memberRepository.findByPersonalId(userId);
+        Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
+        // null 이면 예외 처리 (NosuchElementException)
+        memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // 멤버 못 찾았으면 예외 출력
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
 
         // 멤버에 매핑된 게시글 모두 찾아서 임시저장된 글 있으면 반환.
-        List<Post> posts = postRepository.findAllByMember(member);
+        List<Post> posts = postRepository.findAllByMember(memberOptional.get());
         for (Post post : posts) {
             if(post.getStatus() == Status.TEMP){
-                // 게시글에 해당하는 사진 객체 리스트
-                List<PostImage> postImageList = post.getPostImageList();
-                // 사진 url 리스트 생성
-                List<String> urls = new ArrayList<>();
-                // 사진 url 리스트에 모두 담기
-                for (PostImage postImage : postImageList) {
-                    urls.add(postImage.getImageUrl());
-                }
-
-                return ApiResponse.onSuccess(PostConverter.toTempResponseDTO(post, urls));
+                return ApiResponse.onSuccess(PostConverter.toTempResponseDTO(post));
             }
         }
 
@@ -131,56 +84,21 @@ public class PostService {
 
         Post post = findByPostId(postId);
 
-        // 게시글에 해당하는 사진 객체 리스트
-        List<PostImage> postImageList = post.getPostImageList();
-        // 사진 url 리스트 생성
-        List<String> urls = new ArrayList<>();
-        // 사진 url 리스트에 모두 담기
-        for (PostImage postImage : postImageList) {
-            urls.add(postImage.getImageUrl());
-        }
-
         // userId 로 유저 찾아서 member 객체에 담기
-        Member member = memberRepository.findByPersonalId(userId);
+        Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
+        memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        if (member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
-
-        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, member, urls));
+        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, memberOptional.get()));
 
     }
 
     // 게시글 수정 후 저장.
-    public ApiResponse<?> updatePost(Long postId, PostRequestDTO.patchRequestDTO postRequestDTO, List<String> newUrls){
+    public ApiResponse<?> updatePost(Long postId, PostRequestDTO.patchRequestDTO postRequestDTO, String newUrl){
 
         // 해당 게시글 찾음.
         Post post = findByPostId(postId);
-
-        // 게시글에 해당하는 사진 객체 리스트
-        List<PostImage> postImageList = post.getPostImageList();
-        List<String> oldUrls = postRequestDTO.getOldUrls();
-
-        // 삭제 할 url 과 postImage 테이블의 url 비교해서 일치하면 삭제하는 로직.
-        for (PostImage postImage : postImageList) {
-            for (String oldUrl : oldUrls) {
-
-                if(postImage.getImageUrl().equals(oldUrl)){
-                    // postImage 엔티티 삭제
-                    postImageRepository.delete(postImage);
-                }
-            }
-        }
-
-        // 게시글 사진 객체 생성 하고 저장.
-        for (String url : newUrls) {
-            PostImage postImage = PostImage.builder()
-                    .post(post)
-                    .imageUrl(url)
-                    .build();
-
-            // 새로운 사진 저장
-            postImageRepository.save(postImage);
+        if(post == null){
+            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
         }
 
         // 게시글 수정
@@ -196,6 +114,7 @@ public class PostService {
 
         post.updateStatus(postRequestDTO.getStatus());
 
+        post.updateImage(newUrl);
 
         // 게시글 수정 후 저장
         postRepository.save(post);
@@ -209,55 +128,8 @@ public class PostService {
 
         Post post = findByPostId(postId);
 
-        List<PostImage> postImageList = post.getPostImageList();
-
         postRepository.delete(post);
 
         return ApiResponse.onSuccess(SuccessStatus._OK);
     }
-
-    // 게시글 리뷰 등록
-    @Transactional
-    public ApiResponse<?> addReview(String memberId, Long postId, ReviewRequestDTO.@Valid addReviewDTO request, String imageUrl) {
-
-        Member member = memberRepository.findByPersonalId(memberId);
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
-
-        Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
-        Review review = ReviewConverter.addReview(member, post, request, imageUrl);
-        reviewRepository.save(review);
-
-        return ApiResponse.onSuccess(SuccessStatus._OK);
-    }
-
-    // 게시글 리뷰 조회
-    public ApiResponse<List<ReviewResponseDTO.getReviewResponseDTO>> getPostReview(Long postId, int page) {
-
-        // 게시글 조회
-        Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
-
-        // 게시글 id 를 가진 리뷰 조회 (+ 페이지네이션)
-        List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createdAt"));
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        Page<Review> reviewList = reviewRepository.findAllByPost(post, pageable);
-
-        return ApiResponse.onSuccess(ReviewConverter.getReview(reviewList));
-    }
-
-    // 게시글 리뷰 삭제
-    public ApiResponse<?> deletePostReview(Long reviewId) {
-
-        // S3 버킷에 저장된 게시글 리뷰 사진 삭제
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
-        s3Service.deleteImage(review.getImageUrl(), "images");
-
-        // 게시글 리뷰 삭제
-        reviewRepository.deleteById(reviewId);
-
-        return ApiResponse.onSuccess(SuccessStatus._OK);
-    }
 }
-// https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/irecipe_architecture.drawio
