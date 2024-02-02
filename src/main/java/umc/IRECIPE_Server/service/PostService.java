@@ -50,7 +50,7 @@ public class PostService {
                 .content(postRequestDto.getContent())
                 .category(postRequestDto.getCategory())
                 .level(postRequestDto.getLevel())
-                .imgaeUrl(url)
+                .imageUrl(url)
                 .status(postRequestDto.getStatus())
                 .build();
 

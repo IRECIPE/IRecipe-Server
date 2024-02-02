@@ -23,7 +23,7 @@ public class PostConverter {
                 .category(post.getCategory())
                 .content(post.getContent())
                 .level(post.getLevel())
-                .imageUrl(post.getImgaeUrl())
+                .imageUrl(post.getImageUrl())
                 .status(post.getStatus())
                 .build();
     }
@@ -41,7 +41,7 @@ public class PostConverter {
                 .likes(post.getLikes())
                 .level(post.getLevel())
                 .score(post.getScore())
-                .imageUrl(post.getImgaeUrl())
+                .imageUrl(post.getImageUrl())
                 .writerNickName(member.getNickname())
                 .writerImage(member.getProfileImage())
                 .build();

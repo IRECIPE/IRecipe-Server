@@ -98,7 +98,7 @@ public class PostController {
     public ApiResponse<?> deletePost(@PathVariable Long postId){
 
         Post post = postService.findByPostId(postId);
-        s3Service.deleteImage(post.getImgaeUrl(), "images");
+        s3Service.deleteImage(post.getImageUrl(), "images");
 
         return postService.deletePost(postId);
     }

@@ -51,7 +51,7 @@ public class Post extends BaseEntity {
     private int likes;
 
     // 게시글 사진 url
-    private String imgaeUrl;
+    private String imageUrl;
 
     // 카테고리
     @Enumerated(EnumType.STRING)
@@ -104,7 +104,7 @@ public class Post extends BaseEntity {
         this.status = status;
     }
 
-    public void updateImage(String imageUrl){ this.imgaeUrl = imageUrl; }
+    public void updateImage(String imageUrl){ this.imageUrl = imageUrl; }
 
     // 좋아요 수정
     public void updateLikes(int likes) { this.likes = likes; }
