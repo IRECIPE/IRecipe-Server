@@ -13,6 +13,7 @@ import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
 import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
 import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.service.ReviewService;
+import umc.IRECIPE_Server.service.ReviewServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +24,6 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final S3Service s3Service;
 
     // 게시글 리뷰 등록
     @PostMapping(value = "/{postId}/review", consumes = "multipart/form-data")
