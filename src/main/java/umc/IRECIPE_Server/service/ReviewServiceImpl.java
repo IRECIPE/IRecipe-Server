@@ -105,4 +105,3 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.deleteById(reviewId);
     }
 }
-// https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/irecipe_architecture.drawio

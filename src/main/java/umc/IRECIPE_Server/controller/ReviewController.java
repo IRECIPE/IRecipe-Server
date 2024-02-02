@@ -45,7 +45,7 @@ public class ReviewController {
     }
 
     // 게시글 리뷰 수정
-    @PatchMapping(value = "/review/{review-id}", consumes = "multipart/form-data")
+    @PatchMapping(value = "/review/{reviewId}", consumes = "multipart/form-data")
     public ApiResponse<ReviewResponseDTO.updateReviewResponseDTO> updatePostReview(@PathVariable("reviewId") Long reviewId,
                                           @RequestPart(required = false) ReviewRequestDTO.addReviewDTO request,
                                           @RequestPart(required = false) MultipartFile file) throws IOException {
