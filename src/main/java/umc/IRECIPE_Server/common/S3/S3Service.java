@@ -36,9 +36,9 @@ public class S3Service {
     }
 
     // 이미지 수정으로 인해 기존 이미지 삭제 메소드
-    public void deleteImage(String fileUrl, String dirName) {
-        String fileName = fileUrl.substring(fileUrl.lastIndexOf(dirName) + dirName.length());
+    public void deleteImage(String fileName, String dirName) {
+        String fileKey = dirName + "/" + fileName;
 
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileKey));
     }
 }

@@ -39,12 +39,14 @@ public class PostController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userId = authentication.getName();
 
+            String fileName = null;
             String url = null;
             if(file != null){
+                fileName = file.getOriginalFilename();
                 url = s3Service.saveFile(file, "images");
             }
 
-            return postService.posting(userId, postRequestDto, url);
+            return postService.posting(userId, postRequestDto, url, fileName);
         }catch(IOException e){
             throw new GeneralException(ErrorStatus._INTERNAL_SERVER_ERROR);
         }
@@ -98,9 +100,9 @@ public class PostController {
     public ApiResponse<?> deletePost(@PathVariable Long postId){
 
         Post post = postService.findByPostId(postId);
-        s3Service.deleteImage(post.getImageUrl(), "images");
+        s3Service.deleteImage(post.getFileName(), "images");
 
-        return postService.deletePost(postId);
+        return postService.deletePost(post);
     }
 
     // 커뮤니티 화면 조회

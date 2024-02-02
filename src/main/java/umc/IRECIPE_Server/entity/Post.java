@@ -53,6 +53,9 @@ public class Post extends BaseEntity {
     // 게시글 사진 url
     private String imageUrl;
 
+    // 사진 이름
+    private String fileName;
+
     // 카테고리
     @Enumerated(EnumType.STRING)
     private Category category;
