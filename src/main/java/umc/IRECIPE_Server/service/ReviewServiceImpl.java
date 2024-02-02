@@ -29,7 +29,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ReviewServiceImpl {
+public class ReviewServiceImpl implements ReviewService {
 
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;

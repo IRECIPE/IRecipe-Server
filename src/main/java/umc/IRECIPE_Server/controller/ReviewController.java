@@ -7,13 +7,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
-import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.ReviewConverter;
 import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
 import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
 import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.service.ReviewService;
-import umc.IRECIPE_Server.service.ReviewServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
