@@ -7,26 +7,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.repository.AllergyRepository;
-import umc.IRECIPE_Server.validation.annotation.ExistCategories;
+import umc.IRECIPE_Server.validation.annotation.ExistAllergies;
 
 @Component
 @RequiredArgsConstructor
-public class CategoriesExistValidator implements ConstraintValidator<ExistCategories, List<Long>> {
+public class AllergiesExistValidator implements ConstraintValidator<ExistAllergies, List<Long>> {
     private final AllergyRepository allergyRepository;
 
     @Override
-    public void initialize(ExistCategories constraintAnnotation) {
+    public void initialize(ExistAllergies constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
     public boolean isValid(List<Long> values, ConstraintValidatorContext context) {
         boolean isValid = values.stream()
-                .allMatch(value -> allergyRepository.existsById(value));
+                .allMatch(allergyRepository::existsById);
 
         if (!isValid) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(ErrorStatus.ALLERGY_NOT_FOUND.toString()).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(ErrorStatus.ALLERGY_NOT_FOUND.getMessage()).addConstraintViolation();
         }
 
         return isValid;
