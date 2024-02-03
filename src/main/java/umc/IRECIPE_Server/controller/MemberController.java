@@ -41,7 +41,12 @@ public class MemberController {
             @RequestPart(value = "request") MemberRequest.JoinDto request,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) throws IOException, java.io.IOException {
-        String url = s3Service.saveFile(file, "/member/profile/${request.getPersonalId()}");
+
+        String url = null;
+        if(file != null){
+            url = s3Service.saveFile(file, "/member/profile/${request.getPersonalId()}");
+        }
+
         Member response = memberService.signup(request, url);
         log.info(request.getName(), file);
 

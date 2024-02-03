@@ -50,6 +50,12 @@ public class Post extends BaseEntity {
     // 게시글 좋아요 수
     private int likes;
 
+    // 게시글 사진 url
+    private String imageUrl;
+
+    // 사진 이름
+    private String fileName;
+
     // 카테고리
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -70,10 +76,6 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Query> queryList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<PostImage> postImageList = new ArrayList<>();
-
 
     // 게시글 제목 수정
     public void updateTitle(String title){
@@ -104,6 +106,8 @@ public class Post extends BaseEntity {
     public void updateStatus(Status status){
         this.status = status;
     }
+
+    public void updateImage(String imageUrl){ this.imageUrl = imageUrl; }
 
     // 좋아요 수정
     public void updateLikes(int likes) { this.likes = likes; }

@@ -22,8 +22,6 @@ import umc.IRECIPE_Server.common.enums.Type;
 @Entity
 @Getter
 @Builder
-@DynamicInsert
-@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Member extends BaseEntity {
@@ -53,8 +51,6 @@ public class Member extends BaseEntity {
     // 회원 고유 id
     @Column(updatable = false, unique = true, nullable = false)
     private String personalId;
-
-    private String imageUrl;
 
     // 중요 알림 온오프여부
     private Boolean important;
