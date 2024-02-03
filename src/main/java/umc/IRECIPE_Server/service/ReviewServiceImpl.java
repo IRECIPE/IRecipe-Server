@@ -47,12 +47,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 이미지 경로값 세팅
         String imageUrl = null;
+        String fileName = null;
         if (file != null) {
             imageUrl = s3Service.saveFile(file, "images");
+            fileName = file.getOriginalFilename();
         }
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
-        Review review = ReviewConverter.addReview(member.get(), post, request, imageUrl);
+        Review review = ReviewConverter.addReview(member.get(), post, request, imageUrl, fileName);
         return reviewRepository.save(review);
     }
 
@@ -75,20 +77,22 @@ public class ReviewServiceImpl implements ReviewService {
         // 리뷰 조회
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
 
-        // 새로 들어온 사진 S3 업로드
-        String newUrl = null;
-        if (file != null) {
-            newUrl = s3Service.saveFile(file, "images");
-        }
-
         // 기존 사진 S3 삭제
         String oldUrl = review.getImageUrl();
         if (oldUrl != null) {
-            s3Service.deleteImage(oldUrl, "images");
+            s3Service.deleteImage(review.getFileName(), "images");
+        }
+
+        // 새로 들어온 사진 S3 업로드
+        String newUrl = null;
+        String newFileName = null;
+        if (file != null) {
+            newUrl = s3Service.saveFile(file, "images");
+            newFileName = file.getOriginalFilename();
         }
 
         // 데이터 업데이트
-        review.updateReview(request.getScore(), request.getContext(), newUrl);
+        review.updateReview(request.getScore(), request.getContext(), newUrl, newFileName);
     }
 
 
@@ -98,7 +102,7 @@ public class ReviewServiceImpl implements ReviewService {
         // S3 버킷에 저장된 게시글 리뷰 사진 삭제
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
         if (review.getImageUrl() != null) {
-            s3Service.deleteImage(review.getImageUrl(), "images");
+            s3Service.deleteImage(review.getFileName(), "images");
         }
 
         // 게시글 리뷰 삭제

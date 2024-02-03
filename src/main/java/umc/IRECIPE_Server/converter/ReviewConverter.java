@@ -15,13 +15,14 @@ import java.util.stream.Collectors;
 public class ReviewConverter {
 
     // 리뷰 등록
-    public static Review addReview(Member member, Post post, ReviewRequestDTO.@Valid addReviewDTO request, String imageUrl){
+    public static Review addReview(Member member, Post post, ReviewRequestDTO.@Valid addReviewDTO request, String imageUrl, String fileName){
         return Review.builder()
                 .member(member)
                 .post(post)
                 .score(request.getScore())
                 .context(request.getContext())
                 .imageUrl(imageUrl)
+                .fileName(fileName)
                 .build();
     }
 
