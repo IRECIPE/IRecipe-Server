@@ -40,10 +40,8 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
 
     @Override
     public Page<Ingredient> getIngredientList(String memberId, Integer page) {
-        Member member = memberRepository.findByPersonalId(memberId);
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
+        Member member = memberRepository.findByPersonalId(memberId)
+                .orElseThrow(() -> new IngredientHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<Ingredient> ingredientPage = ingredientRepository.findAllByMember(member, pageRequest);
@@ -53,10 +51,8 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
 
     @Override
     public Page<Ingredient> getIngredientListByType(String memberId, Type type, Integer page) {
-        Member member = memberRepository.findByPersonalId(memberId);
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
+        Member member = memberRepository.findByPersonalId(memberId)
+                .orElseThrow(() -> new IngredientHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndType(member, type, pageRequest);

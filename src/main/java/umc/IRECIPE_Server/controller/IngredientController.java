@@ -27,7 +27,7 @@ import java.io.IOException;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("/ingredient")
+@RequestMapping("/ingredients")
 public class IngredientController {
 
     private final S3Service s3Service;
@@ -37,12 +37,13 @@ public class IngredientController {
     //재료추가
     @PostMapping(value = "/", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<IngredientResponse.addResultDTO> addIngredient(@RequestPart("request") IngredientRequest.addDTO request,
-                                                                      @RequestPart("file") MultipartFile file
+                                                                      @RequestPart(value = "file", required = false) MultipartFile file
     )throws IOException
     {
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userId = authentication.getName();
+            System.out.println("userId = " + userId);
 
             String url;
             if(file != null){

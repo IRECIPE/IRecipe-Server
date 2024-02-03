@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
-import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
 import umc.IRECIPE_Server.converter.IngredientConverter;
 
@@ -24,10 +23,8 @@ public class IngredientCommandServiceImpl implements IngredientCommandService {
     @Override
     @Transactional
     public Ingredient addIngredient(String memberId, IngredientRequest.addDTO request, String url) {
-        Member member = memberRepository.findByPersonalId(memberId);
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
+        Member member = memberRepository.findByPersonalId(memberId)
+                .orElseThrow(() -> new IngredientHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         Ingredient newIngredient = IngredientConverter.toIngredient(member, request, url);
         return ingredientRepository.save(newIngredient);

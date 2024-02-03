@@ -7,6 +7,8 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
 import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
@@ -48,10 +50,8 @@ public class PostService {
     // 게시글 생성 (Create)
     public ApiResponse<?> posting(String userId, PostRequestDTO.newRequestDTO postRequestDto, List<String> urls){
 
-        Member member = memberRepository.findByPersonalId(userId);
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
+        Member member = memberRepository.findByPersonalId(userId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         // 게시글 객체 생성
         Post post = Post.builder()
@@ -85,12 +85,9 @@ public class PostService {
     // 게시글 임시저장 불러오기
     public ApiResponse<?> newOrTemp(String userId){
         // 멤버 찾기.
-        Member member = memberRepository.findByPersonalId(userId);
+        Member member = memberRepository.findByPersonalId(userId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // 멤버 못 찾았으면 예외 출력
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
 
         // 멤버에 매핑된 게시글 모두 찾아서 임시저장된 글 있으면 반환.
         List<Post> posts = postRepository.findAllByMember(member);
@@ -127,11 +124,9 @@ public class PostService {
         }
 
         // userId 로 유저 찾아서 member 객체에 담기
-        Member member = memberRepository.findByPersonalId(userId);
+        Member member = memberRepository.findByPersonalId(userId)
+                .orElseThrow(() -> new IngredientHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-        if (member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
 
         return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, member, urls));
 

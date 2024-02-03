@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
 import umc.IRECIPE_Server.config.ChatGptConfig;
 import umc.IRECIPE_Server.dto.request.ChatGptMessageDto;
 import umc.IRECIPE_Server.dto.request.ChatGptRecipeSaveRequestDTO;
@@ -105,10 +107,9 @@ public class ChatGptServiceImpl implements ChatGptService {
     @Override
     public void saveRecipe(String memberId, ChatGptRecipeSaveRequestDTO.@Valid RecipeSaveRequestDTO recipe) {
 
-        Member member = memberRepository.findByPersonalId(memberId);
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
+        Member member = memberRepository.findByPersonalId(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
         StoredRecipe storedRecipe = StoredRecipe.builder()
                 .member(member)
                 .body(recipe.getBody())
