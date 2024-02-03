@@ -4,7 +4,8 @@ package umc.IRECIPE_Server.converter;
 import org.springframework.data.domain.Page;
 import umc.IRECIPE_Server.dto.IngredientRequest;
 import umc.IRECIPE_Server.entity.Ingredient;
-import umc.IRECIPE_Server.web.dto.IngredientResponse;
+import umc.IRECIPE_Server.entity.Member;
+import umc.IRECIPE_Server.dto.IngredientResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +20,7 @@ public class IngredientConverter {
                 .build();
     }
 
-    public static Ingredient toIngredient(IngredientRequest.addDTO request) {
+    public static Ingredient toIngredient(Member member, IngredientRequest.addDTO request, String url) {
 
         return Ingredient.builder()
                 .name(request.getName())
@@ -27,6 +28,8 @@ public class IngredientConverter {
                 .category(request.getCategory())
                 .type(request.getType())
                 .expiry_date(request.getExpiryDate())
+                .member(member)
+                .imageUrl(url)
                 .build();
     }
 

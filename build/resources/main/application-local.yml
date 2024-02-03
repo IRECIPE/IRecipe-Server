@@ -30,8 +30,8 @@ cloud:
     s3:
       bucket: irecipebucket
     credentials:
-      access-key: AKIAZQ3DTNPO2J3M4O54
-      secret-key: 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
+      access-key: AKIAZQ3DTNPO2VLD3YNU
+      secret-key: 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
     region:
       static: ap-northeast-2
       auto: false

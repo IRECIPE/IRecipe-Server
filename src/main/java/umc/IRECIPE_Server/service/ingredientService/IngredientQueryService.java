@@ -12,9 +12,9 @@ public interface IngredientQueryService {
 
     void delete(Long ingredientId);
 
-    Page<Ingredient> getIngredientList(Long memberId, Integer page);
+    Page<Ingredient> getIngredientList(String memberId, Integer page);
 
-    Page<Ingredient> getIngredientListByType(Long memberId, Type type, Integer page);
+    Page<Ingredient> getIngredientListByType(String memberId, Type type, Integer page);
 
-    Page<Ingredient> searchIngredientByName(Long memberId, String name, Integer page);
+    Page<Ingredient> searchIngredientByName(String memberId, String name, Integer page);
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
+import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
 import umc.IRECIPE_Server.common.enums.Type;
 import umc.IRECIPE_Server.entity.Ingredient;
@@ -38,8 +39,11 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
     }
 
     @Override
-    public Page<Ingredient> getIngredientList(Long memberId, Integer page) {
-        Member member = memberRepository.findById(memberId).get();
+    public Page<Ingredient> getIngredientList(String memberId, Integer page) {
+        Member member = memberRepository.findByPersonalId(memberId);
+        if(member == null){
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
 
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<Ingredient> ingredientPage = ingredientRepository.findAllByMember(member, pageRequest);
@@ -48,8 +52,11 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
     }
 
     @Override
-    public Page<Ingredient> getIngredientListByType(Long memberId, Type type, Integer page) {
-        Member member = memberRepository.findById(memberId).get();
+    public Page<Ingredient> getIngredientListByType(String memberId, Type type, Integer page) {
+        Member member = memberRepository.findByPersonalId(memberId);
+        if(member == null){
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
 
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndType(member, type, pageRequest);
@@ -58,10 +65,11 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
     }
 
     @Override
-    public Page<Ingredient> searchIngredientByName(Long memberId, String name, Integer page) {
+    public Page<Ingredient> searchIngredientByName(String memberId, String name, Integer page) {
 
         PageRequest pageRequest = PageRequest.of(page, 10);
         Page<Ingredient> ingredientPage = ingredientRepository.findAllByMemberAndName(memberId, name, pageRequest);
+
 
         return ingredientPage;
     }

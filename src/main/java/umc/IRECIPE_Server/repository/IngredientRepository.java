@@ -25,6 +25,6 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
     Page<Ingredient> findAllByMemberAndType(Member member, Type type, PageRequest pageRequest);
 
-    @Query("SELECT i FROM Ingredient i JOIN i.member m WHERE m.id = :memberId AND lower(i.name) LIKE lower(concat('%', :name, '%'))")
-    Page<Ingredient> findAllByMemberAndName(@Param("memberId") Long memberId, @Param("name") String name, PageRequest pageRequest);
+    @Query("SELECT i FROM Ingredient i JOIN i.member m WHERE m.personalId = :memberId AND lower(i.name) LIKE lower(concat('%', :name, '%'))")
+    Page<Ingredient> findAllByMemberAndName(@Param("memberId") String memberId, @Param("name") String name, PageRequest pageRequest);
 }
