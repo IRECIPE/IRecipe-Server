@@ -28,6 +28,7 @@ import umc.IRECIPE_Server.repository.StoredRecipeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -105,12 +106,11 @@ public class ChatGptServiceImpl implements ChatGptService {
     @Override
     public void saveRecipe(String memberId, ChatGptRecipeSaveRequestDTO.@Valid RecipeSaveRequestDTO recipe) {
 
-        Member member = memberRepository.findByPersonalId(memberId);
-        if(member == null){
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
+        Optional<Member> memberOptional = memberRepository.findByPersonalId(memberId);
+        memberOptional.orElseThrow();
+
         StoredRecipe storedRecipe = StoredRecipe.builder()
-                .member(member)
+                .member(memberOptional.get())
                 .body(recipe.getBody())
                 .build();
         storedRecipeRepository.save(storedRecipe);

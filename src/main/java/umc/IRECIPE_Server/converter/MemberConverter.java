@@ -46,7 +46,7 @@ public class MemberConverter {
                 .nickname(request.getNickname())
                 .memberAllergyList(new ArrayList<>())
                 .age(age)
-                .imageUrl(url)
+                .profileImage(url)
                 .personalId(request.getPersonalId())
                 .role(Role.USER)
                 .build();

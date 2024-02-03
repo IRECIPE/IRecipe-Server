@@ -14,7 +14,7 @@ import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
-
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +36,7 @@ public class PostService {
 
     // PostRequestDto를 받아 DB에 게시글 저장 후 PostResponseDto 생성해서 반환하는 메소드.
     // 게시글 생성 (Create)
-    public ApiResponse<?> posting(String userId, PostRequestDTO.newRequestDTO postRequestDto, String url){
+    public ApiResponse<?> posting(String userId, PostRequestDTO.newRequestDTO postRequestDto, String url, String fileName){
 
         Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
         memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
@@ -50,6 +50,7 @@ public class PostService {
                 .category(postRequestDto.getCategory())
                 .level(postRequestDto.getLevel())
                 .imageUrl(url)
+                .fileName(fileName)
                 .status(postRequestDto.getStatus())
                 .build();
 
@@ -124,9 +125,7 @@ public class PostService {
     }
 
     // 게시글 삭제
-    public ApiResponse<?> deletePost(Long postId){
-
-        Post post = findByPostId(postId);
+    public ApiResponse<?> deletePost(Post post){
 
         postRepository.delete(post);
 
