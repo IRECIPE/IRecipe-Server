@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.IRECIPE_Server.validation.annotation.ExistAllergies;
+import umc.IRECIPE_Server.validation.annotation.ExistNickname;
 
 public class MemberRequest {
     @Builder
@@ -60,7 +61,7 @@ public class MemberRequest {
         @NotNull
         Integer age;
 
-        @NotBlank
+        @ExistNickname
         String nickname;
 
         @ExistAllergies
