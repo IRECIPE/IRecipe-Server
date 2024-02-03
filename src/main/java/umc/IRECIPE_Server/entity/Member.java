@@ -2,11 +2,13 @@ package umc.IRECIPE_Server.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -15,6 +17,7 @@ import umc.IRECIPE_Server.common.BaseEntity;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
 import umc.IRECIPE_Server.common.enums.Role;
+import umc.IRECIPE_Server.common.enums.Type;
 
 @Entity
 @Getter
@@ -79,6 +82,37 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<StoredRecipe> recipeList = new ArrayList<>();
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Ingredient> ingredientList = new ArrayList<>();
+
+    public void updateMember(String name, String nickname, Integer gender, Integer age, Boolean important, Boolean event, Boolean activity, List<MemberAllergy> memberAllergyList) {
+        this.name = name;
+        this.nickname = nickname;
+        Age newAge = switch (age) {
+            case 1 -> Age.TEN;
+            case 2 -> Age.TWENTY;
+            case 3 -> Age.THIRTY;
+            case 4 -> Age.FORTY;
+            case 5 -> Age.FIFTY;
+            case 6 -> Age.SIXTY;
+            default -> this.age;
+        };
+        this.age = newAge;
+
+        Gender newGender = switch (gender) {
+            case 1 -> Gender.MALE;
+            case 2 -> Gender.FEMALE;
+            default -> this.gender;
+        };
+        this.gender = newGender;
+
+        this.important = important;
+        this.event = event;
+        this.activity = activity;
+        this.memberAllergyList = memberAllergyList;
+    }
+    public void updateUrl(String url){
+        this.profileImage = url;
+    }
 }

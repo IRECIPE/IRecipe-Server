@@ -16,10 +16,10 @@ import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Type;
 import umc.IRECIPE_Server.converter.IngredientConverter;
 import umc.IRECIPE_Server.dto.IngredientRequest;
+import umc.IRECIPE_Server.dto.IngredientResponse;
 import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.service.ingredientService.IngredientCommandService;
 import umc.IRECIPE_Server.service.ingredientService.IngredientQueryService;
-import umc.IRECIPE_Server.dto.IngredientResponse;
 
 import java.io.IOException;
 
