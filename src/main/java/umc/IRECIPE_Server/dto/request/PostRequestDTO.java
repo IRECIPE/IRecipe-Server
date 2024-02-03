@@ -28,6 +28,7 @@ public class PostRequestDTO {
         private Status status;
 
         private String content;
+
     }
 
     @Builder
@@ -48,7 +49,7 @@ public class PostRequestDTO {
         private String content;
 
         // 삭제 할 사진 url
-        private List<String> oldUrls;
+        private String oldUrl;
     }
 
 }
