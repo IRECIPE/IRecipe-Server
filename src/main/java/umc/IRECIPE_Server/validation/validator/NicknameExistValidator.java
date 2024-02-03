@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.swing.text.html.Option;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.logging.LogLevel;
 import org.springframework.stereotype.Component;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.entity.Member;
@@ -27,13 +28,15 @@ public class NicknameExistValidator implements ConstraintValidator<ExistNickname
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        Optional<Member> target = memberService.findMemberByNickname(value);
+        Boolean target = memberService.findMemberByNickname(value);
 
-        if (target.isPresent()){
+        if (!target){ // 사용 가능한거
+            return true;
+        }
+        else{
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(ErrorStatus.NICKNAME_ALREADY_EXIST.getMessage()).addConstraintViolation();
             return false;
         }
-        return true;
     }
 }

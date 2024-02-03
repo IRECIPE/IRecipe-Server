@@ -40,7 +40,7 @@ public class MemberService {
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
 
-    public Optional<Member> findMemberByNickname(String Nickname){
+    public Boolean findMemberByNickname(String Nickname){
         return memberRepository.existsByNickname(Nickname);
     }
 
