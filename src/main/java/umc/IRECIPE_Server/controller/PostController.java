@@ -11,7 +11,7 @@ import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
-import umc.IRECIPE_Server.entity.PostImage;
+import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.service.PostService;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class PostController {
     @PostMapping(value = "/new-post",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ApiResponse<?> posting(@RequestPart("postRequestDTO") PostRequestDTO.newRequestDTO postRequestDto,
-                                  @RequestPart("files") MultipartFile[] files
+                                  @RequestPart(value = "file", required = false) MultipartFile file
     ) throws IOException
     {
 
@@ -39,13 +39,14 @@ public class PostController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String userId = authentication.getName();
 
-            List<String> urls = new ArrayList<>();
-            // s3 에 이미지 저장 및 경로 가져오기.
-            for (MultipartFile file : files) {
-                urls.add(s3Service.saveFile(file, "images"));
+            String fileName = null;
+            String url = null;
+            if(file != null){
+                fileName = file.getOriginalFilename();
+                url = s3Service.saveFile(file, "images");
             }
 
-            return postService.posting(userId, postRequestDto, urls);
+            return postService.posting(userId, postRequestDto, url, fileName);
         }catch(IOException e){
             throw new GeneralException(ErrorStatus._INTERNAL_SERVER_ERROR);
         }
@@ -78,40 +79,30 @@ public class PostController {
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ApiResponse<?> updatePost(@PathVariable Long postId,
                                      @RequestPart("postRequestDTO") PostRequestDTO.patchRequestDTO postRequestDTO,
-                                     @RequestPart("files") MultipartFile[] files
+                                     @RequestPart(value = "file", required = false) MultipartFile file
     ) throws IOException
     {
-        // 새로운 사진 s3 에 저장
-        List<String> newUrls = new ArrayList<>();
-        if(files != null){
-            // s3 에 이미지 저장 및 경로 가져오기.
-            for (MultipartFile file : files) {
-                newUrls.add(s3Service.saveFile(file, "images"));
-            }
+        String newUrl = null;
+        if(file != null){
+            newUrl = s3Service.saveFile(file, "images");
         }
 
-        // s3 에 있는 게시글 바뀌어서 필요없는 사진 삭제
-        List<String> oldUrls = postRequestDTO.getOldUrls();
-        if(!oldUrls.isEmpty()){
-            for (String oldUrl : oldUrls) {
-                s3Service.deleteImage(oldUrl, "images");
-            }
+        String oldUrl = postRequestDTO.getOldUrl();
+        if(oldUrl != null){
+            s3Service.deleteImage(oldUrl, "images");
         }
 
-        return postService.updatePost(postId, postRequestDTO, newUrls);
+        return postService.updatePost(postId, postRequestDTO, newUrl);
     }
 
     // 게시글 삭제 컨트롤러
     @DeleteMapping("/{postId}")
     public ApiResponse<?> deletePost(@PathVariable Long postId){
 
-        List<PostImage> postImageList = postService.findpostImages(postId);
-        // s3 에 있는 사진 삭제
-        for (PostImage postImage : postImageList) {
-            s3Service.deleteImage(postImage.getImageUrl(), "images");
-        }
+        Post post = postService.findByPostId(postId);
+        s3Service.deleteImage(post.getFileName(), "images");
 
-        return postService.deletePost(postId);
+        return postService.deletePost(post);
     }
 
     // 커뮤니티 화면 조회

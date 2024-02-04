@@ -1,6 +1,7 @@
 package umc.IRECIPE_Server.service;
 
 import java.io.IOException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,14 @@ public class MemberService {
     private final TokenRepository tokenRepository;
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
+
+    public Boolean findMemberByNickname(String Nickname){
+        return memberRepository.existsByNickname(Nickname);
+    }
+
+    public Optional<Member> findMember(Long id) {
+        return memberRepository.findById(id);
+    }
 
     public Member findMember(String personalId) {
         return memberRepository.findByPersonalId(personalId)
@@ -145,6 +154,7 @@ public class MemberService {
         memberAllergyRepository.delete(memberAllergy);
     }
 
+    @Transactional
     public Member login(MemberLoginRequestDto.JoinLoginDto request){
         Member member = memberRepository.findByPersonalId(request.getPersonalId())
                         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));

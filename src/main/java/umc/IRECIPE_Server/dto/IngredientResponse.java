@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.IRECIPE_Server.common.enums.IngredientCategory;
 import umc.IRECIPE_Server.common.enums.Type;
 
 import java.time.LocalDate;
@@ -27,7 +28,7 @@ public class IngredientResponse {
     @AllArgsConstructor
     public static class findOneResultDTO{
         String name;
-        String category;
+        IngredientCategory category;
         String memo;
         Type type;
         LocalDate expiryDate;
@@ -56,7 +57,7 @@ public class IngredientResponse {
     @AllArgsConstructor
     public static class findIngredientResultDTO{
         String name;
-        String category;
+        IngredientCategory category;
         String memo;
         Type type;
         LocalDate expiryDate;
