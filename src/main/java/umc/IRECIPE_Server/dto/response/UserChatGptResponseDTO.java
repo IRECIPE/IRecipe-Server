@@ -15,6 +15,6 @@ public class UserChatGptResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserGptResponseDTO{
-        String gptResponse;
+        private String gptResponse;
     }
 }
