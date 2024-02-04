@@ -38,7 +38,7 @@ public class MemberController {
     @Description("유저 회원가입 api")
     @PostMapping(value = "/signup", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<MemberResponse.JoinResultDto> join(
-            @RequestPart(value = "request") MemberRequest.JoinDto request,
+            @RequestPart(value = "request") @Valid MemberRequest.JoinDto request,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) throws IOException, java.io.IOException {
 
