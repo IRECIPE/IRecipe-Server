@@ -9,7 +9,9 @@ import umc.IRECIPE_Server.converter.IngredientConverter;
 
 import umc.IRECIPE_Server.dto.IngredientRequest;
 import umc.IRECIPE_Server.entity.Ingredient;
+import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.repository.IngredientRepository;
+import umc.IRECIPE_Server.repository.MemberRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -17,10 +19,14 @@ import umc.IRECIPE_Server.repository.IngredientRepository;
 public class IngredientCommandServiceImpl implements IngredientCommandService {
 
     private final IngredientRepository ingredientRepository;
+    private final MemberRepository memberRepository;
     @Override
     @Transactional
-    public Ingredient addIngredient(IngredientRequest.addDTO request) {
-        Ingredient newIngredient = IngredientConverter.toIngredient(request);
+    public Ingredient addIngredient(String memberId, IngredientRequest.addDTO request, String url) {
+        Member member = memberRepository.findByPersonalId(memberId)
+                .orElseThrow(() -> new IngredientHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Ingredient newIngredient = IngredientConverter.toIngredient(member, request, url);
         return ingredientRepository.save(newIngredient);
     }
 

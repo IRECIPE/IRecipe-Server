@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.IRECIPE_Server.common.enums.IngredientCategory;
 import umc.IRECIPE_Server.common.enums.Type;
 
 
@@ -18,7 +19,7 @@ public class IngredientRequest {
     @AllArgsConstructor
     public static class addDTO{
         String name;
-        String category;
+        IngredientCategory category;
         String memo;
         Type type;
         LocalDate expiryDate;
@@ -30,7 +31,7 @@ public class IngredientRequest {
     @AllArgsConstructor
     public static class updateDTO{
         String name;
-        String category;
+        IngredientCategory category;
         String memo;
         Type type;
         LocalDate expiryDate;

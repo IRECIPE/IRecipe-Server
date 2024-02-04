@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
 import umc.IRECIPE_Server.config.ChatGptConfig;
 import umc.IRECIPE_Server.dto.request.ChatGptMessageDto;
 import umc.IRECIPE_Server.dto.request.ChatGptRecipeSaveRequestDTO;

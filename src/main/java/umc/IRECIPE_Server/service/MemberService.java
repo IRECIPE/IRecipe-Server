@@ -145,6 +145,7 @@ public class MemberService {
         memberAllergyRepository.delete(memberAllergy);
     }
 
+    @Transactional
     public Member login(MemberLoginRequestDto.JoinLoginDto request){
         Member member = memberRepository.findByPersonalId(request.getPersonalId())
                         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));

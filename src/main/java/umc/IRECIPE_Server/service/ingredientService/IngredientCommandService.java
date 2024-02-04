@@ -6,6 +6,6 @@ import umc.IRECIPE_Server.entity.Ingredient;
 
 
 public interface IngredientCommandService {
-    Ingredient addIngredient(IngredientRequest.addDTO request);
+    Ingredient addIngredient(String memberId, IngredientRequest.addDTO request, String url);
     Ingredient updateById(IngredientRequest.updateDTO request, Long ingredientId);
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import umc.IRECIPE_Server.common.enums.Type;
 import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 
@@ -21,4 +22,9 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
     List<String> findIngredientsNameOrderByExpiryDate(@Param("memberId") String memberId);
 
     Page<Ingredient> findAllByMember(Member member, PageRequest pageRequest);
+
+    Page<Ingredient> findAllByMemberAndType(Member member, Type type, PageRequest pageRequest);
+
+    @Query("SELECT i FROM Ingredient i JOIN i.member m WHERE m.personalId = :memberId AND lower(i.name) LIKE lower(concat('%', :name, '%'))")
+    Page<Ingredient> findAllByMemberAndName(@Param("memberId") String memberId, @Param("name") String name, PageRequest pageRequest);
 }
