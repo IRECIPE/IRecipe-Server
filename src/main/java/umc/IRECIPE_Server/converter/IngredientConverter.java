@@ -22,6 +22,7 @@ public class IngredientConverter {
 
     public static Ingredient toIngredient(Member member, IngredientRequest.addDTO request, String url) {
 
+
         return Ingredient.builder()
                 .name(request.getName())
                 .memo(request.getMemo())
@@ -30,6 +31,7 @@ public class IngredientConverter {
                 .expiry_date(request.getExpiryDate())
                 .member(member)
                 .imageUrl(url)
+                .remainingDays(Ingredient.calculateRemainingDay(request.getExpiryDate()))
                 .build();
     }
 
@@ -41,6 +43,7 @@ public class IngredientConverter {
                 .category(ingredient.getCategory())
                 .type(ingredient.getType())
                 .expiryDate(ingredient.getExpiry_date())
+                .remainingDays(Ingredient.calculateRemainingDay(ingredient.getExpiry_date()))
                 .build();
 
     }
@@ -49,9 +52,6 @@ public class IngredientConverter {
         List<IngredientResponse.findIngredientResultDTO> ingredientResultDTOList = ingredientList.getContent().stream()
                 .map(IngredientConverter::toFindIngredientResultDTO)
                 .collect(Collectors.toList());
-
-        ingredientResultDTOList.forEach(resultDTO ->
-                System.out.println("Ingredient name: " + resultDTO.getName()));
 
         return IngredientResponse.findAllResultListDTO.builder()
                 .isLast(ingredientList.isLast())
@@ -71,6 +71,7 @@ public class IngredientConverter {
                 .category(ingredient.getCategory())
                 .type(ingredient.getType())
                 .expiryDate(ingredient.getExpiry_date())
+                .remainingDays(Ingredient.calculateRemainingDay(ingredient.getExpiry_date()))
                 .build();
     }
 

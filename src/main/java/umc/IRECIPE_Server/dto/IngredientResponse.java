@@ -32,6 +32,7 @@ public class IngredientResponse {
         String memo;
         Type type;
         LocalDate expiryDate;
+        Integer remainingDays;
     }
 
     @Builder
@@ -61,6 +62,7 @@ public class IngredientResponse {
         String memo;
         Type type;
         LocalDate expiryDate;
+        Integer remainingDays;
     }
 
     @Builder
