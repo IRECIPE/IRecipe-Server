@@ -30,7 +30,7 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //권한
+    // 권한
     @Enumerated(EnumType.STRING)
     private Role role;
 

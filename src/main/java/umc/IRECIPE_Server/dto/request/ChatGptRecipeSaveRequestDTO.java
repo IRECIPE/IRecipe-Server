@@ -6,6 +6,6 @@ public class ChatGptRecipeSaveRequestDTO {
 
     @Getter
     public static class RecipeSaveRequestDTO {
-        String body;
+        private String body;
     }
 }
