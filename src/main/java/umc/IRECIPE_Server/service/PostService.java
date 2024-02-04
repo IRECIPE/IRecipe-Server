@@ -19,7 +19,6 @@ import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
-
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
@@ -143,3 +142,4 @@ public class PostService {
         return postRepository.findRankedPost(pageRequest);
     }
 }
+

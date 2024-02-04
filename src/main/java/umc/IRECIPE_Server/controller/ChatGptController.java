@@ -64,7 +64,6 @@ public class ChatGptController {
     public ApiResponse<Void> saveRecipe(@RequestBody @Valid ChatGptRecipeSaveRequestDTO.RecipeSaveRequestDTO request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberId = authentication.getName();
-        System.out.println(memberId);
         chatGPTService.saveRecipe(memberId, request);
         return ApiResponse.onSuccess(null);
     }
