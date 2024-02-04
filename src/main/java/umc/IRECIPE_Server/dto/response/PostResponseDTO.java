@@ -6,6 +6,7 @@ import lombok.*;
 import umc.IRECIPE_Server.common.enums.Category;
 import umc.IRECIPE_Server.common.enums.Level;
 import umc.IRECIPE_Server.common.enums.Status;
+import umc.IRECIPE_Server.dto.IngredientResponse;
 
 import java.util.List;
 
@@ -110,5 +111,29 @@ public class PostResponseDTO {
         private String nickName;
         // 사용자 사진
         private String memberImage;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getRankedPostDTO {
+        private Long postId;
+        private String title;
+        private String imageUrl;
+        private Integer likes;
+        private Float scores;
+    }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class findAllResultListDTO{
+        List<PostResponseDTO.getRankedPostDTO> postList;
+        Integer listSize;
+        Integer totalPage;
+        Long totalElements;
+        Boolean isFirst;
+        Boolean isLast;
     }
 }

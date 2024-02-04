@@ -1,6 +1,8 @@
 package umc.IRECIPE_Server.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
@@ -134,5 +136,10 @@ public class PostService {
         postRepository.delete(post);
 
         return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
+    public Page<Post> getRanking(Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 6);
+        return postRepository.findRankedPost(pageRequest);
     }
 }
