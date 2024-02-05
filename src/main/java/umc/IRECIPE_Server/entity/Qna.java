@@ -57,6 +57,10 @@ public class Qna extends BaseEntity {
         this.parent = qna;
     }
 
+    public void changeIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     public void updateQna(QnaRequestDTO.updateQna request, String imageUrl, String fileName) {
         this.content = request.getContent();
         this.imageUrl = imageUrl;

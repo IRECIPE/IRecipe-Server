@@ -46,4 +46,11 @@ public class QnaConverter {
                 .message("Qna updated successfully")
                 .build();
     }
+
+    // Qna 삭제
+    public static QnaResponseDTO.deleteQnaDTO deleteQnaResult() {
+        return QnaResponseDTO.deleteQnaDTO.builder()
+                .message("Qna deleted successfully")
+                .build();
+    }
 }

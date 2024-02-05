@@ -51,4 +51,10 @@ public class QnaController {
         return ApiResponse.onSuccess(QnaConverter.updateQnaResult(qnaId));
     }
 
+    // Qna 삭제
+    @DeleteMapping("/qna/{qnaId}")
+    public ApiResponse<QnaResponseDTO.deleteQnaDTO> deleteQna(@PathVariable("qnaId") Long qnaId) {
+        qnaService.deleteQna(qnaId);
+        return ApiResponse.onSuccess(QnaConverter.deleteQnaResult());
+    }
 }

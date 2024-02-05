@@ -57,5 +57,12 @@ public class QnaResponseDTO {
         private String message;
     }
 
-
+    // Qna 삭제
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class deleteQnaDTO {
+        private String message;
+    }
 }

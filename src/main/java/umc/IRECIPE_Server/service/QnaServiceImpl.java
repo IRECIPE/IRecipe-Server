@@ -116,4 +116,46 @@ public class QnaServiceImpl implements QnaService {
 
         qna.updateQna(request, newUrl, newFileName);
     }
+
+    // Qna 삭제
+    @Override
+    public void deleteQna(Long qnaId) {
+
+        // 부모 댓글과 함께 조회
+        Qna qna = qnaCustomRepository.findQnaByIdWithParent(qnaId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_QNA_NOT_FOUND));
+
+        if (!qna.getChildren().isEmpty()) { // 자식이 있을 때
+            // isDeleted 상태만 변경
+            qna.changeIsDeleted(true);
+
+            // S3 사진 삭제
+            if (qna.getImageUrl() != null) {
+                s3Service.deleteImage(qna.getFileName(), "images");
+            }
+
+        } else { // 자식 댓글이 없을 때
+
+            // 삭제 가능한 조상 댓글 삭제
+            qnaRepository.delete(getDeletableAncestorQna(qna));
+
+            // S3 사진 삭제
+            if (qna.getImageUrl() != null) {
+                s3Service.deleteImage(qna.getFileName(), "images");
+            }
+        }
+    }
+
+    private Qna getDeletableAncestorQna(Qna qna) {
+
+        // 현재 댓글의 부모
+        Qna parent = qna.getParent();
+
+        // 재귀 : 부모 댓글이 있음 & 부모의 자식 댓글이 1개 & 부모의 삭제 상태가 True
+        if (parent != null && parent.getChildren().size() == 1 && parent.getIsDeleted()) {
+            return getDeletableAncestorQna(parent);
+        }
+
+        // 삭제해야 하는 댓글 반환
+        return qna;
+    }
 }
