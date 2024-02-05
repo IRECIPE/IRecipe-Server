@@ -12,6 +12,7 @@ import umc.IRECIPE_Server.entity.Qna;
 import umc.IRECIPE_Server.service.QnaService;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
@@ -20,8 +21,8 @@ public class QnaController {
 
     private final QnaService qnaService;
 
-    // 작성
-    @PostMapping(value = "/{postId}/question", consumes = "multipart/form-data")
+    // Qna 작성
+    @PostMapping(value = "/{postId}/qna", consumes = "multipart/form-data")
     public ApiResponse<QnaResponseDTO.addQnaDTO> addQna(@PathVariable("postId") Long postId,
                                                              @RequestPart(required = false) QnaRequestDTO.addQna request,
                                                              @RequestPart(required = false) MultipartFile file) throws IOException {
@@ -30,5 +31,13 @@ public class QnaController {
 
         Qna qna = qnaService.addQna(memberId, postId, request, file);
         return ApiResponse.onSuccess(QnaConverter.addQnaResult(qna));
+    }
+
+    // Qna 조회
+    @GetMapping("/{postId}/qna")
+    public ApiResponse<List<QnaResponseDTO.getQnaDTO>> getQna(@PathVariable("postId") Long postId) {
+
+        List<QnaResponseDTO.getQnaDTO> qnaList = qnaService.getQna(postId);
+        return ApiResponse.onSuccess(qnaList);
     }
 }

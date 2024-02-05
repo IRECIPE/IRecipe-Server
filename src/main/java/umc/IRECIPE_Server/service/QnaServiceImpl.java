@@ -10,15 +10,17 @@ import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.QnaConverter;
 import umc.IRECIPE_Server.dto.request.QnaRequestDTO;
+import umc.IRECIPE_Server.dto.response.QnaResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.entity.Qna;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
+import umc.IRECIPE_Server.repository.QnaCustomRepository;
 import umc.IRECIPE_Server.repository.QnaRepository;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +31,10 @@ public class QnaServiceImpl implements QnaService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final QnaRepository qnaRepository;
+    private final QnaCustomRepository qnaCustomRepository;
     private final S3Service s3Service;
 
-    // 작성
+    // Qna 작성
     @Override
     public Qna addQna(String memberId, Long postId, QnaRequestDTO.addQna request, MultipartFile file) throws IOException {
 
@@ -42,10 +45,7 @@ public class QnaServiceImpl implements QnaService {
         }
 
         // 해당 커뮤니티 게시글
-        Optional<Post> post = postRepository.findById(postId);
-        if (post.isEmpty()) {
-            throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
-        }
+        Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
         // 사진
         String imageUrl = null;
@@ -56,7 +56,7 @@ public class QnaServiceImpl implements QnaService {
         }
 
         // 저장할 데이터 세팅
-        Qna qna = QnaConverter.toQna(member.get(), post.get(), request, imageUrl, fileName);
+        Qna qna = QnaConverter.toQna(member.get(), post, request, imageUrl, fileName);
 
         // 자식 댓글이면, 부모 댓글 업데이트
         Qna parentQna;
@@ -66,5 +66,30 @@ public class QnaServiceImpl implements QnaService {
         }
 
         return qnaRepository.save(qna);
+    }
+
+    // Qna 조회
+    @Override
+    public List<QnaResponseDTO.getQnaDTO> getQna(Long postId) {
+
+        // 해당 커뮤니티 게시글
+        Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        // QueryDSL 을 사용하여 게시글 Qna 전체 조회 (정렬 : 부모 댓글 순, 작성시간 순)
+        List<Qna> qnaList = qnaCustomRepository.findAllByPost(post);
+
+        // 대댓글 중첩구조 세팅
+        List<QnaResponseDTO.getQnaDTO> qnaResponseDTOList = new ArrayList<>();
+        Map<Long, QnaResponseDTO.getQnaDTO> map = new HashMap<>();
+
+        qnaList.forEach(q -> {
+                QnaResponseDTO.getQnaDTO qdto = QnaConverter.getQnaResult(q);
+                map.put(qdto.getQnaId(), qdto);
+                if (q.getParent() != null) map.get(q.getParent().getId()).getChildren().add(qdto);
+                else qnaResponseDTOList.add(qdto);
+                }
+        );
+
+        return qnaResponseDTOList;
     }
 }
