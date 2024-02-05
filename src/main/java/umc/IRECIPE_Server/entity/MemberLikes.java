@@ -30,12 +30,6 @@ public class MemberLikes extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(length = 254)
-    private String image;
-
-    @Column(length = 254)
-    private String memo;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;

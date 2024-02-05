@@ -106,9 +106,26 @@ public class PostResponseDTO {
         private String title;
         // 게시글 소제목
         private String subhead;
+        // 게시글 사진
+        private String imageUrl;
         // 사용자 별명
         private String nickName;
         // 사용자 사진
         private String memberImage;
+        // 게시글 관심수
+        private int likes;
+        // 게시글 평균 별점
+        private Float score;
+        // 게시글 리뷰 갯수
+        private int reviewsCount;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LikePostDTO{
+        private Long postId;
+        private int likes;
     }
 }

@@ -1,8 +1,13 @@
 package umc.IRECIPE_Server.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
@@ -13,10 +18,15 @@ import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
+import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
+import umc.IRECIPE_Server.entity.MemberLikes;
 import umc.IRECIPE_Server.entity.Post;
+import umc.IRECIPE_Server.repository.MemberLikesRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
+import umc.IRECIPE_Server.repository.StoredRecipeRepository;
+
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +38,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final MemberLikesRepository memberLikesRepository;
+    private final StoredRecipeRepository storedRecipeRepository;
 
     // postId 로 Post 찾고 Null 이면 예외 출력하는 메소드
     public Post findByPostId(Long postId){
@@ -133,5 +145,70 @@ public class PostService {
         postRepository.delete(post);
 
         return ApiResponse.onSuccess(SuccessStatus._OK);
+    }
+
+    // 커뮤니티 화면 조회
+    public ApiResponse<?> getPostsPage(int page, String criteria){
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, criteria));
+        Page<Post> postPage = postRepository.findAll(pageable);
+
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage));
+    }
+
+    // 게시글에 관심 눌렀을 때
+    public ApiResponse<?> pushLike(String userId, Long postId){
+        // 멤버 찾기.
+        Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
+        // null 이면 예외 처리 (NosuchElementException)
+        memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Post post = findByPostId(postId);
+
+        // 이미 좋아요가 눌려있으면 예외 출력.
+        if(memberLikesRepository.findByMemberAndPost(memberOptional.get(), post).isPresent()){
+            throw new GeneralException(ErrorStatus.LIKE_FOUND);
+        }
+
+        // 좋아요 객체 생성 및 저장
+        MemberLikes memberLikes = MemberLikes.builder()
+                .member(memberOptional.get())
+                .post(post)
+                .build();
+
+        memberLikesRepository.save(memberLikes);
+
+        // 게시글 관심 + 1
+        post.updateLikes(post.getLikes()+1);
+        postRepository.save(post);
+
+        return ApiResponse.onSuccess(PostConverter.toLikePostDTO(post));
+    }
+
+    public ApiResponse<?> deleteLike(String userId, Long postId){
+        // 멤버 찾기. null 이면 예외 처리 (NosuchElementException)
+        Member member = memberRepository.findByPersonalId(userId)
+            .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Post post = findByPostId(postId);
+
+        MemberLikes memberLikes = memberLikesRepository.findByMemberAndPost(member, post)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.LIKE_NOT_FOUND));
+
+        memberLikesRepository.delete(memberLikes);
+
+        // 게시글 관심 - 1
+        post.updateLikes(post.getLikes()-1);
+        postRepository.save(post);
+
+        return ApiResponse.onSuccess(PostConverter.toLikePostDTO(post));
+    }
+
+    public ApiResponse<?> searchPost(PostRequestDTO.searchDTO searchDTO){
+
+        String keyword = searchDTO.getKeyword();
+        String type = searchDTO.getType();
+
+        return null;
     }
 }
