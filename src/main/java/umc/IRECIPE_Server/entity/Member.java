@@ -82,6 +82,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Ingredient> ingredientList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<DislikedFood> dislikedFoodList = new ArrayList<>();
+
     public void updateMember(String name, String nickname, Integer gender, Integer age, Boolean important, Boolean event, Boolean activity, List<MemberAllergy> memberAllergyList) {
         this.name = name;
         this.nickname = nickname;
