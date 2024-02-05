@@ -9,9 +9,6 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
-import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
-import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
-import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
@@ -19,7 +16,7 @@ import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
-import javax.swing.text.html.Option;
+
 import java.util.List;
 import java.util.Optional;
 
