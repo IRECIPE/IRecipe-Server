@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.IRECIPE_Server.common.BaseEntity;
+import umc.IRECIPE_Server.common.enums.IngredientCategory;
 import umc.IRECIPE_Server.common.enums.Type;
 
 import java.time.LocalDate;
@@ -30,7 +31,8 @@ public class Ingredient extends BaseEntity {
     private String name;
 
     // 음식 카테고리
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private IngredientCategory category;
 
     // 보관 방법
     @Enumerated(EnumType.STRING)
@@ -41,7 +43,9 @@ public class Ingredient extends BaseEntity {
 
     private String memo;
 
-    public void updateIngredient(String name, String category, Type type, LocalDate expiry_date, String memo) {
+    private String imageUrl;
+
+    public void updateIngredient(String name, IngredientCategory category, Type type, LocalDate expiry_date, String memo) {
         this.name = name;
         this.category = category;
         this.type = type;

@@ -2,7 +2,3 @@ spring:
   profiles:
     include: dev, local
     active: local
-
-
-
-
