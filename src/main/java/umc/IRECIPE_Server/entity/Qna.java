@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import umc.IRECIPE_Server.common.BaseEntity;
+import umc.IRECIPE_Server.dto.request.QnaRequestDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,12 @@ public class Qna extends BaseEntity {
 
     public void updateParent(Qna qna) {
         this.parent = qna;
+    }
+
+    public void updateQna(QnaRequestDTO.updateQna request, String imageUrl, String fileName) {
+        this.content = request.getContent();
+        this.imageUrl = imageUrl;
+        this.fileName = fileName;
     }
 
 }

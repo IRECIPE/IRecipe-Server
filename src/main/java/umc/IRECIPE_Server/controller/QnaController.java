@@ -40,4 +40,15 @@ public class QnaController {
         List<QnaResponseDTO.getQnaDTO> qnaList = qnaService.getQna(postId);
         return ApiResponse.onSuccess(qnaList);
     }
+
+    // Qna 수정
+    @PatchMapping(value = "/qna/{qnaId}", consumes = "multipart/form-data")
+    public ApiResponse<QnaResponseDTO.updateQnaDTO> updateQna(@PathVariable("qnaId") Long qnaId,
+                                                              @RequestPart(required = false) QnaRequestDTO.updateQna request,
+                                                              @RequestPart(required = false) MultipartFile file) throws IOException {
+
+        qnaService.updateQna(qnaId, request, file);
+        return ApiResponse.onSuccess(QnaConverter.updateQnaResult(qnaId));
+    }
+
 }

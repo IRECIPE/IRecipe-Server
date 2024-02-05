@@ -38,4 +38,12 @@ public class QnaConverter {
                 new QnaResponseDTO.getQnaDTO(qna.getId(), null, null, null, null, "삭제된 댓글입니다", null) :
                 new QnaResponseDTO.getQnaDTO(qna.getId(), qna.getMember().getId(), qna.getMember().getNickname(), qna.getMember().getProfileImage(), qna.getCreatedAt(), qna.getContent(), qna.getImageUrl());
     }
+
+    // Qna 수정
+    public static QnaResponseDTO.updateQnaDTO updateQnaResult(Long qnaId) {
+        return QnaResponseDTO.updateQnaDTO.builder()
+                .qnaId(qnaId)
+                .message("Qna updated successfully")
+                .build();
+    }
 }

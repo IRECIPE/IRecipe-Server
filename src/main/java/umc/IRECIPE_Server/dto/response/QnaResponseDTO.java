@@ -47,6 +47,15 @@ public class QnaResponseDTO {
         }
     }
 
+    // Qna 수정
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class updateQnaDTO {
+        private Long qnaId;
+        private String message;
+    }
 
 
 }

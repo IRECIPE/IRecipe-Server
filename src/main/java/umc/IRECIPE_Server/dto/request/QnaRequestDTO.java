@@ -15,4 +15,12 @@ public class QnaRequestDTO {
         private String content;
         private Long parentId;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class updateQna {
+        private String content;
+    }
 }

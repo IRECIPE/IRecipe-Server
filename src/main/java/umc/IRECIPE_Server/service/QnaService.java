@@ -15,4 +15,7 @@ public interface QnaService {
 
     // Qna 조회
     public List<QnaResponseDTO.getQnaDTO> getQna(Long postId);
+
+    // Qna 수정
+    public void updateQna(Long qnaId, QnaRequestDTO.updateQna request, MultipartFile file) throws IOException;
 }
