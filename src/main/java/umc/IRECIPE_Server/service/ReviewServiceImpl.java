@@ -109,7 +109,6 @@ public class ReviewServiceImpl implements ReviewService {
         review.updateReview(request.getScore(), request.getContext(), newUrl, newFileName);
     }
 
-
     // 게시글 리뷰 삭제
     public void deletePostReview(Long reviewId) {
 
@@ -118,6 +117,12 @@ public class ReviewServiceImpl implements ReviewService {
         if (review.getImageUrl() != null) {
             s3Service.deleteImage(review.getFileName(), "images");
         }
+
+        // 게시글 평균 별점 업데이트
+        Post post = postRepository.findById(review.getPost().getId()).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        int reviewCount = reviewRepository.countByPost_Id(post.getId());
+        Float newScore = (post.getScore() * reviewCount - review.getScore()) / (reviewCount - 1);
+        post.updateScore(newScore);
 
         // 게시글 리뷰 삭제
         reviewRepository.deleteById(reviewId);
