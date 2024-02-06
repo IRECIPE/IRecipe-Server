@@ -53,7 +53,13 @@ public class ReviewServiceImpl implements ReviewService {
             fileName = file.getOriginalFilename();
         }
 
+        // 게시글 평균 별점 수정 : (원래 평균 별점 * 리뷰 개수 + 새로 들어온 별점) / (원래 리뷰 개수 + 1)
         Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        int reviewCount = reviewRepository.countByPost_Id(post.getId());
+        Float newScore = (post.getScore() * reviewCount + request.getScore()) / (reviewCount + 1);
+        post.updateScore(newScore);
+
+        // 리뷰 등록
         Review review = ReviewConverter.addReview(member.get(), post, request, imageUrl, fileName);
         return reviewRepository.save(review);
     }
@@ -90,6 +96,7 @@ public class ReviewServiceImpl implements ReviewService {
             newUrl = s3Service.saveFile(file, "images");
             newFileName = file.getOriginalFilename();
         }
+
 
         // 데이터 업데이트
         review.updateReview(request.getScore(), request.getContext(), newUrl, newFileName);
