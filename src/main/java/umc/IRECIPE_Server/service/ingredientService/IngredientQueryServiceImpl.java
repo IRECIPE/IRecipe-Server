@@ -69,4 +69,11 @@ public class IngredientQueryServiceImpl implements IngredientQueryService {
 
         return ingredientPage;
     }
+
+    @Override
+    public Page<Ingredient> getNearingExpirationIngredientList(String memberId, Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        Page<Ingredient> ingredientPage = ingredientRepository.findExpirationListByMember(memberId, pageRequest);
+        return ingredientPage;
+    }
 }

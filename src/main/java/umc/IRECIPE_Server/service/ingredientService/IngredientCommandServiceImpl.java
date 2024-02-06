@@ -27,6 +27,7 @@ public class IngredientCommandServiceImpl implements IngredientCommandService {
                 .orElseThrow(() -> new IngredientHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         Ingredient newIngredient = IngredientConverter.toIngredient(member, request, url);
+
         return ingredientRepository.save(newIngredient);
     }
 
