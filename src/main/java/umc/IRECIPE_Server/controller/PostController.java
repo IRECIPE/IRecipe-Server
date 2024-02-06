@@ -138,7 +138,11 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public ApiResponse<?> searchPost(@RequestBody PostRequestDTO.searchDTO searchDTO){
-        return null;
+    public ApiResponse<?> searchPost(@RequestParam(required = false, value = "page") int page,
+                                     @RequestParam(required = false, value = "keyword") String keyword,
+                                     @RequestParam(required = false, value = "type") String type
+    )
+    {
+        return postService.searchPost(keyword, type, page);
     }
 }

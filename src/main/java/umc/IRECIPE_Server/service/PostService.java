@@ -85,7 +85,7 @@ public class PostService {
 
 
         // 멤버에 매핑된 게시글 모두 찾아서 임시저장된 글 있으면 반환.
-        List<Post> posts = postRepository.findAllByMember(memberOptional.get());
+        List<Post> posts = postRepository.findByMember(memberOptional.get());
         for (Post post : posts) {
             if(post.getStatus() == Status.TEMP){
                 return ApiResponse.onSuccess(PostConverter.toTempResponseDTO(post));
@@ -151,7 +151,7 @@ public class PostService {
     public ApiResponse<?> getPostsPage(int page, String criteria){
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, criteria));
-        Page<Post> postPage = postRepository.findAll(pageable);
+        Page<Post> postPage = postRepository.findAllByStatus(pageable, Status.POST);
 
         return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage));
     }
@@ -204,11 +204,39 @@ public class PostService {
         return ApiResponse.onSuccess(PostConverter.toLikePostDTO(post));
     }
 
-    public ApiResponse<?> searchPost(PostRequestDTO.searchDTO searchDTO){
+    public ApiResponse<?> searchPost(String keyword, String type, int page){
 
-        String keyword = searchDTO.getKeyword();
-        String type = searchDTO.getType();
+        Page<Post> postPage;
+        Pageable pageable = PageRequest.of(page, 10);
 
-        return null;
+        if (type.equals("title")){
+            postPage = postRepository.findByTitleContainingAndStatus(pageable, keyword, Status.POST);
+            if(postPage.isEmpty()){
+                throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+            }
+        }
+        else if(type.equals("content")){
+            postPage = postRepository.findByContentContainingAndStatus(pageable, keyword, Status.POST);
+            if(postPage.isEmpty()){
+                throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+            }
+        }
+        else if(type.equals("writer")){
+            // 멤버 찾기. null 이면 예외 처리 (NosuchElementException)
+            Member member = memberRepository.findByNickname(keyword);
+            if(member == null){
+                throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+            }
+
+            postPage = postRepository.findByMemberAndStatus(pageable, member, Status.POST);
+            if(postPage.isEmpty()){
+                throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+            }
+        }
+        else {
+            throw new GeneralException(ErrorStatus.CONTENT_NOT_EXIST);
+        }
+
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage));
     }
 }

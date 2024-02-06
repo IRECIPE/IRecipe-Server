@@ -3,6 +3,7 @@ package umc.IRECIPE_Server.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 
@@ -12,10 +13,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByMember(Member member);
 
-    Page<Post> findAll(Pageable pageable);
+    Page<Post> findAllByStatus(Pageable pageable, Status status);
 
-    List<Post> findByTitleContaining(String keyword);
+    Page<Post> findByTitleContainingAndStatus(Pageable pageable, String keyword, Status status);
 
-    List<Post> findByContentContaining(String keyword);
+    Page<Post> findByContentContainingAndStatus(Pageable pageable, String keyword, Status status);
+
+    Page<Post> findByMemberAndStatus(Pageable pageable, Member member, Status status);
 
 }
