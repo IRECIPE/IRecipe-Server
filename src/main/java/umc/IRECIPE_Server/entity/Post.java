@@ -74,8 +74,8 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Review> reviewList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Query> queryList = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Qna> qnaList = new ArrayList<>();
 
     // 게시글 제목 수정
     public void updateTitle(String title){
