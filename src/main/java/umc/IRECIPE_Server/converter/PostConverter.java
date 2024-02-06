@@ -32,6 +32,7 @@ public class PostConverter {
                 .level(post.getLevel())
                 .imageUrl(post.getImageUrl())
                 .status(post.getStatus())
+                .createdAt(post.getCreatedAt().toLocalDate())
                 .build();
     }
 
@@ -51,6 +52,7 @@ public class PostConverter {
                 .imageUrl(post.getImageUrl())
                 .writerNickName(member.getNickname())
                 .writerImage(member.getProfileImage())
+                .createdAt(post.getCreatedAt().toLocalDate())
                 .build();
     }
 
@@ -72,6 +74,7 @@ public class PostConverter {
                         .reviewsCount(m.getReviewList().size())
                         .nickName(m.getMember().getNickname())
                         .memberImage(m.getMember().getProfileImage())
+                        .createdAt(m.getCreatedAt().toLocalDate())
                         .build())
                 .collect(Collectors.toList());
     }

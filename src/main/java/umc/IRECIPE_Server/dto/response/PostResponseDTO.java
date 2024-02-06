@@ -8,6 +8,7 @@ import umc.IRECIPE_Server.common.enums.Level;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.dto.IngredientResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -43,6 +44,8 @@ public class PostResponseDTO {
         private Status status;
         // 게시글 이미지
         private String imageUrl;
+        // 생성일
+        private LocalDate createdAt;
     }
 
     @Builder
@@ -74,6 +77,8 @@ public class PostResponseDTO {
         private String writerNickName;
         // 작성자 프로필 사진
         private String writerImage;
+        // 생성일
+        private LocalDate createdAt;
     }
 
     @Builder
@@ -119,6 +124,8 @@ public class PostResponseDTO {
         private Float score;
         // 게시글 리뷰 갯수
         private int reviewsCount;
+        // 게시글 생성 날짜
+        private LocalDate createdAt;
     }
 
     @Builder
