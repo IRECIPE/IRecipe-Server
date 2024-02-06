@@ -4,6 +4,10 @@ package umc.IRECIPE_Server.converter;
 import org.springframework.data.domain.Page;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
+import umc.IRECIPE_Server.dto.IngredientResponse;
+import umc.IRECIPE_Server.dto.response.PostResponseDTO;
+import umc.IRECIPE_Server.entity.Ingredient;
+
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 
@@ -72,10 +76,35 @@ public class PostConverter {
                 .collect(Collectors.toList());
     }
 
-    public static PostResponseDTO.LikePostDTO toLikePostDTO(Post post){
+    public static PostResponseDTO.LikePostDTO toLikePostDTO(Post post) {
         return PostResponseDTO.LikePostDTO.builder()
                 .postId(post.getId())
                 .likes(post.getLikes())
+                .build();
+    }
+
+    public static PostResponseDTO.getRankedPostDTO toGetRankedPostDTO(Post post) {
+        return PostResponseDTO.getRankedPostDTO.builder()
+                .postId(post.getId())
+                .title(post.getTitle())
+                .scores(post.getScore())
+                .likes(post.getLikes())
+                .imageUrl(post.getImageUrl())
+                .build();
+
+    }
+    public static PostResponseDTO.findAllResultListDTO toFindAllResultListDTO(Page<Post> postList) {
+        List<PostResponseDTO.getRankedPostDTO> postResultDTOList = postList.getContent().stream()
+                .map(PostConverter::toGetRankedPostDTO)
+                .collect(Collectors.toList());
+
+        return PostResponseDTO.findAllResultListDTO.builder()
+                .isLast(postList.isLast())
+                .isFirst(postList.isFirst())
+                .totalPage(postList.getTotalPages())
+                .totalElements(postList.getTotalElements())
+                .listSize(postResultDTOList.size())
+                .postList(postResultDTOList)
                 .build();
     }
 }

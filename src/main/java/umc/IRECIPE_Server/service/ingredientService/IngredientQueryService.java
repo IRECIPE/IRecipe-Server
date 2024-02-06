@@ -17,4 +17,6 @@ public interface IngredientQueryService {
     Page<Ingredient> getIngredientListByType(String memberId, Type type, Integer page);
 
     Page<Ingredient> searchIngredientByName(String memberId, String name, Integer page);
+
+    Page<Ingredient> getNearingExpirationIngredientList(String memberId, Integer page);
 }

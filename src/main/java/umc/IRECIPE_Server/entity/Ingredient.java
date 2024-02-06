@@ -11,6 +11,7 @@ import umc.IRECIPE_Server.common.enums.IngredientCategory;
 import umc.IRECIPE_Server.common.enums.Type;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -45,11 +46,20 @@ public class Ingredient extends BaseEntity {
 
     private String imageUrl;
 
+    private int remainingDays;
+
     public void updateIngredient(String name, IngredientCategory category, Type type, LocalDate expiry_date, String memo) {
         this.name = name;
         this.category = category;
         this.type = type;
         this.expiry_date = expiry_date;
         this.memo = memo;
+        this.remainingDays = calculateRemainingDay(this.expiry_date);
+    }
+
+    static public int calculateRemainingDay(LocalDate expiry_date) {
+        LocalDate currentDate = LocalDate.now();
+        long daysBetween = ChronoUnit.DAYS.between(currentDate, expiry_date);
+        return (int) daysBetween;
     }
 }

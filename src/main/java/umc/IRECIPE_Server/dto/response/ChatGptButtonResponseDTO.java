@@ -15,5 +15,6 @@ public class ChatGptButtonResponseDTO {
         private String button1;
         private String button2;
         private String button3;
+        private String button4;
     }
 }

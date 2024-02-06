@@ -116,4 +116,12 @@ public class IngredientController {
         return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
     }
 
+    @GetMapping("/expire")
+    public ApiResponse<IngredientResponse.findAllResultListDTO> findNearingExpirationIngredient(@RequestParam(name = "page") Integer page) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        Page<Ingredient> ingredientList = ingredientQueryService.getNearingExpirationIngredientList(userId, page);
+        return ApiResponse.onSuccess(IngredientConverter.toFindAllResultListDTO(ingredientList));
+    }
 }

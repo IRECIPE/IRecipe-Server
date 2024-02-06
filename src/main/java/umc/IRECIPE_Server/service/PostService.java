@@ -3,8 +3,10 @@ package umc.IRECIPE_Server.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +14,6 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
-import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
-import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
-import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
@@ -25,9 +24,11 @@ import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.repository.MemberLikesRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
+
 import umc.IRECIPE_Server.repository.StoredRecipeRepository;
 
 import javax.swing.text.html.Option;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -239,4 +240,11 @@ public class PostService {
 
         return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage));
     }
+
+    public Page<Post> getRanking(Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 6);
+        return postRepository.findRankedPost(pageRequest);
+    }
 }
+
+

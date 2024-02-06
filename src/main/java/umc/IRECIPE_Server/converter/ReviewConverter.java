@@ -40,6 +40,7 @@ public class ReviewConverter {
                 .map(m -> ReviewResponseDTO.getReviewResponseDTO.builder()
                         .reviewId(m.getId())
                         .memberId(m.getMember().getId())
+                        .memberNickname(m.getMember().getNickname())
                         .memberImage(m.getMember().getProfileImage())
                         .context(m.getContext())
                         .score(m.getScore())
