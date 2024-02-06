@@ -97,6 +97,13 @@ public class ReviewServiceImpl implements ReviewService {
             newFileName = file.getOriginalFilename();
         }
 
+        // 별점 변경 시 게시글 평균 별점 업데이트
+        if (request.getScore() != review.getScore()) {
+            Post post = postRepository.findById(review.getPost().getId()).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+            int reviewCount = reviewRepository.countByPost_Id(post.getId());
+            Float newScore = (post.getScore() * reviewCount - review.getScore() + request.getScore()) / reviewCount;
+            post.updateScore(newScore);
+        }
 
         // 데이터 업데이트
         review.updateReview(request.getScore(), request.getContext(), newUrl, newFileName);
