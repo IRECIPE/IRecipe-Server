@@ -28,6 +28,7 @@ public class ReviewResponseDTO {
     public static class getReviewResponseDTO {
         private Long reviewId;
         private Long memberId;
+        private String memberNickname;
         private String memberImage;
         private String context;
         private Float score;
