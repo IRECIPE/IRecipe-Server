@@ -1,13 +1,18 @@
 package umc.IRECIPE_Server.converter;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
 import umc.IRECIPE_Server.common.enums.Role;
 import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberResponse;
+import umc.IRECIPE_Server.dto.MemberResponse.getPostsDto;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
+import umc.IRECIPE_Server.entity.Post;
+import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.TokenRepository;
 
@@ -83,4 +88,31 @@ public class MemberConverter {
                 .str("사용 가능한 닉네임 입니다.")
                 .build();
     }
+
+    public static MemberResponse.getPostsDto postsDto(Post post){
+        return MemberResponse.getPostsDto.builder()
+                .title(post.getTitle())
+                .subhead(post.getSubhead())
+                .level(post.getLevel())
+                .likes(post.getLikes())
+                .fileName(post.getFileName())
+                .content(post.getContent())
+                .category(post.getCategory())
+                .imageUrl(post.getImageUrl())
+                .build();
+    }
+
+    public static MemberResponse.getPostsListDto postsListDto(Page<Post> postList){
+        List<MemberResponse.getPostsDto> postsDtoList = postList.stream()
+                .map(MemberConverter::postsDto).collect(Collectors.toList());
+
+        return MemberResponse.getPostsListDto.builder()
+                .isFirst(postList.isFirst())
+                .isLast(postList.isLast())
+                .totalPage(postList.getTotalPages())
+                .totalElements(postList.getTotalElements())
+                .listSize(postsDtoList.size())
+                .build();
+    }
+
 }

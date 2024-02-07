@@ -29,6 +29,8 @@ public class QMember extends EntityPathBase<Member> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final ListPath<DislikedFood, QDislikedFood> dislikedFoodList = this.<DislikedFood, QDislikedFood>createList("dislikedFoodList", DislikedFood.class, QDislikedFood.class, PathInits.DIRECT2);
+
     public final BooleanPath event = createBoolean("event");
 
     public final EnumPath<umc.IRECIPE_Server.common.enums.Gender> gender = createEnum("gender", umc.IRECIPE_Server.common.enums.Gender.class);

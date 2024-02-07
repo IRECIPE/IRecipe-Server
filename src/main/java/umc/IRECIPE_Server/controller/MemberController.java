@@ -3,9 +3,13 @@ package umc.IRECIPE_Server.controller;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +22,7 @@ import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.entity.Member;
+import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.service.MemberService;
 
@@ -97,10 +102,25 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.updateNicknameResult());
     }
 
+    @Description("로그인")
     @PostMapping(value = "/login")
     public ApiResponse<MemberResponse.JoinResultDto> joinLogin(
             @RequestBody @Valid MemberLoginRequestDto.JoinLoginDto request){
         Member response = memberService.login(request);
         return ApiResponse.onSuccess(MemberConverter.toJoinResult(response, jwtProvider));
+    }
+
+    @Description("사용자가 작성한 글 보기 api")
+    @GetMapping(value = "/written")
+    public ApiResponse<MemberResponse.getPostsListDto> showPosts(
+            @RequestParam(name = "page") Integer page
+    ){
+        //사용자 id 찾기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();//personal id
+
+        memberService.getPostList(userId, page);
+        return null;
+
     }
 }

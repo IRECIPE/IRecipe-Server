@@ -11,59 +11,50 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QReview is a Querydsl query type for Review
+ * QDislikedFood is a Querydsl query type for DislikedFood
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QReview extends EntityPathBase<Review> {
+public class QDislikedFood extends EntityPathBase<DislikedFood> {
 
-    private static final long serialVersionUID = -382718205L;
+    private static final long serialVersionUID = -951686072L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QReview review = new QReview("review");
+    public static final QDislikedFood dislikedFood = new QDislikedFood("dislikedFood");
 
     public final umc.IRECIPE_Server.common.QBaseEntity _super = new umc.IRECIPE_Server.common.QBaseEntity(this);
-
-    public final StringPath context = createString("context");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final StringPath fileName = createString("fileName");
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final StringPath imageUrl = createString("imageUrl");
 
     public final QMember member;
 
-    public final QPost post;
-
-    public final NumberPath<Float> score = createNumber("score", Float.class);
+    public final StringPath name = createString("name");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public QReview(String variable) {
-        this(Review.class, forVariable(variable), INITS);
+    public QDislikedFood(String variable) {
+        this(DislikedFood.class, forVariable(variable), INITS);
     }
 
-    public QReview(Path<? extends Review> path) {
+    public QDislikedFood(Path<? extends DislikedFood> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QReview(PathMetadata metadata) {
+    public QDislikedFood(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QReview(PathMetadata metadata, PathInits inits) {
-        this(Review.class, metadata, inits);
+    public QDislikedFood(PathMetadata metadata, PathInits inits) {
+        this(DislikedFood.class, metadata, inits);
     }
 
-    public QReview(Class<? extends Review> type, PathMetadata metadata, PathInits inits) {
+    public QDislikedFood(Class<? extends DislikedFood> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
-        this.post = inits.isInitialized("post") ? new QPost(forProperty("post"), inits.get("post")) : null;
     }
 
 }

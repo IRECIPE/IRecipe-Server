@@ -8,6 +8,7 @@ import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 
 import java.util.List;
+import umc.IRECIPE_Server.entity.Review;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -15,5 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p order by p.score desc, p.likes desc")
     Page<Post> findRankedPost(PageRequest pageRequest);
+
+    Page<Post> findAllByMember(Member member, PageRequest pageRequest);
 
 }

@@ -1,15 +1,19 @@
 package umc.IRECIPE_Server.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.AllergyHandler;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.PostHandler;
 import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.MemberAllergyConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
@@ -19,11 +23,14 @@ import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.entity.Allergy;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
+import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.entity.RefreshToken;
+import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.AllergyRepository;
 import umc.IRECIPE_Server.repository.MemberAllergyRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
+import umc.IRECIPE_Server.repository.PostRepository;
 import umc.IRECIPE_Server.repository.TokenRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +44,7 @@ public class MemberService {
     private final AllergyRepository allergyRepository;
     private final MemberAllergyRepository memberAllergyRepository;
     private final TokenRepository tokenRepository;
+    private final PostRepository postRepository;
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
 
@@ -59,20 +67,9 @@ public class MemberService {
             throw new MemberHandler(ErrorStatus.NICKNAME_ALREADY_EXIST);
     }
 
-    public Member findMemberId(String personalId){
-        Member member = memberRepository.findByPersonalId(personalId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        if(member == null){
-            throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
-        }
-        return member;
-    }
-
     public MemberAllergy findMemberAllergy(Long memberId, Long allergyId){
         return memberAllergyRepository
                 .findByAllergy_IdAndMember_Id(memberId, allergyId);
-
-
     }
 
     @Transactional
@@ -168,6 +165,39 @@ public class MemberService {
                 .build();
         tokenRepository.save(refreshToken);
         return member;
+    }
+
+    @Transactional
+    public List<Post> viewStoredPost(String personalId){
+        //누가 쓴거 볼건데
+        Member member = memberRepository.findByPersonalId(personalId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        List<Post> postList = postRepository.findAllByMember(member);
+        List<Post> posts = new ArrayList<>();
+        for(Post post: postList){
+            if(post.getMember().equals(member)){
+                posts.add(post);
+            }
+        }
+
+        //사용자가 작성한 글이 없는 경우
+        if(posts.isEmpty())
+            throw new PostHandler(ErrorStatus.POST_NOT_FOUND);
+
+        return posts;
+
+    }
+
+    public Page<Post> getPostList(String personalId, Integer page) {
+        Optional<Member> member = memberRepository.findByPersonalId(personalId);
+        if(member.isEmpty()){
+            throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        Member mem = member.get();
+
+        Page<Post> postPage = postRepository.findAllByMember(mem, PageRequest.of(page, 10));
+        return postPage;
     }
 
 }
