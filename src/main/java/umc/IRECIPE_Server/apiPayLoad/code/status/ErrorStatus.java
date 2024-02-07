@@ -57,7 +57,12 @@ public enum ErrorStatus implements BaseErrorCode {
 
 
     //알러지 관련 에러
-    ALLERGY_NOT_FOUND(HttpStatus.BAD_REQUEST, "ALLERGY4001", "알러지를 찾을 수 없습니다.");
+    ALLERGY_NOT_FOUND(HttpStatus.BAD_REQUEST, "ALLERGY4001", "알러지를 찾을 수 없습니다."),
+
+    //페이지 관련 에러
+    MEMBER_DONT_HAVE_POSTS(HttpStatus.BAD_REQUEST, "PAGE4003", "게시물이 존재하지 않습니다."),
+    NO_MORE_PAGE(HttpStatus.BAD_REQUEST, "PAGE4002", "더이상 페이지가 존재하지 않습니다."),
+    INVALID_PAGE(HttpStatus.BAD_REQUEST, "PAGE4001", "유효하지 않은 페이지입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

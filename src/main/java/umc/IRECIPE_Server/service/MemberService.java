@@ -202,8 +202,11 @@ public class MemberService {
         Member mem = member.get();
         log.info(mem.getName());
 
-        postPage = postRepository.findByMemberAndStatus(pageable, mem, Status.TEMP);
-        if(postPage.isEmpty()) throw new PostHandler(ErrorStatus.POST_NOT_FOUND);
+        postPage = postRepository.findByMemberAndStatus(pageable, mem, Status.POST);
+        if(postPage.isEmpty()) {
+            if(page > 0) throw new PostHandler(ErrorStatus.NO_MORE_PAGE);
+            else if(page == 0) throw new PostHandler(ErrorStatus.MEMBER_DONT_HAVE_POSTS);
+        }
 
         return postPage;
     }
