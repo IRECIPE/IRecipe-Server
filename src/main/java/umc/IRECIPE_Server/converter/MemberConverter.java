@@ -102,17 +102,20 @@ public class MemberConverter {
                 .build();
     }
 
-    public static MemberResponse.getPostsListDto postsListDto(Page<Post> postList){
-        List<MemberResponse.getPostsDto> postsDtoList = postList.stream()
-                .map(MemberConverter::postsDto).collect(Collectors.toList());
-
-        return MemberResponse.getPostsListDto.builder()
-                .isFirst(postList.isFirst())
-                .isLast(postList.isLast())
-                .totalPage(postList.getTotalPages())
-                .totalElements(postList.getTotalElements())
-                .listSize(postsDtoList.size())
-                .build();
+    public static List<MemberResponse.getPostsDto> postsListDto(Page<Post> postPage){
+        return postPage.stream()
+                .map(val -> MemberResponse.getPostsDto.builder()
+                        .title(val.getTitle())
+                        .subhead(val.getSubhead())
+                        .level(val.getLevel())
+                        .score(val.getScore())
+                        .content(val.getContent())
+                        .likes(val.getLikes())
+                        .imageUrl(val.getImageUrl())
+                        .category(val.getCategory())
+                        .fileName(val.getFileName())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

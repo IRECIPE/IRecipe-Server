@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import umc.IRECIPE_Server.apiPayLoad.exception.handler.AllergyHandler;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.PostHandler;
 import umc.IRECIPE_Server.common.S3.S3Service;
+import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.MemberAllergyConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.dto.MemberRequest;
@@ -190,13 +192,19 @@ public class MemberService {
     }
 
     public Page<Post> getPostList(String personalId, Integer page) {
+        Page<Post> postPage;
+        Pageable pageable = PageRequest.of(page, 10);
+
         Optional<Member> member = memberRepository.findByPersonalId(personalId);
         if(member.isEmpty()){
             throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
         }
         Member mem = member.get();
+        log.info(mem.getName());
 
-        Page<Post> postPage = postRepository.findAllByMember(mem, PageRequest.of(page, 10));
+        postPage = postRepository.findByMemberAndStatus(pageable, mem, Status.TEMP);
+        if(postPage.isEmpty()) throw new PostHandler(ErrorStatus.POST_NOT_FOUND);
+
         return postPage;
     }
 

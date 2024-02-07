@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.entity.Member;
 
+import java.util.List;
 import java.util.Optional;
 import umc.IRECIPE_Server.entity.Post;
 

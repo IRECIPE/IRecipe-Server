@@ -7,6 +7,8 @@ import java.util.List;
 import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -112,15 +114,14 @@ public class MemberController {
 
     @Description("사용자가 작성한 글 보기 api")
     @GetMapping(value = "/written")
-    public ApiResponse<MemberResponse.getPostsListDto> showPosts(
+    public ApiResponse<List<MemberResponse.getPostsDto>> showPosts(
             @RequestParam(name = "page") Integer page
     ){
         //사용자 id 찾기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();//personal id
 
-        memberService.getPostList(userId, page);
-        return null;
+        return ApiResponse.onSuccess(MemberConverter.postsListDto(memberService.getPostList(userId, page)));
 
     }
 }
