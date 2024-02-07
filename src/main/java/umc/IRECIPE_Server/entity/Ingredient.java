@@ -62,4 +62,47 @@ public class Ingredient extends BaseEntity {
         long daysBetween = ChronoUnit.DAYS.between(currentDate, expiry_date);
         return (int) daysBetween;
     }
+
+    static public String setDefaultImage(IngredientCategory category) {
+        String imageUrl = "";
+        switch (category){
+            case MEAT -> {
+                imageUrl = "https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/meat.png";
+                return imageUrl;
+            }
+            case FISH -> {
+                imageUrl = "https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/fish.png";
+                return imageUrl;
+            }
+            case DRINK -> {
+                imageUrl = "https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/drink.png";
+                return imageUrl;
+            }
+            case FRUIT -> {
+                imageUrl = "https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/fruit.png";
+                return imageUrl;
+            }
+            case SAUCE -> {
+                imageUrl = "https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/sauce.png";
+                return imageUrl;
+            }
+            case VEGETABLE -> {
+                imageUrl = "https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/vegetable.png";
+                return imageUrl;
+            }
+            case CRUSTACEAN -> {
+                imageUrl = "https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/crustacean.png";
+                return imageUrl;
+            }
+            case DAIRY_PRODUCT -> {
+                imageUrl = "https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/dairy_product.png";
+                return imageUrl;
+            }
+            case PROCESSED_FOOD -> {
+                imageUrl = "https://irecipebucket.s3.ap-northeast-2.amazonaws.com/images/processed_food.png";
+                return imageUrl;
+            }
+        }
+        return imageUrl;
+    }
 }

@@ -36,27 +36,13 @@ public class IngredientController {
 
     //재료추가
     @PostMapping(value = "/", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ApiResponse<IngredientResponse.addResultDTO> addIngredient(@RequestPart("request") IngredientRequest.addDTO request,
-                                                                      @RequestPart(value = "file", required = false) MultipartFile file
-    )throws IOException
+    public ApiResponse<IngredientResponse.addResultDTO> addIngredient(@RequestPart("request") IngredientRequest.addDTO request)
     {
-        try{
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String userId = authentication.getName();
-            System.out.println("userId = " + userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
 
-            String url;
-            if(file != null){
-                // s3 에 이미지 저장 및 경로 가져오기.
-                url = s3Service.saveFile(file, "images");
-            }
-            else url = null;
-
-            Ingredient ingredient = ingredientCommandService.addIngredient(userId, request, url);
-            return ApiResponse.onSuccess(IngredientConverter.toaddResultDTO(ingredient));}
-        catch(IOException e){
-            throw new GeneralException(ErrorStatus._INTERNAL_SERVER_ERROR);
-        }
+        Ingredient ingredient = ingredientCommandService.addIngredient(userId, request);
+        return ApiResponse.onSuccess(IngredientConverter.toaddResultDTO(ingredient));
     }
 
     //재료 상세정보 조회

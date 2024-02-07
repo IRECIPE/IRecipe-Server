@@ -20,8 +20,8 @@ public class IngredientConverter {
                 .build();
     }
 
-    public static Ingredient toIngredient(Member member, IngredientRequest.addDTO request, String url) {
-
+    public static Ingredient toIngredient(Member member, IngredientRequest.addDTO request) {
+        String url = Ingredient.setDefaultImage(request.getCategory());
 
         return Ingredient.builder()
                 .name(request.getName())
