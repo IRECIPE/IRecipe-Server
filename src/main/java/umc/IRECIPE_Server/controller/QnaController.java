@@ -24,8 +24,8 @@ public class QnaController {
     // Qna 작성
     @PostMapping(value = "/{postId}/qna", consumes = "multipart/form-data")
     public ApiResponse<QnaResponseDTO.addQnaDTO> addQna(@PathVariable("postId") Long postId,
-                                                             @RequestPart(required = false) QnaRequestDTO.addQna request,
-                                                             @RequestPart(required = false) MultipartFile file) throws IOException {
+                                                             @RequestPart(name = "QnaRequestDTO", required = false) QnaRequestDTO.addQna request,
+                                                             @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         // 작성자
         String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -44,8 +44,8 @@ public class QnaController {
     // Qna 수정
     @PatchMapping(value = "/qna/{qnaId}", consumes = "multipart/form-data")
     public ApiResponse<QnaResponseDTO.updateQnaDTO> updateQna(@PathVariable("qnaId") Long qnaId,
-                                                              @RequestPart(required = false) QnaRequestDTO.updateQna request,
-                                                              @RequestPart(required = false) MultipartFile file) throws IOException {
+                                                              @RequestPart(name = "QnaRequestDTO", required = false) QnaRequestDTO.updateQna request,
+                                                              @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
         qnaService.updateQna(qnaId, request, file);
         return ApiResponse.onSuccess(QnaConverter.updateQnaResult(qnaId));

@@ -53,7 +53,13 @@ public class ReviewServiceImpl implements ReviewService {
             fileName = file.getOriginalFilename();
         }
 
+        // 게시글 평균 별점 수정 : (원래 평균 별점 * 리뷰 개수 + 새로 들어온 별점) / (원래 리뷰 개수 + 1)
         Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        int reviewCount = reviewRepository.countByPost_Id(post.getId());
+        Float newScore = (post.getScore() * reviewCount + request.getScore()) / (reviewCount + 1);
+        post.updateScore(newScore);
+
+        // 리뷰 등록
         Review review = ReviewConverter.addReview(member.get(), post, request, imageUrl, fileName);
         return reviewRepository.save(review);
     }
@@ -91,10 +97,17 @@ public class ReviewServiceImpl implements ReviewService {
             newFileName = file.getOriginalFilename();
         }
 
+        // 별점 변경 시 게시글 평균 별점 업데이트
+        if (request.getScore() != review.getScore()) {
+            Post post = postRepository.findById(review.getPost().getId()).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+            int reviewCount = reviewRepository.countByPost_Id(post.getId());
+            Float newScore = (post.getScore() * reviewCount - review.getScore() + request.getScore()) / reviewCount;
+            post.updateScore(newScore);
+        }
+
         // 데이터 업데이트
         review.updateReview(request.getScore(), request.getContext(), newUrl, newFileName);
     }
-
 
     // 게시글 리뷰 삭제
     public void deletePostReview(Long reviewId) {
@@ -104,6 +117,12 @@ public class ReviewServiceImpl implements ReviewService {
         if (review.getImageUrl() != null) {
             s3Service.deleteImage(review.getFileName(), "images");
         }
+
+        // 게시글 평균 별점 업데이트
+        Post post = postRepository.findById(review.getPost().getId()).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+        int reviewCount = reviewRepository.countByPost_Id(post.getId());
+        Float newScore = (post.getScore() * reviewCount - review.getScore()) / (reviewCount - 1);
+        post.updateScore(newScore);
 
         // 게시글 리뷰 삭제
         reviewRepository.deleteById(reviewId);

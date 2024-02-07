@@ -68,7 +68,7 @@ public class PostController {
 
     // 게시글 단일 조회 컨트롤러
     @GetMapping("/{postId}")
-    public ApiResponse<?> getPost(@PathVariable Long postId) {
+    public ApiResponse<?> getPost(@PathVariable("postId") Long postId) {
 
         // 현재 토큰을 사용중인 유저 고유 id 조회
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -80,7 +80,7 @@ public class PostController {
     // 게시글 수정 컨트롤러
     @PatchMapping(value = "/{postId}",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ApiResponse<?> updatePost(@PathVariable Long postId,
+    public ApiResponse<?> updatePost(@PathVariable("postId") Long postId,
                                      @RequestPart("postRequestDTO") PostRequestDTO.patchRequestDTO postRequestDTO,
                                      @RequestPart(value = "file", required = false) MultipartFile file
     ) throws IOException {
@@ -99,7 +99,7 @@ public class PostController {
 
     // 게시글 삭제 컨트롤러
     @DeleteMapping("/{postId}")
-    public ApiResponse<?> deletePost(@PathVariable Long postId) {
+    public ApiResponse<?> deletePost(@PathVariable("postId") Long postId) {
 
         Post post = postService.findByPostId(postId);
         s3Service.deleteImage(post.getFileName(), "images");
