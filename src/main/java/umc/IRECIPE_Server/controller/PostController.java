@@ -109,6 +109,43 @@ public class PostController {
 
     // 커뮤니티 화면 조회
     @GetMapping("/paging")
+    public ApiResponse<?> getPostsPage(@RequestParam(required = false, value = "page") int page,
+                                       @RequestParam(required = false, value = "criteria") String criteria
+    )
+    {
+        return postService.getPostsPage(page, criteria);
+    }
+
+    @PostMapping("/like/{postId}")
+    public ApiResponse<?> pushLike(@PathVariable Long postId){
+
+        // 현재 토큰을 사용중인 유저 고유 id 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        return postService.pushLike(userId, postId);
+
+    }
+
+    @DeleteMapping("/like/{postId}")
+    public ApiResponse<?> deleteLike(@PathVariable Long postId){
+
+        // 현재 토큰을 사용중인 유저 고유 id 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        return postService.deleteLike(userId, postId);
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<?> searchPost(@RequestParam(required = false, value = "page") int page,
+                                     @RequestParam(required = false, value = "keyword") String keyword,
+                                     @RequestParam(required = false, value = "type") String type
+    )
+    {
+        return postService.searchPost(keyword, type, page);
+    }
+
     public ApiResponse<?> postPaging() {
         return null;
     }
@@ -117,5 +154,6 @@ public class PostController {
     public ApiResponse<PostResponseDTO.findAllResultListDTO> getRankedPost(@RequestParam(name = "page") Integer page) {
         Page<Post> ranking = postService.getRanking(page);
         return ApiResponse.onSuccess(PostConverter.toFindAllResultListDTO(ranking));
+
     }
 }

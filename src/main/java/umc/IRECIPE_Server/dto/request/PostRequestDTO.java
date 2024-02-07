@@ -52,4 +52,16 @@ public class PostRequestDTO {
         private String oldUrl;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class searchDTO{
+        // 검색어 키워드
+        private String keyword;
+        // 검색 타입(제목, 작성자, 내용)
+        private String type;
+        // 페이지 넘버
+        private int page;
+    }
 }
