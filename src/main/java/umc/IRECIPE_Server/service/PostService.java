@@ -14,6 +14,7 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.common.enums.Category;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
@@ -21,6 +22,7 @@ import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberLikes;
 import umc.IRECIPE_Server.entity.Post;
+import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.repository.MemberLikesRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
@@ -29,8 +31,12 @@ import umc.IRECIPE_Server.repository.StoredRecipeRepository;
 
 import javax.swing.text.html.Option;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +74,7 @@ public class PostService {
                 .imageUrl(url)
                 .fileName(fileName)
                 .status(postRequestDto.getStatus())
+                .score(0.0F)
                 .build();
 
         // 게시글 저장
@@ -242,8 +249,20 @@ public class PostService {
     }
 
     public Page<Post> getRanking(Integer page) {
-        PageRequest pageRequest = PageRequest.of(page, 6);
+        PageRequest pageRequest = PageRequest.of(page, 4);
+        postRepository.findAll().stream()
+                .map(Post::calculateAverageRatingExcludingLast30DaysReviews)
+                .collect(Collectors.toList());
         return postRepository.findRankedPost(pageRequest);
+    }
+
+
+    public Page<Post> getCategoryRanking(Integer page, Category category) {
+        PageRequest pageRequest = PageRequest.of(page, 4);
+        postRepository.findAll().stream()
+                .map(Post::calculateAverageRatingExcludingLast30DaysReviews)
+                .collect(Collectors.toList());
+        return postRepository.findCategoryRankedPost(pageRequest, category);
     }
 }
 

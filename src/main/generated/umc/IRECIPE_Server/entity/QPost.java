@@ -49,6 +49,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Float> score = createNumber("score", Float.class);
 
+    public final NumberPath<Float> scoreInOneMonth = createNumber("scoreInOneMonth", Float.class);
+
     public final EnumPath<umc.IRECIPE_Server.common.enums.Status> status = createEnum("status", umc.IRECIPE_Server.common.enums.Status.class);
 
     public final StringPath subhead = createString("subhead");

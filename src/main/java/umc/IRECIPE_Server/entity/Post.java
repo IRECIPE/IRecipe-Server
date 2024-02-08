@@ -2,8 +2,13 @@ package umc.IRECIPE_Server.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,6 +68,9 @@ public class Post extends BaseEntity {
     // 평균 별점
     private Float score;
 
+    //한달 평균 별점
+    private Float scoreInOneMonth;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Review> reviewList = new ArrayList<>();
 
@@ -106,5 +114,41 @@ public class Post extends BaseEntity {
 
     // 평균 별점 수정
     public void updateScore(Float score) { this.score = score; }
+
+    public void updateScoreInOneMonth(Float score){
+        this.scoreInOneMonth = scoreInOneMonth;
+    }
+
+    // 이전 30일 동안의 리뷰를 제외한 평균 별점을 계산하는 메서드
+    public Float calculateAverageRatingExcludingLast30DaysReviews() {
+        // 현재 날짜와 시간을 가져옵니다.
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        // 현재 날짜와 시간으로부터 30일 전의 LocalDateTime을 계산합니다.
+        LocalDateTime thirtyDaysAgoDateTime = currentDateTime.minusDays(30);
+
+        // 30일 전의 LocalDateTime을 LocalDate와 LocalTime으로 분리합니다.
+        LocalDate thirtyDaysAgoDate = thirtyDaysAgoDateTime.toLocalDate();
+        LocalTime midnight = LocalTime.MIDNIGHT;
+        LocalDateTime thirtyDaysAgo = LocalDateTime.of(thirtyDaysAgoDate, midnight);
+
+        // 이전 30일 동안의 리뷰를 필터링하여 가져옵니다.
+        List<Review> filteredReviews = reviewList.stream()
+                .filter(review -> review.getCreatedAt().isBefore(thirtyDaysAgo))
+                .collect(Collectors.toList());
+
+        // 이전 30일 동안의 리뷰를 제외한 리뷰들의 총 별점과 개수를 계산합니다.
+        float totalRatingExcludingLast30DaysReviews = 0;
+        int count = 0;
+        for (Review review : reviewList) {
+            if (!filteredReviews.contains(review)) {
+                totalRatingExcludingLast30DaysReviews += review.getScore();
+                count++;
+            }
+        }
+        System.out.println("count = " + count);
+        scoreInOneMonth = count > 0 ? totalRatingExcludingLast30DaysReviews / count : 0;
+        return scoreInOneMonth;
+    }
 
 }
