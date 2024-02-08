@@ -87,12 +87,14 @@ public class PostConverter {
     }
 
     public static PostResponseDTO.getRankedPostDTO toGetRankedPostDTO(Post post) {
+
         return PostResponseDTO.getRankedPostDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .scores(post.getScore())
                 .likes(post.getLikes())
                 .imageUrl(post.getImageUrl())
+                .scoresInOneMonth(post.getScoreInOneMonth())
                 .build();
 
     }
