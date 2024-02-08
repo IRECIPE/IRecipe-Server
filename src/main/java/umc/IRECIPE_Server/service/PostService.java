@@ -14,6 +14,7 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
+import umc.IRECIPE_Server.common.enums.Category;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
@@ -255,6 +256,13 @@ public class PostService {
     }
 
 
+    public Page<Post> getCategoryRanking(Integer page, Category category) {
+        PageRequest pageRequest = PageRequest.of(page, 4);
+        postRepository.findAll().stream()
+                .map(Post::calculateAverageRatingExcludingLast30DaysReviews)
+                .collect(Collectors.toList());
+        return postRepository.findCategoryRankedPost(pageRequest, category);
+    }
 }
 
 
