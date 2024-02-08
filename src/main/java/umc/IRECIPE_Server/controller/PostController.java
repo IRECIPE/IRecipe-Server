@@ -133,7 +133,7 @@ public class PostController {
     // 커뮤니티 화면 조회
     @Operation(
             summary = "커뮤니티 처음 화면 조회",
-            description = "페이지 번호와 정렬 기준 받아서 모든 게시글의 정보 반환"
+            description = "페이지 번호와 정렬 기준(likes, createdAt, score) 받아서 모든 게시글의 정보 반환"
     )
     @GetMapping("/paging")
     public ApiResponse<?> getPostsPage(@RequestParam(required = false, value = "page") int page,
@@ -174,7 +174,7 @@ public class PostController {
 
     @Operation(
             summary = "게시글 검색",
-            description = "페이지 번호, 검색어, 검색 기준 받아서 검색된 게시글 정보 반환"
+            description = "페이지 번호, 검색어, 검색 기준(title, content, writer) 받아서 검색된 게시글 정보 반환"
     )
     @GetMapping("/search")
     public ApiResponse<?> searchPost(@RequestParam(required = false, value = "page") int page,
