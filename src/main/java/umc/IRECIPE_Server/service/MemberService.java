@@ -25,12 +25,14 @@ import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.entity.Allergy;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
+import umc.IRECIPE_Server.entity.MemberLikes;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.entity.RefreshToken;
 import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.AllergyRepository;
 import umc.IRECIPE_Server.repository.MemberAllergyRepository;
+import umc.IRECIPE_Server.repository.MemberLikesRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
 import umc.IRECIPE_Server.repository.TokenRepository;
@@ -47,6 +49,7 @@ public class MemberService {
     private final MemberAllergyRepository memberAllergyRepository;
     private final TokenRepository tokenRepository;
     private final PostRepository postRepository;
+    private final MemberLikesRepository memberLikesRepository;
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
 
@@ -191,7 +194,7 @@ public class MemberService {
 
     }
 
-    public Page<Post> getPostList(String personalId, Integer page) {
+    public Page<Post> getWrittenPostList(String personalId, Integer page) {
         Page<Post> postPage;
         Pageable pageable = PageRequest.of(page, 10);
 
@@ -201,6 +204,28 @@ public class MemberService {
         }
         Member mem = member.get();
         log.info(mem.getName());
+
+        postPage = postRepository.findByMemberAndStatus(pageable, mem, Status.POST);
+        if(postPage.isEmpty()) {
+            if(page > 0) throw new PostHandler(ErrorStatus.NO_MORE_PAGE);
+            else if(page == 0) throw new PostHandler(ErrorStatus.MEMBER_DONT_HAVE_POSTS);
+        }
+
+        return postPage;
+    }
+
+    public Page<Post> getLikedPostList(String personalId, Integer page) {
+        Page<Post> postPage;
+        Pageable pageable = PageRequest.of(page, 10);
+
+        Optional<Member> member = memberRepository.findByPersonalId(personalId);
+        if(member.isEmpty()){
+            throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        Member mem = member.get();
+        log.info(mem.getName());
+
+        Optional<MemberLikes> memberLikes = memberLikesRepository.findByMember(mem);
 
         postPage = postRepository.findByMemberAndStatus(pageable, mem, Status.POST);
         if(postPage.isEmpty()) {

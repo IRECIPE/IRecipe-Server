@@ -109,7 +109,7 @@ public class MemberController {
 
     @Description("사용자가 작성한 글 보기 api")
     @GetMapping(value = "/written")
-    public ApiResponse<List<MemberResponse.getPostsDto>> showPosts(
+    public ApiResponse<List<MemberResponse.getPostsDto>> showWrittenPosts(
             @RequestParam(name = "page") Integer page
     ){
         if(page < 0) throw new PostHandler(ErrorStatus.INVALID_PAGE);
@@ -117,7 +117,19 @@ public class MemberController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();//personal id
 
-        return ApiResponse.onSuccess(MemberConverter.postsListDto(memberService.getPostList(userId, page)));
+        return ApiResponse.onSuccess(MemberConverter.postsListDto(memberService.getWrittenPostList(userId, page)));
+    }
 
+    @Description("사용자가 좋아요 누른 글 보기")
+    @GetMapping(value = "/liked")
+    public ApiResponse<?> showLikedPosts(
+            @RequestParam(name = "page") Integer page
+    ){
+        if(page < 0) throw new PostHandler(ErrorStatus.INVALID_PAGE);
+        //사용자 id 찾기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();//personal id
+
+        return ApiResponse.onSuccess(MemberConverter.postsListDto(memberService.getLikedPostList(userId, page)));
     }
 }
