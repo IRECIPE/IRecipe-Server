@@ -29,11 +29,7 @@ public class QMemberLikes extends EntityPathBase<MemberLikes> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath image = createString("image");
-
     public final QMember member;
-
-    public final StringPath memo = createString("memo");
 
     public final QPost post;
 

@@ -51,7 +51,10 @@ public enum ErrorStatus implements BaseErrorCode {
     //커뮤니티 관련 에러
     POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST4011", "게시글을 찾을 수 없습니다."),
     POST_REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST4012", "게시글 후기를 찾을 수 없습니다."),
+    LIKE_FOUND(HttpStatus.BAD_REQUEST, "POST4014", "이미 관심에 추가한 게시글입니다."),
+    LIKE_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST4015", "이미 관심에 추가되어 있지 않습니다."),
     POST_QNA_NOT_FOUND(HttpStatus.BAD_REQUEST, "POST4013", "게시글 QnA를 찾을 수 없습니다"),
+
 
     //알러지 관련 에러
     ALLERGY_NOT_FOUND(HttpStatus.BAD_REQUEST, "ALLERGY4001", "알러지를 찾을 수 없습니다.");

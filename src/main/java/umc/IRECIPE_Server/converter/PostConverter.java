@@ -2,9 +2,12 @@ package umc.IRECIPE_Server.converter;
 
 
 import org.springframework.data.domain.Page;
+import umc.IRECIPE_Server.dto.response.PostResponseDTO;
+import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
 import umc.IRECIPE_Server.dto.IngredientResponse;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Ingredient;
+
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 
@@ -29,6 +32,7 @@ public class PostConverter {
                 .level(post.getLevel())
                 .imageUrl(post.getImageUrl())
                 .status(post.getStatus())
+                .createdAt(post.getCreatedAt().toLocalDate())
                 .build();
     }
 
@@ -48,12 +52,37 @@ public class PostConverter {
                 .imageUrl(post.getImageUrl())
                 .writerNickName(member.getNickname())
                 .writerImage(member.getProfileImage())
+                .createdAt(post.getCreatedAt().toLocalDate())
                 .build();
     }
 
     public static PostResponseDTO.updateDTO toUpdateResponseDTO(Post post){
         return PostResponseDTO.updateDTO.builder()
                 .postId(post.getId())
+                .build();
+    }
+
+    public static List<PostResponseDTO.getAllPostDTO> toGetAllPostDTO(Page<Post> postPage){
+        return postPage.stream()
+                .map(m -> PostResponseDTO.getAllPostDTO.builder()
+                        .postId(m.getId())
+                        .title(m.getTitle())
+                        .subhead(m.getSubhead())
+                        .imageUrl(m.getImageUrl())
+                        .likes(m.getLikes())
+                        .score(m.getScore())
+                        .reviewsCount(m.getReviewList().size())
+                        .nickName(m.getMember().getNickname())
+                        .memberImage(m.getMember().getProfileImage())
+                        .createdAt(m.getCreatedAt().toLocalDate())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public static PostResponseDTO.LikePostDTO toLikePostDTO(Post post) {
+        return PostResponseDTO.LikePostDTO.builder()
+                .postId(post.getId())
+                .likes(post.getLikes())
                 .build();
     }
 

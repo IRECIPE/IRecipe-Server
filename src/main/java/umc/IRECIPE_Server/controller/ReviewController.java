@@ -26,8 +26,8 @@ public class ReviewController {
     // 게시글 리뷰 등록
     @PostMapping(value = "/{postId}/review", consumes = "multipart/form-data")
     public ApiResponse<ReviewResponseDTO.addReviewResponseDTO> addPostReview(@PathVariable("postId") Long postId,
-                                        @RequestPart(required = false) ReviewRequestDTO.addReviewDTO request,
-                                        @RequestPart(required = false) MultipartFile file) throws IOException {
+                                        @RequestPart(name = "ReviewRequestDTO", required = false) ReviewRequestDTO.addReviewDTO request,
+                                        @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         // memberId 값 세팅
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberId = authentication.getName();
@@ -47,8 +47,8 @@ public class ReviewController {
     // 게시글 리뷰 수정
     @PatchMapping(value = "/review/{reviewId}", consumes = "multipart/form-data")
     public ApiResponse<ReviewResponseDTO.updateReviewResponseDTO> updatePostReview(@PathVariable("reviewId") Long reviewId,
-                                          @RequestPart(required = false) ReviewRequestDTO.addReviewDTO request,
-                                          @RequestPart(required = false) MultipartFile file) throws IOException {
+                                          @RequestPart(name = "ReviewRequestDTO", required = false) ReviewRequestDTO.addReviewDTO request,
+                                          @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
 
         reviewService.updatePostReview(reviewId, request, file);
         return ApiResponse.onSuccess(ReviewConverter.updateReviewResult(reviewId));

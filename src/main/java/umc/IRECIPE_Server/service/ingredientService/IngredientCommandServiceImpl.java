@@ -22,11 +22,11 @@ public class IngredientCommandServiceImpl implements IngredientCommandService {
     private final MemberRepository memberRepository;
     @Override
     @Transactional
-    public Ingredient addIngredient(String memberId, IngredientRequest.addDTO request, String url) {
+    public Ingredient addIngredient(String memberId, IngredientRequest.addDTO request) {
         Member member = memberRepository.findByPersonalId(memberId)
                 .orElseThrow(() -> new IngredientHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-        Ingredient newIngredient = IngredientConverter.toIngredient(member, request, url);
+        Ingredient newIngredient = IngredientConverter.toIngredient(member, request);
 
         return ingredientRepository.save(newIngredient);
     }

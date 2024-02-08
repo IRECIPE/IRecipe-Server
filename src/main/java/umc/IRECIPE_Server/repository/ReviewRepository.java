@@ -12,4 +12,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     // 게시글 리뷰 조회 (0번 페이지부터 10개씩 최신순으로 조회)
     Page<Review> findAllByPost(Post past, Pageable pageable);
+
+    // 게시글의 리뷰 개수 조회
+    int countByPost_Id(Long postId);
 }

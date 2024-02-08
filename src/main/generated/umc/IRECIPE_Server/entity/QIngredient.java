@@ -24,12 +24,14 @@ public class QIngredient extends EntityPathBase<Ingredient> {
 
     public final umc.IRECIPE_Server.common.QBaseEntity _super = new umc.IRECIPE_Server.common.QBaseEntity(this);
 
-    public final StringPath category = createString("category");
+    public final EnumPath<umc.IRECIPE_Server.common.enums.IngredientCategory> category = createEnum("category", umc.IRECIPE_Server.common.enums.IngredientCategory.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final DatePath<java.time.LocalDate> expiry_date = createDate("expiry_date", java.time.LocalDate.class);
+
+    public final StringPath imageUrl = createString("imageUrl");
 
     public final NumberPath<Long> ingredientId = createNumber("ingredientId", Long.class);
 
@@ -38,6 +40,8 @@ public class QIngredient extends EntityPathBase<Ingredient> {
     public final StringPath memo = createString("memo");
 
     public final StringPath name = createString("name");
+
+    public final NumberPath<Integer> remainingDays = createNumber("remainingDays", Integer.class);
 
     public final EnumPath<umc.IRECIPE_Server.common.enums.Type> type = createEnum("type", umc.IRECIPE_Server.common.enums.Type.class);
 
