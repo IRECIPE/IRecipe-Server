@@ -1,5 +1,6 @@
 package umc.IRECIPE_Server.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
@@ -8,96 +9,126 @@ import umc.IRECIPE_Server.common.enums.Level;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.dto.IngredientResponse;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
 public class PostResponseDTO {
+    @Schema(description = "게시글 신규 등록 응답 DTO")
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class postDTO{
-        // 게시글 id
+        @Schema(description = "게시글 Id", defaultValue = "1")
         private Long postId;
 
     }
 
+    @Schema(description = "임시저장글 응답 DTO")
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class getTempDTO{
-        // 게시글 id
+        @Schema(description = "게시글 Id", defaultValue = "1")
         private Long postId;
-        // 게시글 제목
+
+        @Schema(description = "게시글 제목", defaultValue = "간장게장")
         private String title;
-        // 게시글 소제목
+
+        @Schema(description = "게시글 소제목", defaultValue = "간장게장은 한국의 전통 음식 중 하나로...")
         private String subhead;
-        // 게시글 내용
+
+        @Schema(description = "게시글 내용", defaultValue = "재료 - 꽃게: 2마리 - 간장: 1컵 ...")
         private String content;
-        // 카테고리
+
+        @Schema(description = "음식 카테고리", defaultValue = "WESTERN/JAPANESE/CHINESE/KOREAN/UNIQUE/SIMPLE/ADVANCED")
         private Category category;
-        // 난이도
+
+        @Schema(description = "난이도", defaultValue = "EASY/MID/DIFFICULT")
         private Level level;
-        // 임시저장, 등록
+
+        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "TEMP/POST")
         private Status status;
-        // 게시글 이미지
+
+        @Schema(description = "게시글 사진", defaultValue = "~~~~/images/test.png")
         private String imageUrl;
-        // 생성일
+
+        @Schema(description = "게시글 생성일", defaultValue = "2024/02/08")
         private LocalDate createdAt;
     }
 
+    @Schema(description = "게시글 단일 조회 응답 DTO")
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class getDTO{
-        // 게시글 id
+        @Schema(description = "게시글 Id", defaultValue = "1")
         private Long postId;
-        // 게시글 제목
+
+        @Schema(description = "게시글 제목", defaultValue = "간장게장")
         private String title;
-        // 게시글 소제목
+
+        @Schema(description = "게시글 소제목", defaultValue = "간장게장은 한국의 전통 음식 중 하나로...")
         private String subhead;
-        // 게시글 내용
+
+        @Schema(description = "게시글 내용", defaultValue = "재료 - 꽃게: 2마리 - 간장: 1컵 ...")
         private String content;
-        // 게시글 좋아요 수
+
+        @Schema(description = "게시글 관심수", defaultValue = "3")
         private int likes;
-        // 카테고리
+
+        @Schema(description = "음식 카테고리", defaultValue = "WESTERN/JAPANESE/CHINESE/KOREAN/UNIQUE/SIMPLE/ADVANCED")
         private Category category;
-        // 난이도
+
+        @Schema(description = "난이도", defaultValue = "EASY/MID/DIFFICULT")
         private Level level;
-        // 임시저장, 등록
+
+        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "TEMP/POST")
         private Status status;
-        // 평균 별점
+
+        @Schema(description = "게시글 평균 별점", defaultValue = "4.3")
         private Float score;
-        // 게시글 사진
+
+        @Schema(description = "게시글 사진", defaultValue = "~~~~/images/test.png")
         private String imageUrl;
-        // 작성자 이름
+
+        @Schema(description = "작성자 닉네임", defaultValue = "Alber")
         private String writerNickName;
-        // 작성자 프로필 사진
+
+        @Schema(description = "작성자 프로필 사진", defaultValue = "~~~~~/Alber.jpg")
         private String writerImage;
-        // 생성일
+
+        @Schema(description = "게시글 리뷰 갯수", defaultValue = "13")
+        private int reviewsCount;
+
+        @Schema(description = "게시글 생성일", defaultValue = "2024/02/08")
         private LocalDate createdAt;
     }
 
+    @Schema(description = "게시글 수정 응답 DTO")
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class updateDTO{
-        // 게시글 id
+        @Schema(description = "게시글 Id", defaultValue = "1")
         private Long postId;
     }
 
+    @Schema(description = "게시글 관심 버튼 응답 DTO")
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class likeDTO{
-        // 게시글 id
+        @Schema(description = "게시글 Id", defaultValue = "1")
         private Long postId;
-        // 게시글 좋아요 수
+
+        @Schema(description = "게시글 관심수", defaultValue = "3")
         private Long likes;
     }
 
@@ -106,25 +137,34 @@ public class PostResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class getAllPostDTO{
-        // 게시글 id
+        @Schema(description = "게시글 Id", defaultValue = "1")
         private Long postId;
-        // 게시글 제목
+
+        @Schema(description = "게시글 제목", defaultValue = "간장게장")
         private String title;
-        // 게시글 소제목
+
+        @Schema(description = "게시글 소제목", defaultValue = "간장게장은 한국의 전통 음식 중 하나로...")
         private String subhead;
-        // 게시글 사진
+
+        @Schema(description = "게시글 사진", defaultValue = "~~~~/images/test.png")
         private String imageUrl;
-        // 사용자 별명
+
+        @Schema(description = "작성자 닉네임", defaultValue = "Alber")
         private String nickName;
-        // 사용자 사진
+
+        @Schema(description = "작성자 프로필 사진", defaultValue = "~~~~~/Alber.jpg")
         private String memberImage;
-        // 게시글 관심수
+
+        @Schema(description = "게시글 관심수", defaultValue = "3")
         private int likes;
-        // 게시글 평균 별점
+
+        @Schema(description = "게시글 평균 별점", defaultValue = "4.3")
         private Float score;
-        // 게시글 리뷰 갯수
+
+        @Schema(description = "게시글 리뷰 갯수", defaultValue = "13")
         private int reviewsCount;
-        // 게시글 생성 날짜
+
+        @Schema(description = "게시글 생성일", defaultValue = "2024/02/08")
         private LocalDate createdAt;
     }
 
@@ -133,7 +173,10 @@ public class PostResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LikePostDTO{
+        @Schema(description = "게시글 Id", defaultValue = "1")
         private Long postId;
+
+        @Schema(description = "게시글 관심수", defaultValue = "3")
         private int likes;
     }
 
