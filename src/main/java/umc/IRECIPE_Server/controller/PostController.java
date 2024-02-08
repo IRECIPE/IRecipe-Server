@@ -186,12 +186,20 @@ public class PostController {
         return postService.searchPost(keyword, type, page);
     }
 
+    @Operation(
+            summary = "이달의 랭킹 전체 조회 API",
+            description = "페이지 번호 받아서 이달의 랭킹 레시피들 조회"
+    )
     @GetMapping("/ranking")
     public ApiResponse<PostResponseDTO.findAllResultListDTO> getRankedPost(@RequestParam(name = "page") Integer page) {
         Page<Post> ranking = postService.getRanking(page);
         return ApiResponse.onSuccess(PostConverter.toFindAllResultListDTO(ranking));
     }
 
+    @Operation(
+            summary = "카테고리별 이달의 랭킹 조회 API",
+            description = "페이지 번호와 카테고리(PathVariable) 받아서 카테고리별 랭킹 조회"
+    )
     @GetMapping("/ranking/{category}")
     public ApiResponse<PostResponseDTO.findAllResultListDTO> getCategoryRankedPost(@RequestParam(name = "page") Integer page,
                                                                                    @PathVariable(name = "category") Category category) {

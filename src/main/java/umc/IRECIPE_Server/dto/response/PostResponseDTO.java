@@ -132,6 +132,7 @@ public class PostResponseDTO {
         private Long likes;
     }
 
+    @Schema(description = "커뮤니티 화면 조회 응답 DTO")
     @Builder
     @Getter
     @NoArgsConstructor
@@ -168,6 +169,7 @@ public class PostResponseDTO {
         private LocalDate createdAt;
     }
 
+    @Schema(description = "게시글 관심 응답 DTO")
     @Builder
     @Getter
     @NoArgsConstructor
@@ -180,18 +182,33 @@ public class PostResponseDTO {
         private int likes;
     }
 
+    @Schema(description = "이달의 랭킹 게시글 응답 DTO")
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class getRankedPostDTO {
+
+        @Schema(description = "게시글 Id", defaultValue = "1")
         private Long postId;
+
+        @Schema(description = "게시글 제목", defaultValue = "간장게장")
         private String title;
+
+        @Schema(description = "게시글 사진", defaultValue = "~~~~/images/test.png")
         private String imageUrl;
+
+        @Schema(description = "게시글 관심수", defaultValue = "3")
         private Integer likes;
+
+        @Schema(description = "게시글 평균 별점", defaultValue = "4.3")
         private Float scores;
+
+        @Schema(description = "게시글 한달 평균 별점", defaultValue = "4.3")
         private Float scoresInOneMonth;
     }
+
+    @Schema(description = "이달의 랭킹 게시글 리스트 DTO")
     @Builder
     @Getter
     @NoArgsConstructor
