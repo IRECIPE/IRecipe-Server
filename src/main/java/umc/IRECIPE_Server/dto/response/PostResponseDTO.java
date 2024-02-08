@@ -190,6 +190,7 @@ public class PostResponseDTO {
         private String imageUrl;
         private Integer likes;
         private Float scores;
+        private Float scoresInOneMonth;
     }
     @Builder
     @Getter

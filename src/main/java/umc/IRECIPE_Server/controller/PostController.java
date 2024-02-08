@@ -16,6 +16,7 @@ import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.common.S3.S3Service;
+import umc.IRECIPE_Server.common.enums.Category;
 import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
@@ -189,6 +190,12 @@ public class PostController {
     public ApiResponse<PostResponseDTO.findAllResultListDTO> getRankedPost(@RequestParam(name = "page") Integer page) {
         Page<Post> ranking = postService.getRanking(page);
         return ApiResponse.onSuccess(PostConverter.toFindAllResultListDTO(ranking));
+    }
 
+    @GetMapping("/ranking/{category}")
+    public ApiResponse<PostResponseDTO.findAllResultListDTO> getCategoryRankedPost(@RequestParam(name = "page") Integer page,
+                                                                                   @PathVariable(name = "category") Category category) {
+        Page<Post> ranking = postService.getCategoryRanking(page, category);
+        return ApiResponse.onSuccess(PostConverter.toFindAllResultListDTO(ranking));
     }
 }
