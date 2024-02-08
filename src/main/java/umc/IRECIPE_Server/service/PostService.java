@@ -74,6 +74,7 @@ public class PostService {
                 .imageUrl(url)
                 .fileName(fileName)
                 .status(postRequestDto.getStatus())
+                .score(0.0F)
                 .build();
 
         // 게시글 저장
