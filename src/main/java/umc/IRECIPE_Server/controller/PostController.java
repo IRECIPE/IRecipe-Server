@@ -36,8 +36,8 @@ public class PostController {
 
     //게시글 등록하는 컨트롤러
     @Operation(
-            summary = "새로운 게시글 등록",
-            description = "사진과 게시글 내용을 이용하여 게시글을 신규 등록하는 기능"
+            summary = "새로운 게시글 등록 API",
+            description = "게시글 내용(DTO, MultipartFile)을 이용하여 게시글을 신규 등록하는 기능"
     )
     @PostMapping(value = "/new-post",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -66,7 +66,7 @@ public class PostController {
 
     // 글쓰기 버튼 눌렀을 때 임시저장 있으면 불러오고, 없으면 그냥 새 글 쓰는 컨트롤러
     @Operation(
-            summary = "임시저장글 불러오기",
+            summary = "임시저장글 불러오기 API",
             description = "글쓰기 버튼 눌렀을 때 임시저장 있으면 불러오고, 없으면 임시저장글 없다는 메시지반환"
     )
     @GetMapping(value = "/new-temp")
@@ -80,8 +80,8 @@ public class PostController {
 
     // 게시글 단일 조회 컨트롤러
     @Operation(
-            summary = "게시글 단일 조회",
-            description = "게시글 Id 를 이용하여 해당 게시글 조회"
+            summary = "게시글 단일 조회 API",
+            description = "게시글 Id(PathVariable) 를 이용하여 해당 게시글 조회"
     )
     @GetMapping("/{postId}")
     public ApiResponse<?> getPost(@PathVariable("postId") Long postId) {
@@ -95,8 +95,8 @@ public class PostController {
 
     // 게시글 수정 컨트롤러
     @Operation(
-            summary = "게시글 수정",
-            description = "게시글 Id 와 게시글 전체를 다시 한번 받아서 게시글 수정"
+            summary = "게시글 수정 API",
+            description = "게시글 Id(PathVariable) 와 게시글 전체(DTO, MultipartFile)를 다시 한번 받아서 게시글 수정"
     )
     @PatchMapping(value = "/{postId}",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -119,8 +119,8 @@ public class PostController {
 
     // 게시글 삭제 컨트롤러
     @Operation(
-            summary = "게시글 삭제",
-            description = "게시글 Id 받아서 게시글 삭제"
+            summary = "게시글 삭제 API",
+            description = "게시글 Id(PathVariable) 받아서 게시글 삭제"
     )
     @DeleteMapping("/{postId}")
     public ApiResponse<?> deletePost(@PathVariable("postId") Long postId) {
@@ -133,7 +133,7 @@ public class PostController {
 
     // 커뮤니티 화면 조회
     @Operation(
-            summary = "커뮤니티 처음 화면 조회",
+            summary = "커뮤니티 처음 화면 조회 API",
             description = "페이지 번호와 정렬 기준(likes, createdAt, score) 받아서 모든 게시글의 정보 반환"
     )
     @GetMapping("/paging")
@@ -145,7 +145,7 @@ public class PostController {
     }
 
     @Operation(
-            summary = "게시글 관심 저장",
+            summary = "게시글 관심 추가 API",
             description = "관심 눌렀을 때 게시글의 관심 + 1, 사용자 관심에 추가"
     )
     @PostMapping("/like/{postId}")
@@ -160,7 +160,7 @@ public class PostController {
     }
 
     @Operation(
-            summary = "게시글 관심 삭제",
+            summary = "게시글 관심 삭제 API",
             description = "관심 한번 더 누르면 관심 - 1, 관심에서 제거"
     )
     @DeleteMapping("/like/{postId}")
@@ -174,7 +174,7 @@ public class PostController {
     }
 
     @Operation(
-            summary = "게시글 검색",
+            summary = "게시글 검색 API",
             description = "페이지 번호, 검색어, 검색 기준(title, content, writer) 받아서 검색된 게시글 정보 반환"
     )
     @GetMapping("/search")

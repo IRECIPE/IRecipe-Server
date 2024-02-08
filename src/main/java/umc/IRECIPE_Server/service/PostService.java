@@ -193,6 +193,7 @@ public class PostService {
         return ApiResponse.onSuccess(PostConverter.toLikePostDTO(post));
     }
 
+    // 관심 한번 더 눌렀을 때
     public ApiResponse<?> deleteLike(String userId, Long postId){
         // 멤버 찾기. null 이면 예외 처리 (NosuchElementException)
         Member member = memberRepository.findByPersonalId(userId)
@@ -212,6 +213,7 @@ public class PostService {
         return ApiResponse.onSuccess(PostConverter.toLikePostDTO(post));
     }
 
+    // 게시글 검색
     public ApiResponse<?> searchPost(String keyword, String type, int page){
 
         Page<Post> postPage;
