@@ -53,6 +53,7 @@ public class PostConverter {
                 .writerNickName(member.getNickname())
                 .writerImage(member.getProfileImage())
                 .createdAt(post.getCreatedAt().toLocalDate())
+                .reviewsCount(post.getReviewList().size())
                 .build();
     }
 
