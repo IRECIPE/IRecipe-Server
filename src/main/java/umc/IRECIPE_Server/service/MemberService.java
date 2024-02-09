@@ -238,6 +238,10 @@ public class MemberService {
             postList.add(tmp);
         }
 
+        if(postList.isEmpty()){
+            throw new MemberHandler(ErrorStatus.POST_NOT_FOUND);
+        }
+
         return postList;
     }
 
