@@ -1,7 +1,6 @@
 package umc.IRECIPE_Server.service;
 
 import java.io.IOException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,8 +43,8 @@ public class MemberService {
         return memberRepository.existsByNickname(Nickname);
     }
 
-    public Optional<Member> findMember(Long id) {
-        return memberRepository.findById(id);
+    public Boolean findMemberByPersonalId(String id){
+        return memberRepository.existsByPersonalId(id);
     }
 
     public Member findMember(String personalId) {
@@ -59,20 +58,9 @@ public class MemberService {
             throw new MemberHandler(ErrorStatus.NICKNAME_ALREADY_EXIST);
     }
 
-    public Member findMemberId(String personalId){
-        Member member = memberRepository.findByPersonalId(personalId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        if(member == null){
-            throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
-        }
-        return member;
-    }
-
     public MemberAllergy findMemberAllergy(Long memberId, Long allergyId){
         return memberAllergyRepository
                 .findByAllergy_IdAndMember_Id(memberId, allergyId);
-
-
     }
 
     @Transactional
