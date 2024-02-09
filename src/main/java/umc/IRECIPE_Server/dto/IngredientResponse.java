@@ -27,6 +27,7 @@ public class IngredientResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class findOneResultDTO{
+        Long ingredientId;
         String name;
         IngredientCategory category;
         String memo;
@@ -57,6 +58,7 @@ public class IngredientResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class findIngredientResultDTO{
+        Long ingredientId;
         String name;
         IngredientCategory category;
         String memo;
