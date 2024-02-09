@@ -17,6 +17,7 @@ import umc.IRECIPE_Server.entity.Post;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import umc.IRECIPE_Server.entity.Review;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -31,6 +32,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findByMemberAndStatus(Pageable pageable, Member member, Status status);
 
+    Post findByStatusAndId(Status status, Long id);
+
     List<Post> findAllByMember(Member member);
 
     @Query("select p from Post p where p.status = 'POST' " +
@@ -41,4 +44,3 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "order by p.scoreInOneMonth desc, p.likes desc")
     Page<Post> findCategoryRankedPost(PageRequest pageRequest, @Param("category") Category category);
 }
-
