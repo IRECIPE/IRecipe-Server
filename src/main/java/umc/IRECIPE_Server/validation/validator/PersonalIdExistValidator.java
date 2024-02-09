@@ -7,14 +7,15 @@ import org.springframework.stereotype.Component;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.service.MemberService;
 import umc.IRECIPE_Server.validation.annotation.ExistNickname;
+import umc.IRECIPE_Server.validation.annotation.ExistPersonalId;
 
 @Component
 @RequiredArgsConstructor
-public class PersonalIdExistValidator implements ConstraintValidator<ExistNickname, String> {
+public class PersonalIdExistValidator implements ConstraintValidator<ExistPersonalId, String> {
     private final MemberService memberService;
 
     @Override
-    public void initialize(ExistNickname constraintAnnotation) {
+    public void initialize(ExistPersonalId constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
