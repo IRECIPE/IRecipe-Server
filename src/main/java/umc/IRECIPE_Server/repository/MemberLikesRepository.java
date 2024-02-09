@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface MemberLikesRepository extends JpaRepository<MemberLikes, Long> {
 
     Optional<MemberLikes> findByMemberAndPost(Member member, Post post);
-
-    List<MemberLikes> findAllByMember(Member member);
+    
 }
