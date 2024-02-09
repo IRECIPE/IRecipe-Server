@@ -206,6 +206,7 @@ public class PostResponseDTO {
 
         @Schema(description = "게시글 한달 평균 별점", defaultValue = "4.3")
         private Float scoresInOneMonth;
+
     }
 
     @Schema(description = "이달의 랭킹 게시글 리스트 DTO")
@@ -214,11 +215,17 @@ public class PostResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class findAllResultListDTO{
+        @Schema(description = "게시글 리스트")
         List<PostResponseDTO.getRankedPostDTO> postList;
+        @Schema(description = "리스트 사이즈", defaultValue = "1")
         Integer listSize;
+        @Schema(description = "전체 페이지 갯수", defaultValue = "1")
         Integer totalPage;
+        @Schema(description = "전체 데이터 갯수", defaultValue = "10")
         Long totalElements;
+        @Schema(description = "첫 페이지면 true", defaultValue = "true")
         Boolean isFirst;
+        @Schema(description = " 마지막 페이지면 true", defaultValue = "true")
         Boolean isLast;
     }
 }
