@@ -1,13 +1,18 @@
 package umc.IRECIPE_Server.converter;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
 import umc.IRECIPE_Server.common.enums.Role;
 import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberResponse;
+import umc.IRECIPE_Server.dto.MemberResponse.getPostsDto;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
+import umc.IRECIPE_Server.entity.Post;
+import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.TokenRepository;
 
@@ -83,4 +88,50 @@ public class MemberConverter {
                 .str("사용 가능한 닉네임 입니다.")
                 .build();
     }
+
+    public static MemberResponse.getPostsDto postsDto(Post post){
+        return MemberResponse.getPostsDto.builder()
+                .title(post.getTitle())
+                .subhead(post.getSubhead())
+                .level(post.getLevel())
+                .likes(post.getLikes())
+                .fileName(post.getFileName())
+                .content(post.getContent())
+                .category(post.getCategory())
+                .imageUrl(post.getImageUrl())
+                .build();
+    }
+
+    public static List<MemberResponse.getPostsDto> postsListDto(Page<Post> postPage){
+        return postPage.stream()
+                .map(val -> MemberResponse.getPostsDto.builder()
+                        .title(val.getTitle())
+                        .subhead(val.getSubhead())
+                        .level(val.getLevel())
+                        .score(val.getScore())
+                        .content(val.getContent())
+                        .likes(val.getLikes())
+                        .imageUrl(val.getImageUrl())
+                        .category(val.getCategory())
+                        .fileName(val.getFileName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public static List<MemberResponse.getPostsDto> postsLikedListDto(List<Post> postList){
+        return postList.stream()
+                .map(val -> MemberResponse.getPostsDto.builder()
+                        .title(val.getTitle())
+                        .subhead(val.getSubhead())
+                        .level(val.getLevel())
+                        .score(val.getScore())
+                        .content(val.getContent())
+                        .likes(val.getLikes())
+                        .imageUrl(val.getImageUrl())
+                        .category(val.getCategory())
+                        .fileName(val.getFileName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }

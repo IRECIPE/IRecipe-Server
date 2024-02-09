@@ -1,8 +1,8 @@
 package umc.IRECIPE_Server.controller;
 
 import io.jsonwebtoken.io.IOException;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
+import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.PostHandler;
 import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.dto.MemberRequest;
@@ -97,10 +99,37 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.updateNicknameResult());
     }
 
+    @Description("로그인")
     @PostMapping(value = "/login")
     public ApiResponse<MemberResponse.JoinResultDto> joinLogin(
             @RequestBody @Valid MemberLoginRequestDto.JoinLoginDto request){
         Member response = memberService.login(request);
         return ApiResponse.onSuccess(MemberConverter.toJoinResult(response, jwtProvider));
+    }
+
+    @Description("사용자가 작성한 글 보기 api")
+    @GetMapping(value = "/written")
+    public ApiResponse<List<MemberResponse.getPostsDto>> showWrittenPosts(
+            @RequestParam(name = "page") Integer page
+    ){
+        if(page < 0) throw new PostHandler(ErrorStatus.INVALID_PAGE);
+        //사용자 id 찾기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();//personal id
+
+        return ApiResponse.onSuccess(MemberConverter.postsListDto(memberService.getWrittenPostList(userId, page)));
+    }
+
+    @Description("사용자가 좋아요 누른 글 보기")
+    @GetMapping(value = "/liked")
+    public ApiResponse<?> showLikedPosts(
+            @RequestParam(name = "page") Integer page
+    ){
+        if(page < 0) throw new PostHandler(ErrorStatus.INVALID_PAGE);
+        //사용자 id 찾기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();//personal id
+
+        return ApiResponse.onSuccess(MemberConverter.postsLikedListDto(memberService.getLikedPostList(userId, page)));
     }
 }

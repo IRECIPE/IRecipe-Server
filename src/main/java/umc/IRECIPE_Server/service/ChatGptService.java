@@ -9,7 +9,7 @@ import umc.IRECIPE_Server.dto.response.ChatGptResponseDTO;
 
 public interface ChatGptService {
 
-    // 랜덤 레시피 & 일반 채팅
+    // 랜덤 레시피
     ChatGptResponseDTO askQuestion(String memberId, String question);
 
     // 사용자 재료 기반 레시피
