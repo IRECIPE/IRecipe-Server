@@ -25,11 +25,11 @@ public class PostRequestDTO {
         private String title;
         @Schema(description = "게시글 소제목", defaultValue = "간장게장은 한국의 전통 음식 중 하나로...")
         private String subhead;
-        @Schema(description = "음식 카테고리", defaultValue = "WESTERN/JAPANESE/CHINESE/KOREAN/UNIQUE/SIMPLE/ADVANCED")
+        @Schema(description = "음식 카테고리", defaultValue = "WESTERN")
         private Category category;
-        @Schema(description = "난이도", defaultValue = "EASY/MID/DIFFICULT")
+        @Schema(description = "난이도", defaultValue = "EASY")
         private Level level;
-        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "TEMP/POST")
+        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "POST")
         private Status status;
         @Schema(description = "게시글 내용", defaultValue = "재료 - 꽃게: 2마리 - 간장: 1컵 ...")
         private String content;
@@ -46,11 +46,11 @@ public class PostRequestDTO {
         private String title;
         @Schema(description = "게시글 소제목", defaultValue = "간장게장은 한국의 전통 음식 중 하나로...")
         private String subhead;
-        @Schema(description = "음식 카테고리", defaultValue = "WESTERN/JAPANESE/CHINESE/KOREAN/UNIQUE/SIMPLE/ADVANCED")
+        @Schema(description = "음식 카테고리", defaultValue = "WESTERN")
         private Category category;
-        @Schema(description = "난이도", defaultValue = "EASY/MID/DIFFICULT")
+        @Schema(description = "난이도", defaultValue = "EASY")
         private Level level;
-        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "TEMP/POST")
+        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "POST")
         private Status status;
         @Schema(description = "게시글 내용", defaultValue = "재료 - 꽃게: 2마리 - 간장: 1컵 ...")
         private String content;
