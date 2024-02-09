@@ -130,6 +130,6 @@ public class MemberController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();//personal id
 
-        return ApiResponse.onSuccess(MemberConverter.postsListDto(memberService.getLikedPostList(userId, page)));
+        return ApiResponse.onSuccess(MemberConverter.postsLikedListDto(memberService.getLikedPostList(userId, page)));
     }
 }

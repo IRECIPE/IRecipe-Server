@@ -29,6 +29,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findByMemberAndStatus(Pageable pageable, Member member, Status status);
 
+    Post findByStatusAndId(Status status, Long id);
+
     List<Post> findAllByMember(Member member);
 
     @Query("select p from Post p order by p.score desc, p.likes desc")

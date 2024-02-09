@@ -214,8 +214,8 @@ public class MemberService {
         return postPage;
     }
 
-    public Page<Post> getLikedPostList(String personalId, Integer page) {
-        Page<Post> postPage;
+    public List<Post> getLikedPostList(String personalId, Integer page) {
+        Page<MemberLikes> postIdPage;
         Pageable pageable = PageRequest.of(page, 10);
 
         Optional<Member> member = memberRepository.findByPersonalId(personalId);
@@ -225,15 +225,20 @@ public class MemberService {
         Member mem = member.get();
         log.info(mem.getName());
 
-        Optional<MemberLikes> memberLikes = memberLikesRepository.findByMember(mem);
-
-        postPage = postRepository.findByMemberAndStatus(pageable, mem, Status.POST);
-        if(postPage.isEmpty()) {
+        postIdPage = memberLikesRepository.findByMember(mem, pageable);
+        if(postIdPage.isEmpty()){
             if(page > 0) throw new PostHandler(ErrorStatus.NO_MORE_PAGE);
-            else if(page == 0) throw new PostHandler(ErrorStatus.MEMBER_DONT_HAVE_POSTS);
+            if(page == 0) throw new PostHandler(ErrorStatus.MEMBER_DONT_HAVE_POSTS);
         }
 
-        return postPage;
+        List<Post> postList = new ArrayList<>();
+        for(MemberLikes memberLikes : postIdPage.toList()){
+            Long id = memberLikes.getId();
+            Post tmp = postRepository.findByStatusAndId(Status.POST, id);
+            postList.add(tmp);
+        }
+
+        return postList;
     }
 
 }
