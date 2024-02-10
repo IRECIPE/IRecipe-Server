@@ -103,7 +103,7 @@ public class ChatGptServiceImpl implements ChatGptService {
         return responseEntity.getBody();
     }
 
-    // ChatGPT API 요청하기 - 랜덤 레시피 / 일반 채팅
+    // ChatGPT API 요청하기 - 랜덤 레시피
     @Override
     public ChatGptResponseDTO askQuestion(String memberId, String question) {
 

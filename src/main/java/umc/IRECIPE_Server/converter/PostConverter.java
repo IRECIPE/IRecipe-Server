@@ -12,6 +12,7 @@ import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PostConverter {
@@ -38,7 +39,7 @@ public class PostConverter {
 
 
 
-    public static PostResponseDTO.getDTO toGetResponseDTO(Post post, Member member){
+    public static PostResponseDTO.getDTO toGetResponseDTO(Post post, Member member, boolean likeOrNot){
         return PostResponseDTO.getDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -53,6 +54,8 @@ public class PostConverter {
                 .writerNickName(member.getNickname())
                 .writerImage(member.getProfileImage())
                 .createdAt(post.getCreatedAt().toLocalDate())
+                .reviewsCount(post.getReviewList().size())
+                .likeOrNot(likeOrNot)
                 .build();
     }
 
@@ -62,7 +65,7 @@ public class PostConverter {
                 .build();
     }
 
-    public static List<PostResponseDTO.getAllPostDTO> toGetAllPostDTO(Page<Post> postPage){
+    public static List<PostResponseDTO.getAllPostDTO> toGetAllPostDTO(Page<Post> postPage, Map<Long, Boolean> likeMap){
         return postPage.stream()
                 .map(m -> PostResponseDTO.getAllPostDTO.builder()
                         .postId(m.getId())
@@ -75,6 +78,7 @@ public class PostConverter {
                         .nickName(m.getMember().getNickname())
                         .memberImage(m.getMember().getProfileImage())
                         .createdAt(m.getCreatedAt().toLocalDate())
+                        .likeOrNot(likeMap.get(m.getId()))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -87,12 +91,14 @@ public class PostConverter {
     }
 
     public static PostResponseDTO.getRankedPostDTO toGetRankedPostDTO(Post post) {
+
         return PostResponseDTO.getRankedPostDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .scores(post.getScore())
                 .likes(post.getLikes())
                 .imageUrl(post.getImageUrl())
+                .scoresInOneMonth(post.getScoreInOneMonth())
                 .build();
 
     }
