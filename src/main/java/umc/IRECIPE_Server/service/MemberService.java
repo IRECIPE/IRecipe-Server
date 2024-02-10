@@ -57,8 +57,8 @@ public class MemberService {
         return memberRepository.existsByNickname(Nickname);
     }
 
-    public Optional<Member> findMember(Long id) {
-        return memberRepository.findById(id);
+    public Boolean findMemberByPersonalId(String id){
+        return memberRepository.existsByPersonalId(id);
     }
 
     public Member findMember(String personalId) {
