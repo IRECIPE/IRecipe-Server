@@ -44,19 +44,19 @@ public class PostResponseDTO {
         @Schema(description = "게시글 내용", defaultValue = "재료 - 꽃게: 2마리 - 간장: 1컵 ...")
         private String content;
 
-        @Schema(description = "음식 카테고리", defaultValue = "WESTERN/JAPANESE/CHINESE/KOREAN/UNIQUE/SIMPLE/ADVANCED")
+        @Schema(description = "음식 카테고리", defaultValue = "WESTERN")
         private Category category;
 
-        @Schema(description = "난이도", defaultValue = "EASY/MID/DIFFICULT")
+        @Schema(description = "난이도", defaultValue = "EASY")
         private Level level;
 
-        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "TEMP/POST")
+        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "POST")
         private Status status;
 
-        @Schema(description = "게시글 사진", defaultValue = "~~~~/images/test.png")
+        @Schema(description = "게시글 사진")
         private String imageUrl;
 
-        @Schema(description = "게시글 생성일", defaultValue = "2024/02/08")
+        @Schema(description = "게시글 생성일")
         private LocalDate createdAt;
     }
 
@@ -81,31 +81,34 @@ public class PostResponseDTO {
         @Schema(description = "게시글 관심수", defaultValue = "3")
         private int likes;
 
-        @Schema(description = "음식 카테고리", defaultValue = "WESTERN/JAPANESE/CHINESE/KOREAN/UNIQUE/SIMPLE/ADVANCED")
+        @Schema(description = "음식 카테고리", defaultValue = "WESTERN")
         private Category category;
 
-        @Schema(description = "난이도", defaultValue = "EASY/MID/DIFFICULT")
+        @Schema(description = "난이도", defaultValue = "EASY")
         private Level level;
 
-        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "TEMP/POST")
+        @Schema(description = "게시글 상태(임시저장 여부)", defaultValue = "POST")
         private Status status;
 
         @Schema(description = "게시글 평균 별점", defaultValue = "4.3")
         private Float score;
 
-        @Schema(description = "게시글 사진", defaultValue = "~~~~/images/test.png")
+        @Schema(description = "게시글 사진")
         private String imageUrl;
 
         @Schema(description = "작성자 닉네임", defaultValue = "Alber")
         private String writerNickName;
 
-        @Schema(description = "작성자 프로필 사진", defaultValue = "~~~~~/Alber.jpg")
+        @Schema(description = "작성자 프로필 사진")
         private String writerImage;
 
         @Schema(description = "게시글 리뷰 갯수", defaultValue = "13")
         private int reviewsCount;
 
-        @Schema(description = "게시글 생성일", defaultValue = "2024/02/08")
+        @Schema(description = "해당 사용자가 관심 눌렀는지", defaultValue = "false")
+        private boolean likeOrNot;
+
+        @Schema(description = "게시글 생성일")
         private LocalDate createdAt;
     }
 
@@ -147,13 +150,13 @@ public class PostResponseDTO {
         @Schema(description = "게시글 소제목", defaultValue = "간장게장은 한국의 전통 음식 중 하나로...")
         private String subhead;
 
-        @Schema(description = "게시글 사진", defaultValue = "~~~~/images/test.png")
+        @Schema(description = "게시글 사진")
         private String imageUrl;
 
         @Schema(description = "작성자 닉네임", defaultValue = "Alber")
         private String nickName;
 
-        @Schema(description = "작성자 프로필 사진", defaultValue = "~~~~~/Alber.jpg")
+        @Schema(description = "작성자 프로필 사진")
         private String memberImage;
 
         @Schema(description = "게시글 관심수", defaultValue = "3")
@@ -165,8 +168,11 @@ public class PostResponseDTO {
         @Schema(description = "게시글 리뷰 갯수", defaultValue = "13")
         private int reviewsCount;
 
-        @Schema(description = "게시글 생성일", defaultValue = "2024/02/08")
+        @Schema(description = "게시글 생성일")
         private LocalDate createdAt;
+
+        @Schema(description = "해당 사용자가 관심 눌렀는지", defaultValue = "false")
+        private boolean likeOrNot;
     }
 
     @Schema(description = "게시글 관심 응답 DTO")
@@ -195,7 +201,7 @@ public class PostResponseDTO {
         @Schema(description = "게시글 제목", defaultValue = "간장게장")
         private String title;
 
-        @Schema(description = "게시글 사진", defaultValue = "~~~~/images/test.png")
+        @Schema(description = "게시글 사진")
         private String imageUrl;
 
         @Schema(description = "게시글 관심수", defaultValue = "3")

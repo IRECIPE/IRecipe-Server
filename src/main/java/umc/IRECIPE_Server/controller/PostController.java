@@ -141,7 +141,11 @@ public class PostController {
                                        @RequestParam(required = false, value = "criteria") String criteria
     )
     {
-        return postService.getPostsPage(page, criteria);
+        // 현재 토큰을 사용중인 유저 고유 id 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        return postService.getPostsPage(page, criteria, userId);
     }
 
     @Operation(
@@ -183,7 +187,11 @@ public class PostController {
                                      @RequestParam(required = false, value = "type") String type
     )
     {
-        return postService.searchPost(keyword, type, page);
+        // 현재 토큰을 사용중인 유저 고유 id 조회
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        return postService.searchPost(keyword, type, page, userId);
     }
 
     @Operation(
