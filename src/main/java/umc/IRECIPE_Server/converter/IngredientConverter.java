@@ -38,6 +38,7 @@ public class IngredientConverter {
     public static IngredientResponse.findOneResultDTO toFindOneResultDTO(Ingredient ingredient) {
 
         return IngredientResponse.findOneResultDTO.builder()
+                .ingredientId(ingredient.getIngredientId())
                 .name(ingredient.getName())
                 .memo(ingredient.getMemo())
                 .category(ingredient.getCategory())
@@ -66,6 +67,7 @@ public class IngredientConverter {
     private static IngredientResponse.findIngredientResultDTO toFindIngredientResultDTO(Ingredient ingredient) {
 
         return IngredientResponse.findIngredientResultDTO.builder()
+                .ingredientId(ingredient.getIngredientId())
                 .name(ingredient.getName())
                 .memo(ingredient.getMemo())
                 .category(ingredient.getCategory())
