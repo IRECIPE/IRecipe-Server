@@ -29,13 +29,13 @@ import umc.IRECIPE_Server.repository.PostRepository;
 
 import umc.IRECIPE_Server.repository.StoredRecipeRepository;
 
+import javax.swing.text.StyledEditorKit;
 import javax.swing.text.html.Option;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,7 +112,9 @@ public class PostService {
         Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
         memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, memberOptional.get()));
+        boolean likeOrNot = memberLikesRepository.findByMemberAndPost(memberOptional.get(), post).isPresent();
+
+        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, memberOptional.get(), likeOrNot));
 
     }
 
@@ -156,12 +158,22 @@ public class PostService {
     }
 
     // 커뮤니티 화면 조회
-    public ApiResponse<?> getPostsPage(int page, String criteria){
+    public ApiResponse<?> getPostsPage(int page, String criteria, String userId){
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, criteria));
         Page<Post> postPage = postRepository.findAllByStatus(pageable, Status.POST);
 
-        return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage));
+        Member member = memberRepository.findByPersonalId(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // memberLike 에서 찾으면 관심 눌렀던 게시글, 못 찾으면 관심 안 누른 게시글
+        Map<Long, Boolean> likeMap = new HashMap<>();
+        for (Post post : postPage) {
+            Boolean likeOrNot = memberLikesRepository.findByMemberAndPost(member, post).isPresent();
+            likeMap.put(post.getId(), likeOrNot);
+        }
+
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage, likeMap));
     }
 
     // 게시글에 관심 눌렀을 때
@@ -214,15 +226,26 @@ public class PostService {
     }
 
     // 게시글 검색
-    public ApiResponse<?> searchPost(String keyword, String type, int page){
+    public ApiResponse<?> searchPost(String keyword, String type, int page, String userId){
+
+        // 멤버 찾기. null 이면 예외 처리 (NosuchElementException)
+        Member member = memberRepository.findByPersonalId(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         Page<Post> postPage;
         Pageable pageable = PageRequest.of(page, 10);
+        Map<Long, Boolean> likeMap = new HashMap<>();
 
         if (type.equals("title")){
             postPage = postRepository.findByTitleContainingAndStatus(pageable, keyword, Status.POST);
             if(postPage.isEmpty()){
                 throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+            }
+
+            // memberLike 에서 찾으면 관심 눌렀던 게시글, 못 찾으면 관심 안 누른 게시글
+            for (Post post : postPage) {
+                Boolean likeOrNot = memberLikesRepository.findByMemberAndPost(member, post).isPresent();
+                likeMap.put(post.getId(), likeOrNot);
             }
         }
         else if(type.equals("content")){
@@ -230,24 +253,36 @@ public class PostService {
             if(postPage.isEmpty()){
                 throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
             }
+
+            // memberLike 에서 찾으면 관심 눌렀던 게시글, 못 찾으면 관심 안 누른 게시글
+            for (Post post : postPage) {
+                Boolean likeOrNot = memberLikesRepository.findByMemberAndPost(member, post).isPresent();
+                likeMap.put(post.getId(), likeOrNot);
+            }
         }
         else if(type.equals("writer")){
             // 멤버 찾기. null 이면 예외 처리 (NosuchElementException)
-            Member member = memberRepository.findByNickname(keyword);
-            if(member == null){
+            Member keyMember = memberRepository.findByNickname(keyword);
+            if(keyMember == null){
                 throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
             }
 
-            postPage = postRepository.findByMemberAndStatus(pageable, member, Status.POST);
+            postPage = postRepository.findByMemberAndStatus(pageable, keyMember, Status.POST);
             if(postPage.isEmpty()){
                 throw new GeneralException(ErrorStatus.POST_NOT_FOUND);
+            }
+
+            // memberLike 에서 찾으면 관심 눌렀던 게시글, 못 찾으면 관심 안 누른 게시글
+            for (Post post : postPage) {
+                Boolean likeOrNot = memberLikesRepository.findByMemberAndPost(member, post).isPresent();
+                likeMap.put(post.getId(), likeOrNot);
             }
         }
         else {
             throw new GeneralException(ErrorStatus.CONTENT_NOT_EXIST);
         }
 
-        return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage));
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage, likeMap));
     }
 
     public Page<Post> getRanking(Integer page) {

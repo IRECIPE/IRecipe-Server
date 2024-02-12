@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.IRECIPE_Server.validation.annotation.ExistAllergies;
 import umc.IRECIPE_Server.validation.annotation.ExistNickname;
+import umc.IRECIPE_Server.validation.annotation.ExistPersonalId;
 
 public class MemberRequest {
     @Builder
@@ -51,6 +52,8 @@ public class MemberRequest {
 
     @Getter
     @Valid
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class JoinDto{
         @NotBlank
         String name;
@@ -67,7 +70,7 @@ public class MemberRequest {
         @ExistAllergies
         List<Long> allergyList;
 
-        @NotBlank
+        @ExistPersonalId
         String personalId;
     }
 }

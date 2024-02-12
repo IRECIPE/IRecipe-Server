@@ -7,6 +7,7 @@ import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberLikes;
 import umc.IRECIPE_Server.entity.Post;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberLikesRepository extends JpaRepository<MemberLikes, Long> {
@@ -14,4 +15,5 @@ public interface MemberLikesRepository extends JpaRepository<MemberLikes, Long> 
     Optional<MemberLikes> findByMemberAndPost(Member member, Post post);
 
     Page<MemberLikes> findByMember(Member member, Pageable pageable);
+
 }
