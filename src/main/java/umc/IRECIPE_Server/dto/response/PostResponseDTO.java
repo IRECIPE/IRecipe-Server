@@ -217,15 +217,15 @@ public class PostResponseDTO {
     public static class findAllResultListDTO{
         @Schema(description = "게시글 리스트")
         List<PostResponseDTO.getRankedPostDTO> postList;
-        @Schema(description = "리스트 사이즈", defaultValue = "1")
+        @Schema(description = "리스트 사이즈")
         Integer listSize;
-        @Schema(description = "전체 페이지 갯수", defaultValue = "1")
+        @Schema(description = "전체 페이지 갯수")
         Integer totalPage;
-        @Schema(description = "전체 데이터 갯수", defaultValue = "10")
+        @Schema(description = "전체 데이터 갯수")
         Long totalElements;
-        @Schema(description = "첫 페이지면 true", defaultValue = "true")
+        @Schema(description = "첫 페이지면 true")
         Boolean isFirst;
-        @Schema(description = " 마지막 페이지면 true", defaultValue = "true")
+        @Schema(description = " 마지막 페이지면 true")
         Boolean isLast;
     }
 }
