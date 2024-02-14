@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
+import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.converter.ChatGptConverter;
 import umc.IRECIPE_Server.dto.request.ChatGptRecipeSaveRequestDTO;
 import umc.IRECIPE_Server.dto.request.DislikedFoodRequestDTO;
@@ -58,8 +59,12 @@ public class ChatGptController {
     public ApiResponse<UserChatGptResponseDTO.UserGptResponseDTO> getRefriRecipeResponse() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberId = authentication.getName();
-        String response = chatGPTService.askRefriQuestion(memberId).getChoices().get(0).getMessage().getContent();
-        return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
+        try {
+            String response = chatGPTService.askRefriQuestion(memberId).getChoices().get(0).getMessage().getContent();
+            return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
+        } catch (GeneralException e) {
+            return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO("재료를 찾을 수 없습니다"));
+        }
     }
 
     // 사용자 냉장고 재료 유통기한 기반 레시피 요청
@@ -68,8 +73,12 @@ public class ChatGptController {
     public ApiResponse<UserChatGptResponseDTO.UserGptResponseDTO> getBeforeExpiredRecipeResponse() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String memberId = authentication.getName();
-        String response = chatGPTService.askExpiryIngredientsQuestion(memberId).getChoices().get(0).getMessage().getContent();
-        return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
+        try {
+            String response = chatGPTService.askExpiryIngredientsQuestion(memberId).getChoices().get(0).getMessage().getContent();
+            return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
+        } catch (GeneralException e) {
+            return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO("재료를 찾을 수 없습니다"));
+        }
     }
 
     // 싫어하는 음식 입력받기
