@@ -1,5 +1,6 @@
 package umc.IRECIPE_Server.jwt;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -29,7 +30,7 @@ public class JwtProvider {
     private final Key key;
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //access 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 30; //access 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; //refresh 7일
 
     public JwtProvider(@Value("${jwt.secret}") String secretKey) {
@@ -84,7 +85,7 @@ public class JwtProvider {
 
     public boolean validateToken(String token) {
 
-        try{
+        try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()

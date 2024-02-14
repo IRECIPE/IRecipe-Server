@@ -64,6 +64,7 @@ public enum ErrorStatus implements BaseErrorCode {
     NO_MORE_PAGE(HttpStatus.BAD_REQUEST, "PAGE4002", "더이상 페이지가 존재하지 않습니다."),
     INVALID_PAGE(HttpStatus.BAD_REQUEST, "PAGE4001", "유효하지 않은 페이지입니다.");
 
+
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

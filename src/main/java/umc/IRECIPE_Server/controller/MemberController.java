@@ -1,6 +1,7 @@
 package umc.IRECIPE_Server.controller;
 
 import io.jsonwebtoken.io.IOException;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import jdk.jfr.Description;
@@ -37,7 +38,7 @@ public class MemberController {
         return "Success";
     }
 
-    @Description("유저 회원가입 api")
+    @Operation(summary = "회원가입 API",description = "최초 회원가입")
     @PostMapping(value = "/signup", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<MemberResponse.JoinResultDto> join(
             @RequestPart(value = "request") @Valid MemberRequest.JoinDto request,
@@ -56,7 +57,7 @@ public class MemberController {
     }
 
 
-    @Description("유저 프로필 이미지 변경 api")
+    @Operation(summary = "프로필 이미지 변경 API",description = "사용자 프로필 이미지 변경")
     @PatchMapping(value = "/fix/profile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<MemberResponse.updateMemberResultDto> fixMemberProfile(
             @RequestPart(value = "file") MultipartFile file
@@ -68,7 +69,7 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.updateMemberResult(member));
     }
 
-    @Description("유저 정보 받아오는 api")
+    @Operation(summary = "마이페이지 API",description = "사용자 정보 받아오기")
     @GetMapping(value = "/")
     public ApiResponse<MemberResponse.getMemberResultDto> findOne() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -78,7 +79,7 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.getMemberResult(member));
     }
 
-    @Description("유저 정보 변경 api")
+    @Operation(summary = "유저 정보 변경 API",description = "사용자 정보 변경")
     @PatchMapping(value = "/fix/info")
     public ApiResponse<MemberResponse.updateMemberResultDto> fixMember(
             @RequestBody MemberRequest.fixMemberInfoDto request) {
@@ -90,7 +91,7 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.updateMemberResult(member));
     }
 
-    @Description("닉네임 중복체크 api")
+    @Operation(summary = "닉네임 중복체크 API",description = "닉네임 중복체크")
     @GetMapping(value = "/nickname")
     public ApiResponse<MemberResponse.updateNicknameResultDto> checkNickName(
             @RequestParam("nickname") String nickname
@@ -99,7 +100,7 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.updateNicknameResult());
     }
 
-    @Description("로그인")
+    @Operation(summary = "로그인 API",description = "로그인")
     @PostMapping(value = "/login")
     public ApiResponse<MemberResponse.JoinResultDto> joinLogin(
             @RequestBody @Valid MemberLoginRequestDto.JoinLoginDto request){
@@ -107,7 +108,7 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.toJoinResult(response, jwtProvider));
     }
 
-    @Description("사용자가 작성한 글 보기 api")
+    @Operation(summary = "작성 글 API",description = "사용자가 작성한 글 보기")
     @GetMapping(value = "/written")
     public ApiResponse<List<MemberResponse.getPostsDto>> showWrittenPosts(
             @RequestParam(name = "page") Integer page
@@ -120,7 +121,7 @@ public class MemberController {
         return ApiResponse.onSuccess(MemberConverter.postsListDto(memberService.getWrittenPostList(userId, page)));
     }
 
-    @Description("사용자가 좋아요 누른 글 보기")
+    @Operation(summary = "관심 글 API",description = "사용자가 좋아요 누른 글 보기")
     @GetMapping(value = "/liked")
     public ApiResponse<?> showLikedPosts(
             @RequestParam(name = "page") Integer page
@@ -131,5 +132,14 @@ public class MemberController {
         String userId = authentication.getName();//personal id
 
         return ApiResponse.onSuccess(MemberConverter.postsLikedListDto(memberService.getLikedPostList(userId, page)));
+    }
+
+    @Operation(summary = "토큰 재발급 API", description = "토큰 재발급")
+    @PostMapping(value = "/refresh")
+    public ApiResponse<?> refresh(@RequestParam(name = "user information") String id){
+        Member member = memberService.findMember(id);
+        Member response = memberService.refresh(member);
+
+        return ApiResponse.onSuccess(MemberConverter.toJoinResult(response, jwtProvider));
     }
 }
