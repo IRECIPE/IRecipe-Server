@@ -1,5 +1,6 @@
 package umc.IRECIPE_Server.jwt;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -84,7 +85,7 @@ public class JwtProvider {
 
     public boolean validateToken(String token) {
 
-        try{
+        try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()

@@ -24,6 +24,7 @@ public class MemberConverter {
         return jwtProvider.generateTokenDto(member.getPersonalId());
     }
 
+
     public static Member toMember(MemberRequest.JoinDto request, String url){
 
         Gender gender = null;
