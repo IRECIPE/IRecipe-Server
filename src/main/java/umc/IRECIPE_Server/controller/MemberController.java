@@ -4,7 +4,6 @@ import io.jsonwebtoken.io.IOException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
-import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -136,8 +135,8 @@ public class MemberController {
 
     @Operation(summary = "토큰 재발급 API", description = "토큰 재발급")
     @PostMapping(value = "/refresh")
-    public ApiResponse<?> refresh(@RequestParam(name = "user information") String id){
-        Member member = memberService.findMember(id);
+    public ApiResponse<?> refresh(@RequestParam(name = "personal id") String personalId){
+        Member member = memberService.findMember(personalId);
         Member response = memberService.refresh(member);
 
         return ApiResponse.onSuccess(MemberConverter.toJoinResult(response, jwtProvider));
