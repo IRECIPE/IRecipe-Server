@@ -108,13 +108,9 @@ public class PostService {
 
         Post post = findByPostId(postId);
 
-        // userId 로 유저 찾아서 member 객체에 담기
-        Optional<Member> memberOptional = memberRepository.findByPersonalId(userId);
-        memberOptional.orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        boolean likeOrNot = memberLikesRepository.findByMemberAndPost(post.getMember(), post).isPresent();
 
-        boolean likeOrNot = memberLikesRepository.findByMemberAndPost(memberOptional.get(), post).isPresent();
-
-        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, memberOptional.get(), likeOrNot));
+        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, post.getMember(), likeOrNot));
 
     }
 
