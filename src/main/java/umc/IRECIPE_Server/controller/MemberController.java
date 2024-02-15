@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
+import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.PostHandler;
 import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.MemberConverter;
@@ -22,6 +23,7 @@ import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.jwt.JwtProvider;
+import umc.IRECIPE_Server.repository.TokenRepository;
 import umc.IRECIPE_Server.service.MemberService;
 
 @Tag(name = "멤버", description = "멤버 관련 API")
@@ -142,5 +144,17 @@ public class MemberController {
         Member response = memberService.refresh(member);
 
         return ApiResponse.onSuccess(MemberConverter.toJoinResult(response, jwtProvider));
+    }
+
+    @Operation(summary = "회원 탈퇴 API", description = "회원 탈퇴")
+    @DeleteMapping(value = "/leave")
+    public ApiResponse<?> leave(){
+        //사용자 id 찾기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();//personal id
+
+        memberService.deleteMember(userId);
+
+        return ApiResponse.onSuccess(SuccessStatus._OK);
     }
 }
