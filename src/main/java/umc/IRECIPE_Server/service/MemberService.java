@@ -120,10 +120,9 @@ public class MemberService {
     public Member updateProfileById(MultipartFile file, String personalId) throws IOException {
         Member member = memberRepository.findByPersonalId(personalId)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        String url = s3Service.saveFile(file, "/members/profiles");
+        String url = s3Service.saveFile(file, "members/profiles");
         member.updateUrl(url);
         return member;
-
     }
 
     @Transactional
