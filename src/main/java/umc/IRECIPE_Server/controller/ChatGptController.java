@@ -37,6 +37,14 @@ public class ChatGptController {
         return ApiResponse.onSuccess(ChatGptConverter.tobuttonResponseDTO());
     }
 
+    // 일반 대화
+    @PostMapping()
+    @Operation(summary = "일반 대화 API", description = "챗봇과 일반적인 대화를 할 수 있는 API 입니다")
+    public ApiResponse<UserChatGptResponseDTO.UserGptResponseDTO> getChatTalk(@RequestBody @Valid UserChatGptRequestDTO.UserGptRequestDTO request) {
+        String response = chatGPTService.askQuestion(request.getQuestion()).getChoices().get(0).getMessage().getContent();
+        return ApiResponse.onSuccess(ChatGptConverter.toUserGptResponseDTO(response));
+    }
+
     // 사용자가 ChatGPT 에 랜덤 레시피 요청
     @GetMapping("/random")
     @Operation(summary = "랜덤 레시피 조회 API", description = "싫어하는 음식을 제외하고, 랜덤으로 레시피를 추천해주는 API 입니다")

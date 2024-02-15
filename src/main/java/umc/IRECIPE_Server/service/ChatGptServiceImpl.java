@@ -103,6 +103,24 @@ public class ChatGptServiceImpl implements ChatGptService {
         return responseEntity.getBody();
     }
 
+    // ChatGPT API 요청하기 - 일반 대화
+    @Override
+    public ChatGptResponseDTO askQuestion(String question) {
+        // ChatGPT API 사용 시 지켜야 할 DTO 맞추기
+        List<ChatGptMessageDto> messages = new ArrayList<>();
+        messages.add(ChatGptMessageDto.builder()
+                .role("user")
+                .content(question)
+                .build());
+
+        // 응답 반환
+        return this.getResponse(
+                this.buildHttpEntity(
+                        new ChatGptRequestDTO(messages, ChatGptConfig.MODEL)
+                )
+        );
+    }
+
     // ChatGPT API 요청하기 - 랜덤 레시피
     @Override
     public ChatGptResponseDTO askQuestion(String memberId, String question) {
