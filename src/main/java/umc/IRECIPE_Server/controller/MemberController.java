@@ -2,6 +2,7 @@ package umc.IRECIPE_Server.controller;
 
 import io.jsonwebtoken.io.IOException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.service.MemberService;
 
+@Tag(name = "멤버", description = "멤버 관련 API")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class MemberController {
 
         String url = null;
         if(file != null){
-            url = s3Service.saveFile(file, "/member/profile/${request.getPersonalId()}");
+            url = s3Service.saveFile(file, "member/profile/");
         }
 
         Member response = memberService.signup(request, url);
