@@ -1,6 +1,7 @@
 package umc.IRECIPE_Server.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 import umc.IRECIPE_Server.common.BaseEntity;
 @Entity
@@ -18,4 +19,8 @@ public class RefreshToken  extends BaseEntity {
     private Member member;
 
     private String token;
+
+    public void updateToken(String token) {
+        this.token = token;
+    }
 }

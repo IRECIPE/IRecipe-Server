@@ -131,6 +131,9 @@ public class ChatGptServiceImpl implements ChatGptService {
 
         // 사용자 재료 조회
         List<Ingredient> myIngredientList = ingredientRepository.findNamesByMember_PersonalId(memberId);
+        if (myIngredientList.isEmpty()) {
+            throw new GeneralException(ErrorStatus.INGREDIENT_NOT_FOUND);
+        }
         String myIngredient = myIngredientList.stream()
                 .map(Ingredient::getName)
                 .collect(Collectors.joining(", "));
@@ -146,6 +149,9 @@ public class ChatGptServiceImpl implements ChatGptService {
 
         // 유통기한으로 정렬된 사용자 재료 조회
         List<Ingredient> myExpiryIngredientList = ingredientRepository.findNamesByMember_PersonalId(memberId);
+        if (myExpiryIngredientList.isEmpty()) {
+            throw new GeneralException(ErrorStatus.INGREDIENT_NOT_FOUND);
+        }
         String myExpiryIngredient = myExpiryIngredientList.stream()
                 .sorted(Comparator.comparing(Ingredient::getExpiry_date))
                 .map(Ingredient::getName)

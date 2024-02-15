@@ -101,11 +101,17 @@ public class MemberService {
         //토큰 발급
         MemberResponse.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
-        RefreshToken refreshToken = RefreshToken.builder()
-                .member(member)
-                .token(tokenDto.getRefreshToken())
-                .build();
-        tokenRepository.save(refreshToken);
+        if(tokenRepository.existsByMember(member)){
+            RefreshToken refreshToken = tokenRepository.findByMember(member);
+            refreshToken.updateToken(tokenDto.getRefreshToken());
+        }
+        else {
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .member(member)
+                    .token(tokenDto.getRefreshToken())
+                    .build();
+            tokenRepository.save(refreshToken);
+        }
 
         return member;
     }
@@ -164,36 +170,21 @@ public class MemberService {
 
         MemberResponse.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
-        RefreshToken refreshToken = RefreshToken.builder()
-                .member(member)
-                .token(tokenDto.getRefreshToken())
-                .build();
-        tokenRepository.save(refreshToken);
+        if(tokenRepository.existsByMember(member)){
+            RefreshToken refreshToken = tokenRepository.findByMember(member);
+            refreshToken.updateToken(tokenDto.getRefreshToken());
+        }
+        else {
+            RefreshToken refreshToken = RefreshToken.builder()
+                    .member(member)
+                    .token(tokenDto.getRefreshToken())
+                    .build();
+            tokenRepository.save(refreshToken);
+        }
         return member;
     }
 
     @Transactional
-    public List<Post> viewStoredPost(String personalId){
-        //누가 쓴거 볼건데
-        Member member = memberRepository.findByPersonalId(personalId)
-                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-
-        List<Post> postList = postRepository.findAllByMember(member);
-        List<Post> posts = new ArrayList<>();
-        for(Post post: postList){
-            if(post.getMember().equals(member)){
-                posts.add(post);
-            }
-        }
-
-        //사용자가 작성한 글이 없는 경우
-        if(posts.isEmpty())
-            throw new PostHandler(ErrorStatus.POST_NOT_FOUND);
-
-        return posts;
-
-    }
-
     public Page<Post> getWrittenPostList(String personalId, Integer page) {
         Page<Post> postPage;
         Pageable pageable = PageRequest.of(page, 10);
@@ -214,6 +205,7 @@ public class MemberService {
         return postPage;
     }
 
+    @Transactional
     public List<Post> getLikedPostList(String personalId, Integer page) {
         Page<MemberLikes> postIdPage;
         Pageable pageable = PageRequest.of(page, 10);
@@ -243,6 +235,17 @@ public class MemberService {
         }
 
         return postList;
+    }
+
+    @Transactional
+    public Member refresh(Member member){
+        if(tokenRepository.existsByMember(member)){ // 이미 refresh token이 있다면
+            MemberResponse.JoinResultDto token = jwtProvider.generateTokenDto(member.getPersonalId());
+            RefreshToken refreshToken = tokenRepository.findByMember(member);
+
+            refreshToken.updateToken(token.getRefreshToken());
+        }
+        return member;
     }
 
 }
