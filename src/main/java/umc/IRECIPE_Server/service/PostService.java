@@ -113,7 +113,13 @@ public class PostService {
 
         boolean likeOrNot = memberLikesRepository.findByMemberAndPost(member, post).isPresent();
 
-        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, post.getMember(), likeOrNot));
+        boolean myPost = false;
+
+        if(member == post.getMember()){
+            myPost = true;
+        }
+
+        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, post.getMember(), likeOrNot, myPost));
 
     }
 

@@ -108,6 +108,9 @@ public class PostResponseDTO {
         @Schema(description = "해당 사용자가 관심 눌렀는지", defaultValue = "false")
         private boolean likeOrNot;
 
+        @Schema(description = "내가 쓴 글인지 아닌지", defaultValue = "false")
+        private boolean myPost;
+
         @Schema(description = "게시글 생성일")
         private LocalDate createdAt;
     }
