@@ -18,6 +18,7 @@ import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.PostHandler;
 import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.MemberConverter;
+import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
@@ -134,7 +135,7 @@ public class MemberController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();//personal id
 
-        return ApiResponse.onSuccess(MemberConverter.postsLikedListDto(memberService.getLikedPostList(userId, page)));
+        return memberService.getLikedPostList(userId, page);
     }
 
     @Operation(summary = "토큰 재발급 API", description = "토큰 재발급")

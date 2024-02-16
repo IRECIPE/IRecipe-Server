@@ -119,20 +119,4 @@ public class MemberConverter {
                 .collect(Collectors.toList());
     }
 
-    public static List<MemberResponse.getPostsDto> postsLikedListDto(List<Post> postList){
-        return postList.stream()
-                .map(val -> MemberResponse.getPostsDto.builder()
-                        .title(val.getTitle())
-                        .subhead(val.getSubhead())
-                        .level(val.getLevel())
-                        .score(val.getScore())
-                        .content(val.getContent())
-                        .likes(val.getLikes())
-                        .imageUrl(val.getImageUrl())
-                        .category(val.getCategory())
-                        .fileName(val.getFileName())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
 }
