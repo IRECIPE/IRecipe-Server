@@ -228,7 +228,7 @@ public class MemberService {
 
         List<Post> postList = new ArrayList<>();
         for(MemberLikes memberLikes : postIdPage.toList()){
-            Long id = memberLikes.getId();
+            Long id = memberLikes.getPost().getId();
             Post tmp = postRepository.findByStatusAndId(Status.POST, id);
             postList.add(tmp);
         }
