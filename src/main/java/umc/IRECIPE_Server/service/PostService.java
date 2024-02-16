@@ -108,7 +108,10 @@ public class PostService {
 
         Post post = findByPostId(postId);
 
-        boolean likeOrNot = memberLikesRepository.findByMemberAndPost(post.getMember(), post).isPresent();
+        Member member = memberRepository.findByPersonalId(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        boolean likeOrNot = memberLikesRepository.findByMemberAndPost(member, post).isPresent();
 
         return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, post.getMember(), likeOrNot));
 
