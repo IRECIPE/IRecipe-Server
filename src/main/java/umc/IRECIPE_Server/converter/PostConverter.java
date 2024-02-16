@@ -39,7 +39,7 @@ public class PostConverter {
 
 
 
-    public static PostResponseDTO.getDTO toGetResponseDTO(Post post, Member member, boolean likeOrNot){
+    public static PostResponseDTO.getDTO toGetResponseDTO(Post post, Member member, boolean likeOrNot, boolean myPost){
         return PostResponseDTO.getDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -56,6 +56,7 @@ public class PostConverter {
                 .createdAt(post.getCreatedAt().toLocalDate())
                 .reviewsCount(post.getReviewList().size())
                 .likeOrNot(likeOrNot)
+                .myPost(myPost)
                 .build();
     }
 
