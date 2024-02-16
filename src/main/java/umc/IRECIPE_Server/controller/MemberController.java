@@ -114,7 +114,7 @@ public class MemberController {
 
     @Operation(summary = "작성 글 API",description = "사용자가 작성한 글 보기")
     @GetMapping(value = "/written")
-    public ApiResponse<List<MemberResponse.getPostsDto>> showWrittenPosts(
+    public ApiResponse<?> showWrittenPosts(
             @RequestParam(name = "page") Integer page
     ){
         if(page < 0) throw new PostHandler(ErrorStatus.INVALID_PAGE);
@@ -122,7 +122,7 @@ public class MemberController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();//personal id
 
-        return ApiResponse.onSuccess(MemberConverter.postsListDto(memberService.getWrittenPostList(userId, page)));
+        return memberService.getWrittenPostList(userId, page);
     }
 
     @Operation(summary = "관심 글 API",description = "사용자가 좋아요 누른 글 보기")

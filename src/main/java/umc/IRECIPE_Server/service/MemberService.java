@@ -192,7 +192,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Page<Post> getWrittenPostList(String personalId, Integer page) {
+    public ApiResponse<?> getWrittenPostList(String personalId, Integer page) {
         Page<Post> postPage;
         Pageable pageable = PageRequest.of(page, 10);
 
@@ -209,7 +209,14 @@ public class MemberService {
             else if(page == 0) throw new PostHandler(ErrorStatus.MEMBER_DONT_HAVE_POSTS);
         }
 
-        return postPage;
+        // memberLike 에서 찾으면 관심 눌렀던 게시글, 못 찾으면 관심 안 누른 게시글
+        Map<Long, Boolean> likeMap = new HashMap<>();
+        for (Post post : postPage) {
+            Boolean likeOrNot = memberLikesRepository.findByMemberAndPost(mem, post).isPresent();
+            likeMap.put(post.getId(), likeOrNot);
+        }
+
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage, likeMap));
     }
 
     //회원 관심글 보기
