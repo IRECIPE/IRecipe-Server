@@ -256,7 +256,7 @@ public class MemberService {
             likeMap.put(post.getId(), likeOrNot);
         }
 
-        return ApiResponse.onSuccess(PostConverter.toGetAllPostListDTO(postList, likeMap));
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostListDTO(mem, postList, likeMap));
     }
 
     //토큰 재발급

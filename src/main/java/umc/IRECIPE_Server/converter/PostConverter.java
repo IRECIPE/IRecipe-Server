@@ -66,7 +66,7 @@ public class PostConverter {
                 .build();
     }
 
-    public static List<PostResponseDTO.getDTO> toGetAllPostListDTO(List<Post> postPage, Map<Long, Boolean> likeMap){
+    public static List<PostResponseDTO.getDTO> toGetAllPostListDTO(Member member, List<Post> postPage, Map<Long, Boolean> likeMap){
         return postPage.stream()
                 .map(m -> PostResponseDTO.getDTO.builder()
                         .postId(m.getId())
@@ -82,6 +82,7 @@ public class PostConverter {
                         .likeOrNot(likeMap.get(m.getId()))
                         .category(m.getCategory())
                         .content(m.getContent())
+                        .myPost(m.getMember().equals(member))
                         .build())
                 .collect(Collectors.toList());
     }
