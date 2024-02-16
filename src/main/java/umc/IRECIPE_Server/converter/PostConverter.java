@@ -66,6 +66,27 @@ public class PostConverter {
                 .build();
     }
 
+    public static List<PostResponseDTO.getDTO> toGetAllPostListDTO(Member member, List<Post> postPage, Map<Long, Boolean> likeMap){
+        return postPage.stream()
+                .map(m -> PostResponseDTO.getDTO.builder()
+                        .postId(m.getId())
+                        .title(m.getTitle())
+                        .subhead(m.getSubhead())
+                        .imageUrl(m.getImageUrl())
+                        .likes(m.getLikes())
+                        .score(m.getScore())
+                        .reviewsCount(m.getReviewList().size())
+                        .writerImage(m.getMember().getProfileImage())
+                        .writerNickName(m.getMember().getNickname())
+                        .createdAt(m.getCreatedAt().toLocalDate())
+                        .likeOrNot(likeMap.get(m.getId()))
+                        .category(m.getCategory())
+                        .content(m.getContent())
+                        .myPost(m.getMember().equals(member))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     public static List<PostResponseDTO.getAllPostDTO> toGetAllPostDTO(Page<Post> postPage, Map<Long, Boolean> likeMap){
         return postPage.stream()
                 .map(m -> PostResponseDTO.getAllPostDTO.builder()
