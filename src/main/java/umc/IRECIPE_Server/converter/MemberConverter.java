@@ -6,26 +6,23 @@ import org.springframework.data.domain.Page;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
 import umc.IRECIPE_Server.common.enums.Role;
-import umc.IRECIPE_Server.dto.MemberRequest;
-import umc.IRECIPE_Server.dto.MemberResponse;
-import umc.IRECIPE_Server.dto.MemberResponse.getPostsDto;
+import umc.IRECIPE_Server.dto.request.MemberRequestDTO;
+import umc.IRECIPE_Server.dto.response.MemberResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.entity.Post;
-import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.jwt.JwtProvider;
-import umc.IRECIPE_Server.repository.TokenRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MemberConverter {
-    public static MemberResponse.JoinResultDto toJoinResult(Member member, JwtProvider jwtProvider){
+    public static MemberResponseDTO.JoinResultDto toJoinResult(Member member, JwtProvider jwtProvider){
         return jwtProvider.generateTokenDto(member.getPersonalId());
     }
 
 
-    public static Member toMember(MemberRequest.JoinDto request, String url){
+    public static Member toMember(MemberRequestDTO.JoinDto request, String url){
 
         Gender gender = null;
         Age age = null;
@@ -58,14 +55,14 @@ public class MemberConverter {
                 .build();
     }
 
-    public static MemberResponse.getMemberResultDto getMemberResult(Member member){
+    public static MemberResponseDTO.getMemberResultDto getMemberResult(Member member){
         List<MemberAllergy> allergyList = member.getMemberAllergyList();
 
         List<Long> allergyIds = allergyList.stream()
                 .map(MemberAllergy::getId)
                 .toList();
 
-        return MemberResponse.getMemberResultDto.builder()
+        return MemberResponseDTO.getMemberResultDto.builder()
                 .name(member.getName())
                 .nickname(member.getNickname())
                 .gender(member.getGender())
@@ -77,21 +74,21 @@ public class MemberConverter {
                 .build();
     }
 
-    public static MemberResponse.updateMemberResultDto updateMemberResult(Member member){
-        return MemberResponse.updateMemberResultDto.builder()
+    public static MemberResponseDTO.updateMemberResultDto updateMemberResult(Member member){
+        return MemberResponseDTO.updateMemberResultDto.builder()
                 .memberId(member.getId())
                 .updatedAt(LocalDateTime.now())
                 .build();
     }
 
-    public static MemberResponse.updateNicknameResultDto updateNicknameResult(){
-        return MemberResponse.updateNicknameResultDto.builder()
+    public static MemberResponseDTO.updateNicknameResultDto updateNicknameResult(){
+        return MemberResponseDTO.updateNicknameResultDto.builder()
                 .str("사용 가능한 닉네임 입니다.")
                 .build();
     }
 
-    public static MemberResponse.getPostsDto postsDto(Post post){
-        return MemberResponse.getPostsDto.builder()
+    public static MemberResponseDTO.getPostsDto postsDto(Post post){
+        return MemberResponseDTO.getPostsDto.builder()
                 .title(post.getTitle())
                 .subhead(post.getSubhead())
                 .level(post.getLevel())
@@ -103,9 +100,9 @@ public class MemberConverter {
                 .build();
     }
 
-    public static List<MemberResponse.getPostsDto> postsListDto(Page<Post> postPage){
+    public static List<MemberResponseDTO.getPostsDto> postsListDto(Page<Post> postPage){
         return postPage.stream()
-                .map(val -> MemberResponse.getPostsDto.builder()
+                .map(val -> MemberResponseDTO.getPostsDto.builder()
                         .title(val.getTitle())
                         .subhead(val.getSubhead())
                         .level(val.getLevel())
@@ -119,9 +116,9 @@ public class MemberConverter {
                 .collect(Collectors.toList());
     }
 
-    public static List<MemberResponse.getPostsDto> postsLikedListDto(List<Post> postList){
+    public static List<MemberResponseDTO.getPostsDto> postsLikedListDto(List<Post> postList){
         return postList.stream()
-                .map(val -> MemberResponse.getPostsDto.builder()
+                .map(val -> MemberResponseDTO.getPostsDto.builder()
                         .title(val.getTitle())
                         .subhead(val.getSubhead())
                         .level(val.getLevel())

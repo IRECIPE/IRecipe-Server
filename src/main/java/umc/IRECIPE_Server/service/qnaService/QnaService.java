@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.service;
+package umc.IRECIPE_Server.service.qnaService;
 
 import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.dto.request.QnaRequestDTO;

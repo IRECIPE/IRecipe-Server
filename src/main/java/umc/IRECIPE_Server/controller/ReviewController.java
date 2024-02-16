@@ -13,7 +13,7 @@ import umc.IRECIPE_Server.converter.ReviewConverter;
 import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
 import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
 import umc.IRECIPE_Server.entity.Review;
-import umc.IRECIPE_Server.service.ReviewService;
+import umc.IRECIPE_Server.service.reviewService.ReviewService;
 
 import java.io.IOException;
 import java.util.List;

@@ -3,10 +3,6 @@ package umc.IRECIPE_Server.converter;
 
 import org.springframework.data.domain.Page;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
-import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
-import umc.IRECIPE_Server.dto.IngredientResponse;
-import umc.IRECIPE_Server.dto.response.PostResponseDTO;
-import umc.IRECIPE_Server.entity.Ingredient;
 
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.Post;

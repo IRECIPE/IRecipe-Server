@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.dto;
+package umc.IRECIPE_Server.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -7,14 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.IRECIPE_Server.common.enums.IngredientCategory;
 import umc.IRECIPE_Server.common.enums.Type;
-import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-public class IngredientResponse {
+public class IngredientResponseDTO {
 
     @Schema(description = "냉장고 재료 추가 DTO")
     @Builder
@@ -100,7 +98,7 @@ public class IngredientResponse {
     @AllArgsConstructor
     public static class findAllResultListDTO{
         @Schema(description = "게시글 리스트")
-        List<IngredientResponse.findIngredientResultDTO> ingredientList;
+        List<IngredientResponseDTO.findIngredientResultDTO> ingredientList;
         @Schema(description = "리스트 사이즈")
         Integer listSize;
         @Schema(description = "전체 페이지 갯수")

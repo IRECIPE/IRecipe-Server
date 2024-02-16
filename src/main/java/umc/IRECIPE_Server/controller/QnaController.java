@@ -1,7 +1,6 @@
 package umc.IRECIPE_Server.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,7 +11,7 @@ import umc.IRECIPE_Server.converter.QnaConverter;
 import umc.IRECIPE_Server.dto.request.QnaRequestDTO;
 import umc.IRECIPE_Server.dto.response.QnaResponseDTO;
 import umc.IRECIPE_Server.entity.Qna;
-import umc.IRECIPE_Server.service.QnaService;
+import umc.IRECIPE_Server.service.qnaService.QnaService;
 
 import java.io.IOException;
 import java.util.List;
