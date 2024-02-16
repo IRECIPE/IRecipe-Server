@@ -3,8 +3,11 @@ package umc.IRECIPE_Server.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.Flow.Publisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -52,6 +55,7 @@ public class MemberService {
     private final MemberLikesRepository memberLikesRepository;
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
+
 
     public Boolean findMemberByNickname(String Nickname){
         return memberRepository.existsByNickname(Nickname);
@@ -245,6 +249,18 @@ public class MemberService {
             refreshToken.updateToken(token.getRefreshToken());
         }
         return member;
+    }
+
+    @Transactional
+    public void deleteMember(String personalId){
+        Optional<Member> member = memberRepository.findByPersonalId(personalId);
+        if(member.isEmpty()){
+            throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        Member member1 = member.get();
+        RefreshToken refreshToken = tokenRepository.findByMember(member1);
+        tokenRepository.delete(refreshToken);
+        memberRepository.delete(member1);
     }
 
 }
