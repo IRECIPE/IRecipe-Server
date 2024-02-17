@@ -28,6 +28,7 @@ public class QnaResponseDTO {
 
     // Qna 조회
     @Schema(description = "Qna 조회 응답 DTO")
+    @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
@@ -36,8 +37,8 @@ public class QnaResponseDTO {
         @Schema(description = "Qna Id")
         private Long qnaId;
 
-        @Schema(description = "유저 Id")
-        private Long memberId;
+        @Schema(description = "유저 Personal Id")
+        private String memberId;
 
         @Schema(description = "유저 닉네임")
         private String memberNickName;
@@ -59,6 +60,7 @@ public class QnaResponseDTO {
     }
 
     @Schema(description = "Qna 조회 답변 응답 DTO")
+    @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
@@ -66,8 +68,8 @@ public class QnaResponseDTO {
         @Schema(description = "Qna Id")
         private Long qnaId;
 
-        @Schema(description = "유저 Id")
-        private Long memberId;
+        @Schema(description = "유저 Personal Id")
+        private String memberId;
 
         @Schema(description = "유저 닉네임")
         private String memberNickName;

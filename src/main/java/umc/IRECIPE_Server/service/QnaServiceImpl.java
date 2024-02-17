@@ -60,31 +60,30 @@ public class QnaServiceImpl implements QnaService {
         return qnaRepository.save(qna);
     }
 
-//    // Qna 조회
-//    @Override
-//    public List<QnaResponseDTO.getQnaDTO> getQna(Long postId) {
-//
-//        // 해당 커뮤니티 게시글
-//        Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
-//
-//        // QueryDSL 을 사용하여 게시글 Qna 전체 조회 (정렬 : 부모 댓글 순, 작성시간 순)
-//        List<Qna> qnaList = qnaCustomRepository.findAllByPost(post);
-//
-//        // 대댓글 중첩구조 세팅
-//        List<QnaResponseDTO.getQnaDTO> qnaResponseDTOList = new ArrayList<>();
-//        Map<Long, QnaResponseDTO.getQnaDTO> map = new HashMap<>();
-//
-//        qnaList.forEach(q -> {
-//                QnaResponseDTO.getQnaDTO qdto = QnaConverter.getQnaResult(q);
-//                map.put(qdto.getQnaId(), qdto);
-//                if (q.getParent() != null) map.get(q.getParent().getId()).getChildren().add(qdto);
-//                else qnaResponseDTOList.add(qdto);
-//                }
-//        );
-//
-//        return qnaResponseDTOList;
-//    }
-//
+    // Qna 조회
+    @Override
+    public List<QnaResponseDTO.getQnaDTO> getQna(Long postId) {
+
+        // Qna 조회 (질문)
+        List<Qna> questionList = qnaRepository.findAllByPost_IdAndParentId(postId, (long)0);
+
+        // Qna 데이터 세팅
+        List<QnaResponseDTO.getQnaDTO> qnaList = new ArrayList<>();
+        for (Qna question : questionList) {
+
+            // Qna 조회 (답변)
+            List<Qna> answerList = qnaRepository.findAllByPost_IdAndParentId(postId, question.getId());
+            List<QnaResponseDTO.getQnaChildrenDTO> qnaChildrenList = new ArrayList<>();
+            for (Qna answer : answerList) {
+                qnaChildrenList.add(QnaConverter.toQnaChildrenList(answer));
+            }
+
+            qnaList.add(QnaConverter.getQnaResult(question, qnaChildrenList));
+        }
+
+        return qnaList;
+    }
+
 //    // Qna 수정
 //    @Override
 //    public void updateQna(String memberId, Long qnaId, QnaRequestDTO.updateQna request, MultipartFile file) throws IOException {

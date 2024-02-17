@@ -42,18 +42,18 @@ public class QnaController {
         return ApiResponse.onSuccess(QnaConverter.addQnaResult(qna));
     }
 
-//    // Qna 조회
-//    @Operation(
-//            summary = "Qna 조회하기 API",
-//            description = "게시글 Id(PathVariable) 받아서 해당 게시글의 Qna 조회"
-//    )
-//    @GetMapping("/{postId}/qna")
-//    public ApiResponse<List<QnaResponseDTO.getQnaDTO>> getQna(@PathVariable("postId") Long postId) {
-//
-//        List<QnaResponseDTO.getQnaDTO> qnaList = qnaService.getQna(postId);
-//        return ApiResponse.onSuccess(qnaList);
-//    }
-//
+    // Qna 조회
+    @Operation(
+            summary = "Qna 조회하기 API",
+            description = "게시글 Id(PathVariable) 받아서 해당 게시글의 Qna 조회"
+    )
+    @GetMapping("/{postId}/qna")
+    public ApiResponse<List<QnaResponseDTO.getQnaDTO>> getQna(@PathVariable("postId") Long postId) {
+
+        List<QnaResponseDTO.getQnaDTO> qnaList = qnaService.getQna(postId);
+        return ApiResponse.onSuccess(qnaList);
+    }
+
 //    // Qna 수정
 //    @Operation(
 //            summary = "Qna 수정하기 API",

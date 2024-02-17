@@ -33,9 +33,31 @@ public class QnaConverter {
     }
 
     // Qna 조회
-//    public static QnaResponseDTO.getQnaDTO getQnaResult(Qna qna) {
-//        return
-//    }
+    public static QnaResponseDTO.getQnaDTO getQnaResult(Qna qna, List<QnaResponseDTO.getQnaChildrenDTO> childrenList) {
+        return QnaResponseDTO.getQnaDTO.builder()
+                .qnaId(qna.getId())
+                .memberId(qna.getMember().getPersonalId())
+                .memberNickName(qna.getMember().getNickname())
+                .memberImage(qna.getMember().getProfileImage())
+                .createdAt(qna.getCreatedAt())
+                .content(qna.getContent())
+                .imageUrl(qna.getImageUrl())
+                .children(childrenList)
+                .build();
+    }
+
+    // Qna childrenList 생성
+    public static QnaResponseDTO.getQnaChildrenDTO toQnaChildrenList(Qna qna) {
+        return QnaResponseDTO.getQnaChildrenDTO.builder()
+                .qnaId(qna.getId())
+                .memberId(qna.getMember().getPersonalId())
+                .memberNickName(qna.getMember().getNickname())
+                .memberImage(qna.getMember().getProfileImage())
+                .createdAt(qna.getCreatedAt())
+                .content(qna.getContent())
+                .imageUrl(qna.getImageUrl())
+                .build();
+    }
 
     // Qna 수정
     public static QnaResponseDTO.updateQnaDTO updateQnaResult(Long qnaId) {
