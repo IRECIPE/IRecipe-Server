@@ -51,6 +51,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath personalId = createString("personalId");
 
+    public final ListPath<Post, QPost> postList = this.<Post, QPost>createList("postList", Post.class, QPost.class, PathInits.DIRECT2);
+
     public final StringPath profileImage = createString("profileImage");
 
     public final ListPath<Qna, QQna> qnaList = this.<Qna, QQna>createList("qnaList", Qna.class, QQna.class, PathInits.DIRECT2);

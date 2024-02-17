@@ -42,7 +42,7 @@ public class Review extends BaseEntity {
     private Post post;
 
     // 별점
-    private Float score;
+    private int score;
 
     // 리뷰 내용
     private String context;
@@ -53,7 +53,7 @@ public class Review extends BaseEntity {
     // 사진 이름
     private String fileName;
 
-    public void updateReview(Float score, String context, String imageUrl, String fileName) {
+    public void updateReview(int score, String context, String imageUrl, String fileName) {
         this.score = score;
         this.context = context;
         this.imageUrl = imageUrl;
