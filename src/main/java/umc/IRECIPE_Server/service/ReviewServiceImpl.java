@@ -78,10 +78,19 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     // 게시글 리뷰 수정
-    public void updatePostReview(Long reviewId, ReviewRequestDTO.addReviewDTO request, MultipartFile file) throws IOException {
+    public void updatePostReview(String memberId, Long reviewId, ReviewRequestDTO.addReviewDTO request, MultipartFile file) throws IOException {
 
         // 리뷰 조회
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
+
+        // 작성자만 수정 가능
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if (member.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        if (member.get().getId() != review.getMember().getId()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
 
         // 기존 사진 S3 삭제
         String oldUrl = review.getImageUrl();
@@ -110,10 +119,21 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     // 게시글 리뷰 삭제
-    public void deletePostReview(Long reviewId) {
+    public void deletePostReview(String memberId, Long reviewId) {
+
+        // 리뷰 조회
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
+
+        // 작성자만 삭제 가능
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if (member.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        if (member.get().getId() != review.getMember().getId()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
 
         // S3 버킷에 저장된 게시글 리뷰 사진 삭제
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
         if (review.getImageUrl() != null) {
             s3Service.deleteImage(review.getFileName(), "images");
         }
