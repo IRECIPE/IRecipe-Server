@@ -283,11 +283,11 @@ public class MemberService {
 
         List<Post> posts = postRepository.findAllByMember(member1);
         for(Post post : posts){
-            post.updateStatus(Status.DEL);
+            post.updateStatus(Status.TEMP);
         }
 
         tokenRepository.delete(refreshToken);
-        member1.updateMember(null, null, 0, 0, null, null, null, null);
+        member1.delMember();
     }
 
 }
