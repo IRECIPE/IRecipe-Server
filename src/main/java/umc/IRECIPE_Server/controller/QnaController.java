@@ -54,23 +54,23 @@ public class QnaController {
         return ApiResponse.onSuccess(qnaList);
     }
 
-//    // Qna 수정
-//    @Operation(
-//            summary = "Qna 수정하기 API",
-//            description = "QnaId(PathVariable) 와 Qna(DTo, MultipartFile) 받아서 수정"
-//    )
-//    @PatchMapping(value = "/qna/{qnaId}", consumes = "multipart/form-data")
-//    public ApiResponse<QnaResponseDTO.updateQnaDTO> updateQna(@PathVariable("qnaId") Long qnaId,
-//                                                              @RequestPart(name = "QnaRequestDTO", required = false) QnaRequestDTO.updateQna request,
-//                                                              @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
-//        // memberId 값 세팅
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String memberId = authentication.getName();
-//
-//        qnaService.updateQna(memberId, qnaId, request, file);
-//        return ApiResponse.onSuccess(QnaConverter.updateQnaResult(qnaId));
-//    }
-//
+    // Qna 수정
+    @Operation(
+            summary = "Qna 수정하기 API",
+            description = "QnaId(PathVariable) 와 Qna(DTo, MultipartFile) 받아서 수정"
+    )
+    @PatchMapping(value = "/qna/{qnaId}", consumes = "multipart/form-data")
+    public ApiResponse<QnaResponseDTO.updateQnaDTO> updateQna(@PathVariable("qnaId") Long qnaId,
+                                                              @RequestPart(name = "QnaRequestDTO", required = false) QnaRequestDTO.updateQna request,
+                                                              @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        // memberId 값 세팅
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
+
+        qnaService.updateQna(memberId, qnaId, request, file);
+        return ApiResponse.onSuccess(QnaConverter.updateQnaResult(qnaId));
+    }
+
 //    // Qna 삭제
 //    @Operation(
 //            summary = "Qna 삭제하기 API",

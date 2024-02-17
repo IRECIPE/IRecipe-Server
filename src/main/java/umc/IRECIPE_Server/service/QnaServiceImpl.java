@@ -84,39 +84,39 @@ public class QnaServiceImpl implements QnaService {
         return qnaList;
     }
 
-//    // Qna 수정
-//    @Override
-//    public void updateQna(String memberId, Long qnaId, QnaRequestDTO.updateQna request, MultipartFile file) throws IOException {
-//
-//        // 해당 Qna 조회
-//        Qna qna = qnaRepository.findById(qnaId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_QNA_NOT_FOUND));
-//
-//        // 작성자만 수정 가능
-//        Optional<Member> member = memberRepository.findByPersonalId(memberId);
-//        if (member.isEmpty()) {
-//            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-//        }
-//        if (member.get().getId() != qna.getMember().getId()) {
-//            throw new GeneralException(ErrorStatus._FORBIDDEN);
-//        }
-//
-//        // 기존에 저장된 사진 존재 시 S3 에서 삭제
-//        String oldUrl = qna.getImageUrl();
-//        if (oldUrl != null) {
-//            s3Service.deleteImage(qna.getFileName(), "images");
-//        }
-//
-//        // 새로 저장되는 사진 존재 시 S3 업로드
-//        String newUrl = null;
-//        String newFileName = null;
-//        if (file != null) {
-//            newUrl = s3Service.saveFile(file, "images");
-//            newFileName = file.getOriginalFilename();
-//        }
-//
-//        qna.updateQna(request, newUrl, newFileName);
-//    }
-//
+    // Qna 수정
+    @Override
+    public void updateQna(String memberId, Long qnaId, QnaRequestDTO.updateQna request, MultipartFile file) throws IOException {
+
+        // 해당 Qna 조회
+        Qna qna = qnaRepository.findById(qnaId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_QNA_NOT_FOUND));
+
+        // 작성자만 수정 가능
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if (member.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        if (member.get().getId() != qna.getMember().getId()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
+
+        // 기존에 저장된 사진 존재 시 S3 에서 삭제
+        String oldUrl = qna.getImageUrl();
+        if (oldUrl != null) {
+            s3Service.deleteImage(qna.getFileName(), "images");
+        }
+
+        // 새로 저장되는 사진 존재 시 S3 업로드
+        String newUrl = null;
+        String newFileName = null;
+        if (file != null) {
+            newUrl = s3Service.saveFile(file, "images");
+            newFileName = file.getOriginalFilename();
+        }
+
+        qna.updateQna(request, newUrl, newFileName);
+    }
+
 //    // Qna 삭제
 //    @Override
 //    public void deleteQna(String memberId, Long qnaId) {
