@@ -39,8 +39,8 @@ public class ReviewResponseDTO {
         @Schema(description = "리뷰 Id", defaultValue = "1")
         private Long reviewId;
 
-        @Schema(description = "유저 Id", defaultValue = "1")
-        private Long memberId;
+        @Schema(description = "유저 Personal Id", defaultValue = "1")
+        private String memberId;
 
         @Schema(description = "유저 닉네임", defaultValue = "옆집 할머니")
         private String memberNickname;
