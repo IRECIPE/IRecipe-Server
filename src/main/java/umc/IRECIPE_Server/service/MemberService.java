@@ -280,8 +280,14 @@ public class MemberService {
         }
         Member member1 = member.get();
         RefreshToken refreshToken = tokenRepository.findByMember(member1);
+
+        List<Post> posts = postRepository.findAllByMember(member1);
+        for(Post post : posts){
+            post.updateStatus(Status.DEL);
+        }
+
         tokenRepository.delete(refreshToken);
-        memberRepository.delete(member1);
+        member1.updateMember(null, null, 0, 0, null, null, null, null);
     }
 
 }

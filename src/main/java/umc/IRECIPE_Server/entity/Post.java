@@ -61,7 +61,7 @@ public class Post extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Level level;
 
-    // 임시저장, 등록
+    // 임시저장, 등록, 삭제
     @Enumerated(EnumType.STRING)
     private Status status;
 
