@@ -13,12 +13,12 @@ public interface QnaService {
     // Qna 작성
     public Qna addQna(String memberId, Long postId, QnaRequestDTO.addQna request, MultipartFile file) throws IOException;
 
-    // Qna 조회
-    public List<QnaResponseDTO.getQnaDTO> getQna(Long postId);
-
-    // Qna 수정
-    public void updateQna(String memberId, Long qnaId, QnaRequestDTO.updateQna request, MultipartFile file) throws IOException;
-
-    // Qna 삭제
-    public void deleteQna(String memberId, Long qnaId);
+//    // Qna 조회
+//    public List<QnaResponseDTO.getQnaDTO> getQna(Long postId);
+//
+//    // Qna 수정
+//    public void updateQna(String memberId, Long qnaId, QnaRequestDTO.updateQna request, MultipartFile file) throws IOException;
+//
+//    // Qna 삭제
+//    public void deleteQna(String memberId, Long qnaId);
 }

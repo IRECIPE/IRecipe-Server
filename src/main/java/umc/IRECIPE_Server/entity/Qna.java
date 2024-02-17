@@ -31,18 +31,8 @@ public class Qna extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    // 부모 댓글 : null 일 경우 최상위 댓글
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Qna parent;
-
-    // 자식 댓글들
-    @OneToMany(mappedBy = "parent", orphanRemoval = true)
-    private List<Qna> children = new ArrayList<>();
-
-    // 삭제 여부
-    @ColumnDefault("FALSE")
-    private Boolean isDeleted;
+    // 부모 댓글 : 0 일 경우 최상위 댓글
+    private Long parentId;
 
     // 작성 내용
     private String content;
@@ -52,14 +42,6 @@ public class Qna extends BaseEntity {
 
     // 사진 이름
     private String fileName;
-
-    public void updateParent(Qna qna) {
-        this.parent = qna;
-    }
-
-    public void changeIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
 
     public void updateQna(QnaRequestDTO.updateQna request, String imageUrl, String fileName) {
         this.content = request.getContent();

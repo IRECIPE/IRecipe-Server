@@ -18,7 +18,7 @@ public class QnaConverter {
         return Qna.builder()
                 .member(member)
                 .post(post)
-                .isDeleted(Boolean.FALSE)
+                .parentId(request.getParentId())
                 .content(request.getContent())
                 .imageUrl(imageUrl)
                 .fileName(fileName)
@@ -33,11 +33,9 @@ public class QnaConverter {
     }
 
     // Qna 조회
-    public static QnaResponseDTO.getQnaDTO getQnaResult(Qna qna) {
-        return qna.getIsDeleted() ?
-                new QnaResponseDTO.getQnaDTO(qna.getId(), null, null, null, null, "삭제된 댓글입니다", null) :
-                new QnaResponseDTO.getQnaDTO(qna.getId(), qna.getMember().getId(), qna.getMember().getNickname(), qna.getMember().getProfileImage(), qna.getCreatedAt(), qna.getContent(), qna.getImageUrl());
-    }
+//    public static QnaResponseDTO.getQnaDTO getQnaResult(Qna qna) {
+//        return
+//    }
 
     // Qna 수정
     public static QnaResponseDTO.updateQnaDTO updateQnaResult(Long qnaId) {

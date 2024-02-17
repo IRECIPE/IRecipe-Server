@@ -24,8 +24,6 @@ public class QQna extends EntityPathBase<Qna> {
 
     public final umc.IRECIPE_Server.common.QBaseEntity _super = new umc.IRECIPE_Server.common.QBaseEntity(this);
 
-    public final ListPath<Qna, QQna> children = this.<Qna, QQna>createList("children", Qna.class, QQna.class, PathInits.DIRECT2);
-
     public final StringPath content = createString("content");
 
     //inherited
@@ -37,11 +35,9 @@ public class QQna extends EntityPathBase<Qna> {
 
     public final StringPath imageUrl = createString("imageUrl");
 
-    public final BooleanPath isDeleted = createBoolean("isDeleted");
-
     public final QMember member;
 
-    public final QQna parent;
+    public final NumberPath<Long> parentId = createNumber("parentId", Long.class);
 
     public final QPost post;
 
@@ -67,7 +63,6 @@ public class QQna extends EntityPathBase<Qna> {
     public QQna(Class<? extends Qna> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
-        this.parent = inits.isInitialized("parent") ? new QQna(forProperty("parent"), inits.get("parent")) : null;
         this.post = inits.isInitialized("post") ? new QPost(forProperty("post"), inits.get("post")) : null;
     }
 
