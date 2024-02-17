@@ -71,18 +71,18 @@ public class QnaController {
         return ApiResponse.onSuccess(QnaConverter.updateQnaResult(qnaId));
     }
 
-//    // Qna 삭제
-//    @Operation(
-//            summary = "Qna 삭제하기 API",
-//            description = "QnaId(PathVariable) 받아서 해당 Qna 삭제"
-//    )
-//    @DeleteMapping("/qna/{qnaId}")
-//    public ApiResponse<QnaResponseDTO.deleteQnaDTO> deleteQna(@PathVariable("qnaId") Long qnaId) {
-//        // memberId 값 세팅
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String memberId = authentication.getName();
-//
-//        qnaService.deleteQna(memberId, qnaId);
-//        return ApiResponse.onSuccess(QnaConverter.deleteQnaResult());
-//    }
+    // Qna 삭제
+    @Operation(
+            summary = "Qna 삭제하기 API",
+            description = "QnaId(PathVariable) 받아서 해당 Qna 삭제"
+    )
+    @DeleteMapping("/qna/{qnaId}")
+    public ApiResponse<QnaResponseDTO.deleteQnaDTO> deleteQna(@PathVariable("qnaId") Long qnaId) {
+        // memberId 값 세팅
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
+
+        qnaService.deleteQna(memberId, qnaId);
+        return ApiResponse.onSuccess(QnaConverter.deleteQnaResult());
+    }
 }

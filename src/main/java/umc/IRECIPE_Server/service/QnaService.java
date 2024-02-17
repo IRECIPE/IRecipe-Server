@@ -19,6 +19,6 @@ public interface QnaService {
     // Qna 수정
     public void updateQna(String memberId, Long qnaId, QnaRequestDTO.updateQna request, MultipartFile file) throws IOException;
 
-//    // Qna 삭제
-//    public void deleteQna(String memberId, Long qnaId);
+    // Qna 삭제
+    public void deleteQna(String memberId, Long qnaId);
 }
