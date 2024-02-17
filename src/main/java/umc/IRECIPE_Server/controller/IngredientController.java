@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import umc.IRECIPE_Server.service.ingredientService.IngredientCommandService;
 import umc.IRECIPE_Server.service.ingredientService.IngredientQueryService;
 
 
+@Tag(name = "나의 냉장고", description = "나의 냉장고 관련 API")
 @RestController
 @Validated
 @RequiredArgsConstructor

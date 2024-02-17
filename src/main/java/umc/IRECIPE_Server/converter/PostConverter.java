@@ -35,7 +35,7 @@ public class PostConverter {
 
 
 
-    public static PostResponseDTO.getDTO toGetResponseDTO(Post post, Member member, boolean likeOrNot){
+    public static PostResponseDTO.getDTO toGetResponseDTO(Post post, Member member, boolean likeOrNot, boolean myPost){
         return PostResponseDTO.getDTO.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -52,6 +52,7 @@ public class PostConverter {
                 .createdAt(post.getCreatedAt().toLocalDate())
                 .reviewsCount(post.getReviewList().size())
                 .likeOrNot(likeOrNot)
+                .myPost(myPost)
                 .build();
     }
 
@@ -59,6 +60,27 @@ public class PostConverter {
         return PostResponseDTO.updateDTO.builder()
                 .postId(post.getId())
                 .build();
+    }
+
+    public static List<PostResponseDTO.getDTO> toGetAllPostListDTO(Member member, List<Post> postPage, Map<Long, Boolean> likeMap){
+        return postPage.stream()
+                .map(m -> PostResponseDTO.getDTO.builder()
+                        .postId(m.getId())
+                        .title(m.getTitle())
+                        .subhead(m.getSubhead())
+                        .imageUrl(m.getImageUrl())
+                        .likes(m.getLikes())
+                        .score(m.getScore())
+                        .reviewsCount(m.getReviewList().size())
+                        .writerImage(m.getMember().getProfileImage())
+                        .writerNickName(m.getMember().getNickname())
+                        .createdAt(m.getCreatedAt().toLocalDate())
+                        .likeOrNot(likeMap.get(m.getId()))
+                        .category(m.getCategory())
+                        .content(m.getContent())
+                        .myPost(m.getMember().equals(member))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     public static List<PostResponseDTO.getAllPostDTO> toGetAllPostDTO(Page<Post> postPage, Map<Long, Boolean> likeMap){

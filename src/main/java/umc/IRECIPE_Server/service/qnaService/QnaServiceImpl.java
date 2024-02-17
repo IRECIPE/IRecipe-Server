@@ -95,10 +95,19 @@ public class QnaServiceImpl implements QnaService {
 
     // Qna 수정
     @Override
-    public void updateQna(Long qnaId, QnaRequestDTO.updateQna request, MultipartFile file) throws IOException {
+    public void updateQna(String memberId, Long qnaId, QnaRequestDTO.updateQna request, MultipartFile file) throws IOException {
 
         // 해당 Qna 조회
         Qna qna = qnaRepository.findById(qnaId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_QNA_NOT_FOUND));
+
+        // 작성자만 수정 가능
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if (member.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        if (member.get().getId() != qna.getMember().getId()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
 
         // 기존에 저장된 사진 존재 시 S3 에서 삭제
         String oldUrl = qna.getImageUrl();
@@ -119,7 +128,17 @@ public class QnaServiceImpl implements QnaService {
 
     // Qna 삭제
     @Override
-    public void deleteQna(Long qnaId) {
+    public void deleteQna(String memberId, Long qnaId) {
+
+        // 작성자만 삭제 가능
+        Qna qnaWriter = qnaRepository.findById(qnaId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_QNA_NOT_FOUND));
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if (member.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        if (member.get().getId() != qnaWriter.getMember().getId()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
 
         // 부모 댓글과 함께 조회
         Qna qna = qnaCustomRepository.findQnaByIdWithParent(qnaId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_QNA_NOT_FOUND));

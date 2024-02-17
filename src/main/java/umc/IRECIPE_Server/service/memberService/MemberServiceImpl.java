@@ -2,6 +2,8 @@ package umc.IRECIPE_Server.service.memberService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.AllergyHandler;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
@@ -20,6 +23,7 @@ import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.MemberAllergyConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
+import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.MemberRequestDTO;
 import umc.IRECIPE_Server.dto.response.MemberResponseDTO;
 import umc.IRECIPE_Server.dto.request.MemberLoginRequestDTO;
@@ -185,7 +189,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Transactional
-    public Page<Post> getWrittenPostList(String personalId, Integer page) {
+    public ApiResponse<?> getWrittenPostList(String personalId, Integer page) {
         Page<Post> postPage;
         Pageable pageable = PageRequest.of(page, 10);
 
@@ -202,11 +206,19 @@ public class MemberServiceImpl implements MemberService{
             else if(page == 0) throw new PostHandler(ErrorStatus.MEMBER_DONT_HAVE_POSTS);
         }
 
-        return postPage;
+        // memberLike 에서 찾으면 관심 눌렀던 게시글, 못 찾으면 관심 안 누른 게시글
+        Map<Long, Boolean> likeMap = new HashMap<>();
+        for (Post post : postPage) {
+            Boolean likeOrNot = memberLikesRepository.findByMemberAndPost(mem, post).isPresent();
+            likeMap.put(post.getId(), likeOrNot);
+        }
+
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage, likeMap));
     }
 
+    //회원 관심글 보기
     @Transactional
-    public List<Post> getLikedPostList(String personalId, Integer page) {
+    public ApiResponse<?> getLikedPostList(String personalId, Integer page) {
         Page<MemberLikes> postIdPage;
         Pageable pageable = PageRequest.of(page, 10);
 
@@ -225,7 +237,7 @@ public class MemberServiceImpl implements MemberService{
 
         List<Post> postList = new ArrayList<>();
         for(MemberLikes memberLikes : postIdPage.toList()){
-            Long id = memberLikes.getId();
+            Long id = memberLikes.getPost().getId();
             Post tmp = postRepository.findByStatusAndId(Status.POST, id);
             postList.add(tmp);
         }
@@ -234,9 +246,17 @@ public class MemberServiceImpl implements MemberService{
             throw new MemberHandler(ErrorStatus.POST_NOT_FOUND);
         }
 
-        return postList;
+        // memberLike 에서 찾으면 관심 눌렀던 게시글, 못 찾으면 관심 안 누른 게시글
+        Map<Long, Boolean> likeMap = new HashMap<>();
+        for (Post post : postList) {
+            Boolean likeOrNot = memberLikesRepository.findByMemberAndPost(mem, post).isPresent();
+            likeMap.put(post.getId(), likeOrNot);
+        }
+
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostListDTO(mem, postList, likeMap));
     }
 
+    //토큰 재발급
     @Transactional
     public Member refresh(Member member){
         if(tokenRepository.existsByMember(member)){ // 이미 refresh token이 있다면
@@ -248,6 +268,7 @@ public class MemberServiceImpl implements MemberService{
         return member;
     }
 
+    //회원 탈퇴
     @Transactional
     public void deleteMember(String personalId){
         Optional<Member> member = memberRepository.findByPersonalId(personalId);

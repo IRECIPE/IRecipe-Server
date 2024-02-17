@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.AllergyHandler;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
@@ -47,12 +48,13 @@ public interface MemberService {
 
     Member login(MemberLoginRequestDTO.JoinLoginDto request);
 
-    Page<Post> getWrittenPostList(String personalId, Integer page);
+    ApiResponse<?> getWrittenPostList(String personalId, Integer page);
 
-    List<Post> getLikedPostList(String personalId, Integer page);
+    ApiResponse<?> getLikedPostList(String personalId, Integer page);
 
     Member refresh(Member member);
 
     void deleteMember(String personalId);
+
 
 }
