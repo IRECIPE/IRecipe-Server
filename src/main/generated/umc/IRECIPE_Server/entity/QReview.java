@@ -39,7 +39,7 @@ public class QReview extends EntityPathBase<Review> {
 
     public final QPost post;
 
-    public final NumberPath<Float> score = createNumber("score", Float.class);
+    public final NumberPath<Integer> score = createNumber("score", Integer.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

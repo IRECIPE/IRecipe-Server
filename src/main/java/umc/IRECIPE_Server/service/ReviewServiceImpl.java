@@ -56,7 +56,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 게시글 평균 별점 수정 : (원래 평균 별점 * 리뷰 개수 + 새로 들어온 별점) / (원래 리뷰 개수 + 1)
         Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
         int reviewCount = reviewRepository.countByPost_Id(post.getId());
-        Float newScore = (post.getScore() * reviewCount + request.getScore()) / (reviewCount + 1);
+        Float newScore = (post.getScore() * reviewCount + (float)request.getScore()) / (reviewCount + 1);
         post.updateScore(newScore);
 
         // 리뷰 등록
@@ -101,7 +101,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (request.getScore() != review.getScore()) {
             Post post = postRepository.findById(review.getPost().getId()).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
             int reviewCount = reviewRepository.countByPost_Id(post.getId());
-            Float newScore = (post.getScore() * reviewCount - review.getScore() + request.getScore()) / reviewCount;
+            Float newScore = (post.getScore() * reviewCount - (float)review.getScore() + (float)request.getScore()) / reviewCount;
             post.updateScore(newScore);
         }
 
@@ -121,7 +121,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 게시글 평균 별점 업데이트
         Post post = postRepository.findById(review.getPost().getId()).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
         int reviewCount = reviewRepository.countByPost_Id(post.getId());
-        Float newScore = (post.getScore() * reviewCount - review.getScore()) / (reviewCount - 1);
+        Float newScore = (post.getScore() * reviewCount - (float)review.getScore()) / (reviewCount - 1);
         post.updateScore(newScore);
 
         // 게시글 리뷰 삭제
