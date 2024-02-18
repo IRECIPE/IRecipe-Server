@@ -18,14 +18,12 @@ import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.PostHandler;
 import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.converter.MemberConverter;
-import umc.IRECIPE_Server.converter.PostConverter;
-import umc.IRECIPE_Server.dto.MemberRequest;
-import umc.IRECIPE_Server.dto.MemberResponse;
-import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
+import umc.IRECIPE_Server.dto.request.MemberRequestDTO;
+import umc.IRECIPE_Server.dto.response.MemberResponseDTO;
+import umc.IRECIPE_Server.dto.request.MemberLoginRequestDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.jwt.JwtProvider;
-import umc.IRECIPE_Server.repository.TokenRepository;
-import umc.IRECIPE_Server.service.MemberService;
+import umc.IRECIPE_Server.service.memberService.MemberServiceImpl;
 
 @Tag(name = "멤버", description = "멤버 관련 API")
 @Slf4j
@@ -33,7 +31,7 @@ import umc.IRECIPE_Server.service.MemberService;
 @RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberController {
-    private final MemberService memberService;
+    private final MemberServiceImpl memberService;
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
 
@@ -44,8 +42,8 @@ public class MemberController {
 
     @Operation(summary = "회원가입 API",description = "최초 회원가입")
     @PostMapping(value = "/signup", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ApiResponse<MemberResponse.JoinResultDto> join(
-            @RequestPart(value = "request") @Valid MemberRequest.JoinDto request,
+    public ApiResponse<MemberResponseDTO.JoinResultDto> join(
+            @RequestPart(value = "request") @Valid MemberRequestDTO.JoinDto request,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) throws IOException, java.io.IOException {
 
@@ -63,7 +61,7 @@ public class MemberController {
 
     @Operation(summary = "프로필 이미지 변경 API",description = "사용자 프로필 이미지 변경")
     @PatchMapping(value = "/fix/profile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ApiResponse<MemberResponse.updateMemberResultDto> fixMemberProfile(
+    public ApiResponse<MemberResponseDTO.updateMemberResultDto> fixMemberProfile(
             @RequestPart(value = "file") MultipartFile file
     ) throws java.io.IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -75,7 +73,7 @@ public class MemberController {
 
     @Operation(summary = "마이페이지 API",description = "사용자 정보 받아오기")
     @GetMapping(value = "/")
-    public ApiResponse<MemberResponse.getMemberResultDto> findOne() {
+    public ApiResponse<MemberResponseDTO.getMemberResultDto> findOne() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 
@@ -85,8 +83,8 @@ public class MemberController {
 
     @Operation(summary = "유저 정보 변경 API",description = "사용자 정보 변경")
     @PatchMapping(value = "/fix/info")
-    public ApiResponse<MemberResponse.updateMemberResultDto> fixMember(
-            @RequestBody MemberRequest.fixMemberInfoDto request) {
+    public ApiResponse<MemberResponseDTO.updateMemberResultDto> fixMember(
+            @RequestBody MemberRequestDTO.fixMemberInfoDto request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
@@ -97,7 +95,7 @@ public class MemberController {
 
     @Operation(summary = "닉네임 중복체크 API",description = "닉네임 중복체크")
     @GetMapping(value = "/nickname")
-    public ApiResponse<MemberResponse.updateNicknameResultDto> checkNickName(
+    public ApiResponse<MemberResponseDTO.updateNicknameResultDto> checkNickName(
             @RequestParam("nickname") String nickname
     ){
         memberService.checkNickname(nickname);
@@ -106,14 +104,15 @@ public class MemberController {
 
     @Operation(summary = "로그인 API",description = "로그인")
     @PostMapping(value = "/login")
-    public ApiResponse<MemberResponse.JoinResultDto> joinLogin(
-            @RequestBody @Valid MemberLoginRequestDto.JoinLoginDto request){
+    public ApiResponse<MemberResponseDTO.JoinResultDto> joinLogin(
+            @RequestBody @Valid MemberLoginRequestDTO.JoinLoginDto request){
         Member response = memberService.login(request);
         return ApiResponse.onSuccess(MemberConverter.toJoinResult(response, jwtProvider));
     }
 
     @Operation(summary = "작성 글 API",description = "사용자가 작성한 글 보기")
     @GetMapping(value = "/written")
+
     public ApiResponse<?> showWrittenPosts(
             @RequestParam(name = "page") Integer page
     ){

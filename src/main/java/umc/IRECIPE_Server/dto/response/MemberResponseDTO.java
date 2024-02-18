@@ -1,7 +1,5 @@
-package umc.IRECIPE_Server.dto;
+package umc.IRECIPE_Server.dto.response;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -12,9 +10,8 @@ import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Category;
 import umc.IRECIPE_Server.common.enums.Gender;
 import umc.IRECIPE_Server.common.enums.Level;
-import umc.IRECIPE_Server.entity.MemberAllergy;
 
-public class MemberResponse {
+public class MemberResponseDTO {
     @Builder
     @Getter
     @NoArgsConstructor

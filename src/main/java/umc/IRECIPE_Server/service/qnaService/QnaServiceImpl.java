@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.service;
+package umc.IRECIPE_Server.service.qnaService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
