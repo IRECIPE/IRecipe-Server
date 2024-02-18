@@ -2,8 +2,8 @@ package umc.IRECIPE_Server.converter;
 
 
 import org.springframework.data.domain.Page;
-import umc.IRECIPE_Server.dto.IngredientRequest;
-import umc.IRECIPE_Server.dto.IngredientResponse;
+import umc.IRECIPE_Server.dto.request.IngredientRequestDTO;
+import umc.IRECIPE_Server.dto.response.IngredientResponseDTO;
 import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 
@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 
 public class IngredientConverter {
 
-    public static IngredientResponse.addResultDTO toaddResultDTO(Ingredient ingredient) {
-        return IngredientResponse.addResultDTO.builder()
+    public static IngredientResponseDTO.addResultDTO toaddResultDTO(Ingredient ingredient) {
+        return IngredientResponseDTO.addResultDTO.builder()
                 .ingredientId(ingredient.getIngredientId())
                 .createdAt(LocalDateTime.now())
                 .build();
     }
 
-    public static Ingredient toIngredient(Member member, IngredientRequest.addDTO request) {
+    public static Ingredient toIngredient(Member member, IngredientRequestDTO.addDTO request) {
         String url = Ingredient.setDefaultImage(request.getCategory());
 
         return Ingredient.builder()
@@ -35,9 +35,9 @@ public class IngredientConverter {
                 .build();
     }
 
-    public static IngredientResponse.findOneResultDTO toFindOneResultDTO(Ingredient ingredient) {
+    public static IngredientResponseDTO.findOneResultDTO toFindOneResultDTO(Ingredient ingredient) {
 
-        return IngredientResponse.findOneResultDTO.builder()
+        return IngredientResponseDTO.findOneResultDTO.builder()
                 .ingredientId(ingredient.getIngredientId())
                 .name(ingredient.getName())
                 .memo(ingredient.getMemo())
@@ -49,12 +49,12 @@ public class IngredientConverter {
 
     }
 
-    public static IngredientResponse.findAllResultListDTO toFindAllResultListDTO(Page<Ingredient> ingredientList) {
-        List<IngredientResponse.findIngredientResultDTO> ingredientResultDTOList = ingredientList.getContent().stream()
+    public static IngredientResponseDTO.findAllResultListDTO toFindAllResultListDTO(Page<Ingredient> ingredientList) {
+        List<IngredientResponseDTO.findIngredientResultDTO> ingredientResultDTOList = ingredientList.getContent().stream()
                 .map(IngredientConverter::toFindIngredientResultDTO)
                 .collect(Collectors.toList());
 
-        return IngredientResponse.findAllResultListDTO.builder()
+        return IngredientResponseDTO.findAllResultListDTO.builder()
                 .isLast(ingredientList.isLast())
                 .isFirst(ingredientList.isFirst())
                 .totalPage(ingredientList.getTotalPages())
@@ -64,9 +64,9 @@ public class IngredientConverter {
                 .build();
     }
 
-    private static IngredientResponse.findIngredientResultDTO toFindIngredientResultDTO(Ingredient ingredient) {
+    private static IngredientResponseDTO.findIngredientResultDTO toFindIngredientResultDTO(Ingredient ingredient) {
 
-        return IngredientResponse.findIngredientResultDTO.builder()
+        return IngredientResponseDTO.findIngredientResultDTO.builder()
                 .ingredientId(ingredient.getIngredientId())
                 .name(ingredient.getName())
                 .memo(ingredient.getMemo())
@@ -77,14 +77,14 @@ public class IngredientConverter {
                 .build();
     }
 
-    public static IngredientResponse.deleteResultDTO toDeleteResultDTO() {
-        return IngredientResponse.deleteResultDTO.builder()
+    public static IngredientResponseDTO.deleteResultDTO toDeleteResultDTO() {
+        return IngredientResponseDTO.deleteResultDTO.builder()
                 .message("재료가 삭제되었습니다.")
                 .build();
 
     }
-    public static IngredientResponse.updateResultDTO toUpdateResultDTO(Ingredient ingredient) {
-        return IngredientResponse.updateResultDTO.builder()
+    public static IngredientResponseDTO.updateResultDTO toUpdateResultDTO(Ingredient ingredient) {
+        return IngredientResponseDTO.updateResultDTO.builder()
                 .ingredientId(ingredient.getIngredientId())
                 .updatedAt(LocalDateTime.now())
                 .build();

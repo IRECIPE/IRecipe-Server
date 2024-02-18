@@ -7,7 +7,7 @@ import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.IngredientHandler;
 import umc.IRECIPE_Server.converter.IngredientConverter;
 
-import umc.IRECIPE_Server.dto.IngredientRequest;
+import umc.IRECIPE_Server.dto.request.IngredientRequestDTO;
 import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.repository.IngredientRepository;
@@ -22,7 +22,7 @@ public class IngredientCommandServiceImpl implements IngredientCommandService {
     private final MemberRepository memberRepository;
     @Override
     @Transactional
-    public Ingredient addIngredient(String memberId, IngredientRequest.addDTO request) {
+    public Ingredient addIngredient(String memberId, IngredientRequestDTO.addDTO request) {
         Member member = memberRepository.findByPersonalId(memberId)
                 .orElseThrow(() -> new IngredientHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
@@ -33,7 +33,7 @@ public class IngredientCommandServiceImpl implements IngredientCommandService {
 
     @Override
     @Transactional
-    public Ingredient updateById(IngredientRequest.updateDTO request, Long ingredientId) {
+    public Ingredient updateById(IngredientRequestDTO.updateDTO request, Long ingredientId) {
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new IngredientHandler(ErrorStatus.INGREDIENT_NOT_FOUND));
 

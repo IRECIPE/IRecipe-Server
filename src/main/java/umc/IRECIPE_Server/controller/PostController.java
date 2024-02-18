@@ -1,9 +1,6 @@
 package umc.IRECIPE_Server.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +18,7 @@ import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
 import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Post;
-import umc.IRECIPE_Server.service.PostService;
+import umc.IRECIPE_Server.service.postService.PostServiceImpl;
 
 import java.io.IOException;
 
@@ -31,7 +28,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class PostController {
 
-    private final PostService postService;
+    private final PostServiceImpl postService;
     private final S3Service s3Service;
 
     //게시글 등록하는 컨트롤러
