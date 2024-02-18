@@ -94,11 +94,6 @@ public class MemberService {
             throw new MemberHandler(ErrorStatus.NICKNAME_ALREADY_EXIST);
     }
 
-    public MemberAllergy findMemberAllergy(Long memberId, Long allergyId){
-        return memberAllergyRepository
-                .findByAllergy_IdAndMember_Id(memberId, allergyId);
-    }
-
     @Transactional
     public Member joinMember(MemberRequest.JoinDto request, String url){
         Member newMem = MemberConverter.toMember(request, url);
@@ -175,11 +170,6 @@ public class MemberService {
         member.updateMember(request.getName(), request.getNickname(), request.getGender(), request.getAge(), request.getImportant(), request.getEvent(), request.getActivity(), memberAllergies);
         log.info("[fix] 멤버 정보를 수정했습니다.");
         return memberRepository.save(member);
-    }
-
-    public void deleteMemberAllergy(Long memberId, Long allergyId) {
-        MemberAllergy memberAllergy = findMemberAllergy(memberId, allergyId);
-        if(memberAllergy != null) memberAllergyRepository.delete(memberAllergy);
     }
 
     @Transactional
