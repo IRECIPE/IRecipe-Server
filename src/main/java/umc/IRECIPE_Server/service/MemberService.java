@@ -30,6 +30,7 @@ import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.entity.Allergy;
+import umc.IRECIPE_Server.entity.DislikedFood;
 import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
@@ -41,6 +42,7 @@ import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.entity.StoredRecipe;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.AllergyRepository;
+import umc.IRECIPE_Server.repository.DislikedFoodRepository;
 import umc.IRECIPE_Server.repository.IngredientRepository;
 import umc.IRECIPE_Server.repository.MemberAllergyRepository;
 import umc.IRECIPE_Server.repository.MemberLikesRepository;
@@ -68,6 +70,7 @@ public class MemberService {
     private final QnaRepository qnaRepository;
     private final ReviewRepository reviewRepository;
     private final StoredRecipeRepository storedRecipeRepository;
+    private final DislikedFoodRepository dislikedFoodRepository;
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
 
@@ -159,7 +162,7 @@ public class MemberService {
 
         //원래 있던건 삭제
         for(Long ids : allergyIds){
-            deleteMemberAllergy(member.getId(), ids);
+            memberAllergyRepository.deleteById(ids);
         }
 
         List<Allergy> allergies = allergyList.stream()
@@ -174,10 +177,9 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    @Transactional
     public void deleteMemberAllergy(Long memberId, Long allergyId) {
         MemberAllergy memberAllergy = findMemberAllergy(memberId, allergyId);
-        memberAllergyRepository.delete(memberAllergy);
+        if(memberAllergy != null) memberAllergyRepository.delete(memberAllergy);
     }
 
     @Transactional
@@ -320,6 +322,12 @@ public class MemberService {
         List<StoredRecipe> storedRecipes = storedRecipeRepository.findAllByMember(member1);
         for(StoredRecipe storedRecipe : storedRecipes){
             storedRecipeRepository.deleteById(storedRecipe.getId());
+        }
+
+        //싫어하는 음식 삭제
+        List<DislikedFood> dislikedFoods = dislikedFoodRepository.findAllByMember_Id(member1.getId());
+        for(DislikedFood dislikedFood : dislikedFoods){
+            dislikedFoodRepository.deleteById(dislikedFood.getId());
         }
 
         //token 삭제
