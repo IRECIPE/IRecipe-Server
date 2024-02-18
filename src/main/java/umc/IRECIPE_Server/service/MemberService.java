@@ -30,18 +30,25 @@ import umc.IRECIPE_Server.dto.MemberRequest;
 import umc.IRECIPE_Server.dto.MemberResponse;
 import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
 import umc.IRECIPE_Server.entity.Allergy;
+import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.entity.MemberLikes;
 import umc.IRECIPE_Server.entity.Post;
+import umc.IRECIPE_Server.entity.Qna;
 import umc.IRECIPE_Server.entity.RefreshToken;
 import umc.IRECIPE_Server.entity.Review;
+import umc.IRECIPE_Server.entity.StoredRecipe;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.AllergyRepository;
+import umc.IRECIPE_Server.repository.IngredientRepository;
 import umc.IRECIPE_Server.repository.MemberAllergyRepository;
 import umc.IRECIPE_Server.repository.MemberLikesRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
+import umc.IRECIPE_Server.repository.QnaRepository;
+import umc.IRECIPE_Server.repository.ReviewRepository;
+import umc.IRECIPE_Server.repository.StoredRecipeRepository;
 import umc.IRECIPE_Server.repository.TokenRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,7 +63,11 @@ public class MemberService {
     private final MemberAllergyRepository memberAllergyRepository;
     private final TokenRepository tokenRepository;
     private final PostRepository postRepository;
+    private final IngredientRepository ingredientRepository;
     private final MemberLikesRepository memberLikesRepository;
+    private final QnaRepository qnaRepository;
+    private final ReviewRepository reviewRepository;
+    private final StoredRecipeRepository storedRecipeRepository;
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
 
@@ -281,13 +292,41 @@ public class MemberService {
         Member member1 = member.get();
         RefreshToken refreshToken = tokenRepository.findByMember(member1);
 
+        //재료 삭제
+        List<Ingredient> ingredients = ingredientRepository.findNamesByMember_PersonalId(member1.getPersonalId());
+        for(Ingredient ingredient : ingredients){
+            ingredientRepository.deleteById(ingredient.getIngredientId());
+        }
+
+        //포스트 상태 변경
         List<Post> posts = postRepository.findAllByMember(member1);
         for(Post post : posts){
             post.updateStatus(Status.TEMP);
         }
 
+        //QNA 삭제
+        List<Qna> qnas = qnaRepository.findAllByMember(member1);
+        for(Qna qna : qnas){
+            qnaRepository.deleteById(qna.getId());
+        }
+
+        //리뷰 삭제
+        List<Review> reviews = reviewRepository.findAllByMember(member1);
+        for(Review review : reviews){
+            reviewRepository.deleteById(review.getId());
+        }
+
+        //stored recipe 삭제
+        List<StoredRecipe> storedRecipes = storedRecipeRepository.findAllByMember(member1);
+        for(StoredRecipe storedRecipe : storedRecipes){
+            storedRecipeRepository.deleteById(storedRecipe.getId());
+        }
+
+        //token 삭제
         tokenRepository.delete(refreshToken);
-        member1.delMember();
+
+        //멤버 삭제
+        memberRepository.delete(member1);
     }
 
 }
