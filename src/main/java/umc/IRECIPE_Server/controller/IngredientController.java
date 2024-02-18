@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,22 +15,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
-import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
-import umc.IRECIPE_Server.apiPayLoad.exception.GeneralException;
 import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Type;
 import umc.IRECIPE_Server.converter.IngredientConverter;
-import umc.IRECIPE_Server.dto.IngredientRequest;
-import umc.IRECIPE_Server.dto.IngredientResponse;
+import umc.IRECIPE_Server.dto.request.IngredientRequestDTO;
+import umc.IRECIPE_Server.dto.response.IngredientResponseDTO;
 import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.service.ingredientService.IngredientCommandService;
 import umc.IRECIPE_Server.service.ingredientService.IngredientQueryService;
 
-import java.io.IOException;
 
-
+@Tag(name = "나의 냉장고", description = "나의 냉장고 관련 API")
 @RestController
 @Validated
 @RequiredArgsConstructor
@@ -49,7 +46,7 @@ public class IngredientController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH004", description = "acess 토큰 만료",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH006", description = "acess 토큰 모양이 이상함",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
     })
-    public ApiResponse<IngredientResponse.addResultDTO> addIngredient(@RequestPart("request") IngredientRequest.addDTO request)
+    public ApiResponse<IngredientResponseDTO.addResultDTO> addIngredient(@RequestPart("request") IngredientRequestDTO.addDTO request)
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
@@ -70,7 +67,7 @@ public class IngredientController {
     @Parameters({
             @Parameter(name = "ingredientId", description = "재료의 아이디, path variable 입니다!")
     })
-    public ApiResponse<IngredientResponse.findOneResultDTO> findOne(@PathVariable(name = "ingredientId") Long ingredientId) {
+    public ApiResponse<IngredientResponseDTO.findOneResultDTO> findOne(@PathVariable(name = "ingredientId") Long ingredientId) {
         Ingredient ingredient = ingredientQueryService.findOne(ingredientId);
        return ApiResponse.onSuccess(IngredientConverter.toFindOneResultDTO(ingredient));
     }
@@ -87,7 +84,7 @@ public class IngredientController {
     @Parameters({
             @Parameter(name = "ingredientId", description = "재료의 아이디, path variable 입니다!")
     })
-    public ApiResponse<IngredientResponse.deleteResultDTO> deleteIngredient(@PathVariable(name = "ingredientId") Long ingredientId) {
+    public ApiResponse<IngredientResponseDTO.deleteResultDTO> deleteIngredient(@PathVariable(name = "ingredientId") Long ingredientId) {
         ingredientQueryService.delete(ingredientId);
         return ApiResponse.onSuccess(IngredientConverter.toDeleteResultDTO());
     }
@@ -104,8 +101,8 @@ public class IngredientController {
     @Parameters({
             @Parameter(name = "ingredientId", description = "재료의 아이디, path variable 입니다!")
     })
-    public ApiResponse<IngredientResponse.updateResultDTO> updateIngredient(
-            @RequestBody @Valid IngredientRequest.updateDTO request,
+    public ApiResponse<IngredientResponseDTO.updateResultDTO> updateIngredient(
+            @RequestBody @Valid IngredientRequestDTO.updateDTO request,
             @PathVariable(name = "ingredientId") Long ingredientId) {
         Ingredient ingredient  = ingredientCommandService.updateById(request, ingredientId);
         return ApiResponse.onSuccess(IngredientConverter.toUpdateResultDTO(ingredient));
@@ -121,7 +118,7 @@ public class IngredientController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH004", description = "acess 토큰 만료",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH006", description = "acess 토큰 모양이 이상함",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
     })
-    public ApiResponse<IngredientResponse.findAllResultListDTO> findAll(@RequestParam(name = "page") Integer page) {
+    public ApiResponse<IngredientResponseDTO.findAllResultListDTO> findAll(@RequestParam(name = "page") Integer page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 
@@ -138,8 +135,8 @@ public class IngredientController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH004", description = "acess 토큰 만료",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH006", description = "acess 토큰 모양이 이상함",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
     })
-    public ApiResponse<IngredientResponse.findAllResultListDTO> findRefrigeratedList(@RequestParam(name = "page") Integer page,
-                                                                                     @RequestParam(name = "type") Type type
+    public ApiResponse<IngredientResponseDTO.findAllResultListDTO> findRefrigeratedList(@RequestParam(name = "page") Integer page,
+                                                                                        @RequestParam(name = "type") Type type
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
@@ -157,8 +154,8 @@ public class IngredientController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH004", description = "acess 토큰 만료",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH006", description = "acess 토큰 모양이 이상함",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
     })
-    public ApiResponse<IngredientResponse.findAllResultListDTO> searchIngredient(@RequestParam(name = "name") String name,
-                                                                                 @RequestParam(name = "page") Integer page) {
+    public ApiResponse<IngredientResponseDTO.findAllResultListDTO> searchIngredient(@RequestParam(name = "name") String name,
+                                                                                    @RequestParam(name = "page") Integer page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 
@@ -174,7 +171,7 @@ public class IngredientController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH004", description = "acess 토큰 만료",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH006", description = "acess 토큰 모양이 이상함",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
     })
-    public ApiResponse<IngredientResponse.findAllResultListDTO> findNearingExpirationIngredient(@RequestParam(name = "page") Integer page) {
+    public ApiResponse<IngredientResponseDTO.findAllResultListDTO> findNearingExpirationIngredient(@RequestParam(name = "page") Integer page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 

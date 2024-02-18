@@ -1,15 +1,13 @@
-package umc.IRECIPE_Server.service;
+package umc.IRECIPE_Server.service.memberService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.Flow.Publisher;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +24,9 @@ import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.MemberAllergyConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
 import umc.IRECIPE_Server.converter.PostConverter;
-import umc.IRECIPE_Server.dto.MemberRequest;
-import umc.IRECIPE_Server.dto.MemberResponse;
-import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
+import umc.IRECIPE_Server.dto.request.MemberRequestDTO;
+import umc.IRECIPE_Server.dto.response.MemberResponseDTO;
+import umc.IRECIPE_Server.dto.request.MemberLoginRequestDTO;
 import umc.IRECIPE_Server.entity.Allergy;
 import umc.IRECIPE_Server.entity.DislikedFood;
 import umc.IRECIPE_Server.entity.Ingredient;
@@ -59,7 +57,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final AllergyRepository allergyRepository;
     private final MemberAllergyRepository memberAllergyRepository;
@@ -95,7 +93,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Member joinMember(MemberRequest.JoinDto request, String url){
+    public Member joinMember(MemberRequestDTO.JoinDto request, String url){
         Member newMem = MemberConverter.toMember(request, url);
         List<Allergy> allergyList = request.getAllergyList().stream()
                 .map(allergy -> {
@@ -109,14 +107,14 @@ public class MemberService {
     }
 
     @Transactional
-    public Member signup(MemberRequest.JoinDto request, String url) {
+    public Member signup(MemberRequestDTO.JoinDto request, String url) {
         Member member = memberRepository.findByPersonalId(request.getPersonalId())
                 .orElseGet(() -> this.joinMember(request, url));
 
         log.info("[login] 계정을 찾았습니다. " + member);
 
         //토큰 발급
-        MemberResponse.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
+        MemberResponseDTO.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
         if(tokenRepository.existsByMember(member)){
             RefreshToken refreshToken = tokenRepository.findByMember(member);
@@ -133,6 +131,7 @@ public class MemberService {
         return member;
     }
 
+    //프로필 이미지 수정
     @Transactional
     public Member updateProfileById(MultipartFile file, String personalId) throws IOException {
         Member member = memberRepository.findByPersonalId(personalId)
@@ -142,43 +141,51 @@ public class MemberService {
         return member;
     }
 
+    //회원 정보 수정
     @Transactional
-    public Member updateMemberById(MemberRequest.fixMemberInfoDto request, String personalId) {
+    public Member updateMemberById(MemberRequestDTO.fixMemberInfoDto request, String personalId) {
         Member member = memberRepository.findByPersonalId(personalId)
-                        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
+        // 저장되어 있던 알러지 리스트
         List<MemberAllergy> memberAllergyList = member.getMemberAllergyList();
         List<Long> allergyIds = memberAllergyList.stream()
                 .map(MemberAllergy::getId)
-                .toList(); // 저장되어 있던 알러지 리스트
+                .toList();
+
+        //원래 있던건 삭제
+        for (Long ids : allergyIds) {
+            memberAllergyRepository.deleteById(ids);
+        }
 
         //새로 입력된 알러지 리스트
         List<Long> allergyList = request.getAllergyList();
 
-        //원래 있던건 삭제
-        for(Long ids : allergyIds){
-            memberAllergyRepository.deleteById(ids);
-        }
-
         List<Allergy> allergies = allergyList.stream()
-                        .map(allergy -> {
-                            return allergyRepository.findById(allergy).orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
-                        }).toList();
+                .map(allergy -> {
+                    return allergyRepository.findById(allergy)
+                            .orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
+                }).toList();
         List<MemberAllergy> memberAllergies = MemberAllergyConverter.toMemberAllergyList(allergies);
-        memberAllergies.forEach(memberAllergy -> {memberAllergy.setMember(member);});
+        memberAllergies.forEach(memberAllergy -> {
+            memberAllergy.setMember(member);
+        });
 
-        member.updateMember(request.getName(), request.getNickname(), request.getGender(), request.getAge(), request.getImportant(), request.getEvent(), request.getActivity(), memberAllergies);
+        member.updateMember(request.getName(), request.getNickname(), request.getGender(), request.getAge(),
+                request.getImportant(), request.getEvent(), request.getActivity(), memberAllergies);
         log.info("[fix] 멤버 정보를 수정했습니다.");
         return memberRepository.save(member);
     }
 
+
+    //로그인
     @Transactional
-    public Member login(MemberLoginRequestDto.JoinLoginDto request){
+    public Member login(MemberLoginRequestDTO.JoinLoginDto request){
         Member member = memberRepository.findByPersonalId(request.getPersonalId())
                         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
         log.info("[login] 로그인 했습니다. " + member);
 
-        MemberResponse.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
+        MemberResponseDTO.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
         if(tokenRepository.existsByMember(member)){
             RefreshToken refreshToken = tokenRepository.findByMember(member);
@@ -194,6 +201,8 @@ public class MemberService {
         return member;
     }
 
+
+    //회원이 작성한 글 보기
     @Transactional
     public ApiResponse<?> getWrittenPostList(String personalId, Integer page) {
         Page<Post> postPage;
@@ -266,7 +275,7 @@ public class MemberService {
     @Transactional
     public Member refresh(Member member){
         if(tokenRepository.existsByMember(member)){ // 이미 refresh token이 있다면
-            MemberResponse.JoinResultDto token = jwtProvider.generateTokenDto(member.getPersonalId());
+            MemberResponseDTO.JoinResultDto token = jwtProvider.generateTokenDto(member.getPersonalId());
             RefreshToken refreshToken = tokenRepository.findByMember(member);
 
             refreshToken.updateToken(token.getRefreshToken());

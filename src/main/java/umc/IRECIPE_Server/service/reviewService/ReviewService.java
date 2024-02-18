@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.service;
+package umc.IRECIPE_Server.service.reviewService;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
