@@ -64,6 +64,7 @@ public class JwtProvider {
                 .build();
     }
 
+
     public Authentication getAuthentication(String accessToken) {
 
         Claims claims = parseClaims(accessToken);
