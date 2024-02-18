@@ -28,6 +28,7 @@ public class QnaResponseDTO {
 
     // Qna 조회
     @Schema(description = "Qna 조회 응답 DTO")
+    @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
@@ -36,8 +37,8 @@ public class QnaResponseDTO {
         @Schema(description = "Qna Id")
         private Long qnaId;
 
-        @Schema(description = "유저 Id")
-        private Long memberId;
+        @Schema(description = "유저 Personal Id")
+        private String memberId;
 
         @Schema(description = "유저 닉네임")
         private String memberNickName;
@@ -55,18 +56,35 @@ public class QnaResponseDTO {
         private String imageUrl;
 
         @Schema(description = "자식 댓글 리스트")
-        private List<QnaResponseDTO.getQnaDTO> children = new ArrayList<>();
+        private List<QnaResponseDTO.getQnaChildrenDTO> children;
+    }
 
-        public getQnaDTO(Long qnaId, Long memberId, String memberNickName, String memberImage,
-                         LocalDateTime createdAt, String content, String imageUrl) {
-            this.qnaId = qnaId;
-            this.memberId = memberId;
-            this.memberNickName = memberNickName;
-            this.memberImage = memberImage;
-            this.createdAt = createdAt;
-            this.content = content;
-            this.imageUrl = imageUrl;
-        }
+    @Schema(description = "Qna 조회 답변 응답 DTO")
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class getQnaChildrenDTO {
+        @Schema(description = "Qna Id")
+        private Long qnaId;
+
+        @Schema(description = "유저 Personal Id")
+        private String memberId;
+
+        @Schema(description = "유저 닉네임")
+        private String memberNickName;
+
+        @Schema(description = "유저 프로필 사진")
+        private String memberImage;
+
+        @Schema(description = "Qna 생성일자")
+        private LocalDateTime createdAt;
+
+        @Schema(description = "Qna 내용")
+        private String content;
+
+        @Schema(description = "Qna 사진")
+        private String imageUrl;
     }
 
     // Qna 수정
