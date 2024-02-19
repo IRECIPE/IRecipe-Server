@@ -28,17 +28,27 @@ import umc.IRECIPE_Server.dto.request.MemberRequestDTO;
 import umc.IRECIPE_Server.dto.response.MemberResponseDTO;
 import umc.IRECIPE_Server.dto.request.MemberLoginRequestDTO;
 import umc.IRECIPE_Server.entity.Allergy;
+import umc.IRECIPE_Server.entity.DislikedFood;
+import umc.IRECIPE_Server.entity.Ingredient;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.entity.MemberLikes;
 import umc.IRECIPE_Server.entity.Post;
+import umc.IRECIPE_Server.entity.Qna;
 import umc.IRECIPE_Server.entity.RefreshToken;
+import umc.IRECIPE_Server.entity.Review;
+import umc.IRECIPE_Server.entity.StoredRecipe;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.AllergyRepository;
+import umc.IRECIPE_Server.repository.DislikedFoodRepository;
+import umc.IRECIPE_Server.repository.IngredientRepository;
 import umc.IRECIPE_Server.repository.MemberAllergyRepository;
 import umc.IRECIPE_Server.repository.MemberLikesRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
+import umc.IRECIPE_Server.repository.QnaRepository;
+import umc.IRECIPE_Server.repository.ReviewRepository;
+import umc.IRECIPE_Server.repository.StoredRecipeRepository;
 import umc.IRECIPE_Server.repository.TokenRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,7 +63,12 @@ public class MemberServiceImpl implements MemberService{
     private final MemberAllergyRepository memberAllergyRepository;
     private final TokenRepository tokenRepository;
     private final PostRepository postRepository;
+    private final IngredientRepository ingredientRepository;
     private final MemberLikesRepository memberLikesRepository;
+    private final QnaRepository qnaRepository;
+    private final ReviewRepository reviewRepository;
+    private final StoredRecipeRepository storedRecipeRepository;
+    private final DislikedFoodRepository dislikedFoodRepository;
     private final JwtProvider jwtProvider;
     private final S3Service s3Service;
 
@@ -75,11 +90,6 @@ public class MemberServiceImpl implements MemberService{
         Member member = memberRepository.findByNickname(nickname);
         if (member != null)
             throw new MemberHandler(ErrorStatus.NICKNAME_ALREADY_EXIST);
-    }
-
-    public MemberAllergy findMemberAllergy(Long memberId, Long allergyId){
-        return memberAllergyRepository
-                .findByAllergy_IdAndMember_Id(memberId, allergyId);
     }
 
     @Transactional
@@ -121,6 +131,7 @@ public class MemberServiceImpl implements MemberService{
         return member;
     }
 
+    //프로필 이미지 수정
     @Transactional
     public Member updateProfileById(MultipartFile file, String personalId) throws IOException {
         Member member = memberRepository.findByPersonalId(personalId)
@@ -130,42 +141,44 @@ public class MemberServiceImpl implements MemberService{
         return member;
     }
 
+    //회원 정보 수정
     @Transactional
     public Member updateMemberById(MemberRequestDTO.fixMemberInfoDto request, String personalId) {
         Member member = memberRepository.findByPersonalId(personalId)
-                        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
+        // 저장되어 있던 알러지 리스트
         List<MemberAllergy> memberAllergyList = member.getMemberAllergyList();
         List<Long> allergyIds = memberAllergyList.stream()
                 .map(MemberAllergy::getId)
-                .toList(); // 저장되어 있던 알러지 리스트
+                .toList();
+
+        //원래 있던건 삭제
+        for (Long ids : allergyIds) {
+            memberAllergyRepository.deleteById(ids);
+        }
 
         //새로 입력된 알러지 리스트
         List<Long> allergyList = request.getAllergyList();
 
-        //원래 있던건 삭제
-        for(Long ids : allergyIds){
-            deleteMemberAllergy(member.getId(), ids);
-        }
-
         List<Allergy> allergies = allergyList.stream()
-                        .map(allergy -> {
-                            return allergyRepository.findById(allergy).orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
-                        }).toList();
+                .map(allergy -> {
+                    return allergyRepository.findById(allergy)
+                            .orElseThrow(() -> new AllergyHandler(ErrorStatus.ALLERGY_NOT_FOUND));
+                }).toList();
         List<MemberAllergy> memberAllergies = MemberAllergyConverter.toMemberAllergyList(allergies);
-        memberAllergies.forEach(memberAllergy -> {memberAllergy.setMember(member);});
+        memberAllergies.forEach(memberAllergy -> {
+            memberAllergy.setMember(member);
+        });
 
-        member.updateMember(request.getName(), request.getNickname(), request.getGender(), request.getAge(), request.getImportant(), request.getEvent(), request.getActivity(), memberAllergies);
+        member.updateMember(request.getName(), request.getNickname(), request.getGender(), request.getAge(),
+                request.getImportant(), request.getEvent(), request.getActivity(), memberAllergies);
         log.info("[fix] 멤버 정보를 수정했습니다.");
         return memberRepository.save(member);
     }
 
-    @Transactional
-    public void deleteMemberAllergy(Long memberId, Long allergyId) {
-        MemberAllergy memberAllergy = findMemberAllergy(memberId, allergyId);
-        memberAllergyRepository.delete(memberAllergy);
-    }
 
+    //로그인
     @Transactional
     public Member login(MemberLoginRequestDTO.JoinLoginDto request){
         Member member = memberRepository.findByPersonalId(request.getPersonalId())
@@ -188,6 +201,8 @@ public class MemberServiceImpl implements MemberService{
         return member;
     }
 
+
+    //회원이 작성한 글 보기
     @Transactional
     public ApiResponse<?> getWrittenPostList(String personalId, Integer page) {
         Page<Post> postPage;
@@ -277,7 +292,47 @@ public class MemberServiceImpl implements MemberService{
         }
         Member member1 = member.get();
         RefreshToken refreshToken = tokenRepository.findByMember(member1);
+
+        //재료 삭제
+        List<Ingredient> ingredients = ingredientRepository.findNamesByMember_PersonalId(member1.getPersonalId());
+        for(Ingredient ingredient : ingredients){
+            ingredientRepository.deleteById(ingredient.getIngredientId());
+        }
+
+        //포스트 상태 변경
+        List<Post> posts = postRepository.findAllByMember(member1);
+        for(Post post : posts){
+            post.updateStatus(Status.TEMP);
+        }
+
+        //QNA 삭제
+        List<Qna> qnas = qnaRepository.findAllByMember(member1);
+        for(Qna qna : qnas){
+            qnaRepository.deleteById(qna.getId());
+        }
+
+        //리뷰 삭제
+        List<Review> reviews = reviewRepository.findAllByMember(member1);
+        for(Review review : reviews){
+            reviewRepository.deleteById(review.getId());
+        }
+
+        //stored recipe 삭제
+        List<StoredRecipe> storedRecipes = storedRecipeRepository.findAllByMember(member1);
+        for(StoredRecipe storedRecipe : storedRecipes){
+            storedRecipeRepository.deleteById(storedRecipe.getId());
+        }
+
+        //싫어하는 음식 삭제
+        List<DislikedFood> dislikedFoods = dislikedFoodRepository.findAllByMember_Id(member1.getId());
+        for(DislikedFood dislikedFood : dislikedFoods){
+            dislikedFoodRepository.deleteById(dislikedFood.getId());
+        }
+
+        //token 삭제
         tokenRepository.delete(refreshToken);
+
+        //멤버 삭제
         memberRepository.delete(member1);
     }
 

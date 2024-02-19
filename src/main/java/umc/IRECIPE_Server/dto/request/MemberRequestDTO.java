@@ -26,7 +26,6 @@ public class MemberRequestDTO {
         Integer gender;
         @NotNull
         Integer age;
-        String imageUrl;
         Boolean important;
         Boolean activity;
         Boolean event;

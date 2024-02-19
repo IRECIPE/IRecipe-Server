@@ -34,8 +34,6 @@ public interface MemberService {
 
     void checkNickname(String nickname);
 
-    MemberAllergy findMemberAllergy(Long memberId, Long allergyId);
-
     Member joinMember(MemberRequestDTO.JoinDto request, String url);
 
     Member signup(MemberRequestDTO.JoinDto request, String url);
@@ -44,7 +42,6 @@ public interface MemberService {
 
     Member updateMemberById(MemberRequestDTO.fixMemberInfoDto request, String personalId);
 
-    void deleteMemberAllergy(Long memberId, Long allergyId);
 
     Member login(MemberLoginRequestDTO.JoinLoginDto request);
 
