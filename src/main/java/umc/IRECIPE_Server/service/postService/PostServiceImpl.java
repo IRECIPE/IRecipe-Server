@@ -281,7 +281,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public Page<Post> getRanking(Integer page) {
-        PageRequest pageRequest = PageRequest.of(page, 4);
+        PageRequest pageRequest = PageRequest.of(page, 10);
         postRepository.findAll().stream()
                 .map(Post::calculateAverageRatingExcludingLast30DaysReviews)
                 .collect(Collectors.toList());
@@ -290,7 +290,7 @@ public class PostServiceImpl implements PostService {
 
 
     public Page<Post> getCategoryRanking(Integer page, Category category) {
-        PageRequest pageRequest = PageRequest.of(page, 4);
+        PageRequest pageRequest = PageRequest.of(page, 10);
         postRepository.findAll().stream()
                 .map(Post::calculateAverageRatingExcludingLast30DaysReviews)
                 .collect(Collectors.toList());
