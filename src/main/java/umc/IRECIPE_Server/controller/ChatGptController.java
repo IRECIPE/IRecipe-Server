@@ -1,14 +1,10 @@
 package umc.IRECIPE_Server.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +16,7 @@ import umc.IRECIPE_Server.dto.request.DislikedFoodRequestDTO;
 import umc.IRECIPE_Server.dto.request.UserChatGptRequestDTO;
 import umc.IRECIPE_Server.dto.response.ChatGptButtonResponseDTO;
 import umc.IRECIPE_Server.dto.response.UserChatGptResponseDTO;
-import umc.IRECIPE_Server.service.ChatGptService;
+import umc.IRECIPE_Server.service.chatGptService.ChatGptService;
 
 @Slf4j
 @RestController

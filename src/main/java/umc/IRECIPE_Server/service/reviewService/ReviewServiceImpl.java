@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.service;
+package umc.IRECIPE_Server.service.reviewService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +56,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 게시글 평균 별점 수정 : (원래 평균 별점 * 리뷰 개수 + 새로 들어온 별점) / (원래 리뷰 개수 + 1)
         Post post = postRepository.findById(postId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
         int reviewCount = reviewRepository.countByPost_Id(post.getId());
-        Float newScore = (post.getScore() * reviewCount + request.getScore()) / (reviewCount + 1);
+        Float newScore = (post.getScore() * reviewCount + (float)request.getScore()) / (reviewCount + 1);
         post.updateScore(newScore);
 
         // 리뷰 등록
@@ -78,10 +78,19 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     // 게시글 리뷰 수정
-    public void updatePostReview(Long reviewId, ReviewRequestDTO.addReviewDTO request, MultipartFile file) throws IOException {
+    public void updatePostReview(String memberId, Long reviewId, ReviewRequestDTO.addReviewDTO request, MultipartFile file) throws IOException {
 
         // 리뷰 조회
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
+
+        // 작성자만 수정 가능
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if (member.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        if (member.get().getId() != review.getMember().getId()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
 
         // 기존 사진 S3 삭제
         String oldUrl = review.getImageUrl();
@@ -101,7 +110,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (request.getScore() != review.getScore()) {
             Post post = postRepository.findById(review.getPost().getId()).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
             int reviewCount = reviewRepository.countByPost_Id(post.getId());
-            Float newScore = (post.getScore() * reviewCount - review.getScore() + request.getScore()) / reviewCount;
+            Float newScore = (post.getScore() * reviewCount - (float)review.getScore() + (float)request.getScore()) / reviewCount;
             post.updateScore(newScore);
         }
 
@@ -110,10 +119,21 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     // 게시글 리뷰 삭제
-    public void deletePostReview(Long reviewId) {
+    public void deletePostReview(String memberId, Long reviewId) {
+
+        // 리뷰 조회
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
+
+        // 작성자만 삭제 가능
+        Optional<Member> member = memberRepository.findByPersonalId(memberId);
+        if (member.isEmpty()) {
+            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+        if (member.get().getId() != review.getMember().getId()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
 
         // S3 버킷에 저장된 게시글 리뷰 사진 삭제
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new GeneralException(ErrorStatus.POST_REVIEW_NOT_FOUND));
         if (review.getImageUrl() != null) {
             s3Service.deleteImage(review.getFileName(), "images");
         }
@@ -121,7 +141,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 게시글 평균 별점 업데이트
         Post post = postRepository.findById(review.getPost().getId()).orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
         int reviewCount = reviewRepository.countByPost_Id(post.getId());
-        Float newScore = (post.getScore() * reviewCount - review.getScore()) / (reviewCount - 1);
+        Float newScore = (post.getScore() * reviewCount - (float)review.getScore()) / (reviewCount - 1);
         post.updateScore(newScore);
 
         // 게시글 리뷰 삭제

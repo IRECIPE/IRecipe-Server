@@ -1,15 +1,11 @@
 package umc.IRECIPE_Server.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.*;
 import umc.IRECIPE_Server.common.enums.Category;
 import umc.IRECIPE_Server.common.enums.Level;
 import umc.IRECIPE_Server.common.enums.Status;
-import umc.IRECIPE_Server.dto.IngredientResponse;
 
-import javax.swing.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -107,6 +103,9 @@ public class PostResponseDTO {
 
         @Schema(description = "해당 사용자가 관심 눌렀는지", defaultValue = "false")
         private boolean likeOrNot;
+
+        @Schema(description = "내가 쓴 글인지 아닌지", defaultValue = "false")
+        private boolean myPost;
 
         @Schema(description = "게시글 생성일")
         private LocalDate createdAt;

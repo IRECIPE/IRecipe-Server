@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.dto;
+package umc.IRECIPE_Server.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import umc.IRECIPE_Server.common.enums.Type;
 import java.time.LocalDate;
 
 
-public class IngredientRequest {
+public class IngredientRequestDTO {
 
     @Schema(description = "냉장고 재료 추가 DTO")
     @Builder

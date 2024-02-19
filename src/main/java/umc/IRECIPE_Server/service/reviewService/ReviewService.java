@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.service;
+package umc.IRECIPE_Server.service.reviewService;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -17,8 +17,8 @@ public interface ReviewService {
     Page<Review> getPostReview(Long postId, int page);
 
     // 리뷰 수정
-    void updatePostReview(Long reviewId, ReviewRequestDTO.addReviewDTO request, MultipartFile file) throws IOException;
+    void updatePostReview(String memberId, Long reviewId, ReviewRequestDTO.addReviewDTO request, MultipartFile file) throws IOException;
 
     // 리뷰 삭제
-    void deletePostReview(Long reviewId);
+    void deletePostReview(String memberId, Long reviewId);
 }

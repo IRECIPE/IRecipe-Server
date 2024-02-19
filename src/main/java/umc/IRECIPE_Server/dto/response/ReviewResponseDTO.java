@@ -18,8 +18,8 @@ public class ReviewResponseDTO {
     @AllArgsConstructor
     public static class addReviewResponseDTO {
 
-        @Schema(description = "리뷰 별점", defaultValue = "4.3")
-        private Float score;
+        @Schema(description = "리뷰 별점", defaultValue = "4")
+        private int score;
 
         @Schema(description = "리뷰 내용", defaultValue = "노력대비 최고의 맛!...")
         private String context;
@@ -39,8 +39,8 @@ public class ReviewResponseDTO {
         @Schema(description = "리뷰 Id", defaultValue = "1")
         private Long reviewId;
 
-        @Schema(description = "유저 Id", defaultValue = "1")
-        private Long memberId;
+        @Schema(description = "유저 Personal Id", defaultValue = "1")
+        private String memberId;
 
         @Schema(description = "유저 닉네임", defaultValue = "옆집 할머니")
         private String memberNickname;
@@ -52,7 +52,7 @@ public class ReviewResponseDTO {
         private String context;
 
         @Schema(description = "리뷰 별점")
-        private Float score;
+        private int score;
 
         @Schema(description = "리뷰 사진")
         private String imageUrl;

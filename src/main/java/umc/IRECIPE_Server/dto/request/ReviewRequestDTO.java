@@ -16,6 +16,6 @@ public class ReviewRequestDTO {
         private String context;
 
         @Schema(description = "리뷰 별점", defaultValue = "4.3")
-        private Float score;
+        private int score;
     }
 }

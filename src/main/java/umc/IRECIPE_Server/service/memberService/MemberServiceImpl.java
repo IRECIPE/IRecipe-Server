@@ -1,19 +1,20 @@
-package umc.IRECIPE_Server.service;
+package umc.IRECIPE_Server.service.memberService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.Flow.Publisher;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.AllergyHandler;
 import umc.IRECIPE_Server.apiPayLoad.exception.handler.MemberHandler;
@@ -22,16 +23,16 @@ import umc.IRECIPE_Server.common.S3.S3Service;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.MemberAllergyConverter;
 import umc.IRECIPE_Server.converter.MemberConverter;
-import umc.IRECIPE_Server.dto.MemberRequest;
-import umc.IRECIPE_Server.dto.MemberResponse;
-import umc.IRECIPE_Server.dto.MemberLoginRequestDto;
+import umc.IRECIPE_Server.converter.PostConverter;
+import umc.IRECIPE_Server.dto.request.MemberRequestDTO;
+import umc.IRECIPE_Server.dto.response.MemberResponseDTO;
+import umc.IRECIPE_Server.dto.request.MemberLoginRequestDTO;
 import umc.IRECIPE_Server.entity.Allergy;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.entity.MemberLikes;
 import umc.IRECIPE_Server.entity.Post;
 import umc.IRECIPE_Server.entity.RefreshToken;
-import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.jwt.JwtProvider;
 import umc.IRECIPE_Server.repository.AllergyRepository;
 import umc.IRECIPE_Server.repository.MemberAllergyRepository;
@@ -46,7 +47,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final AllergyRepository allergyRepository;
     private final MemberAllergyRepository memberAllergyRepository;
@@ -82,7 +83,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Member joinMember(MemberRequest.JoinDto request, String url){
+    public Member joinMember(MemberRequestDTO.JoinDto request, String url){
         Member newMem = MemberConverter.toMember(request, url);
         List<Allergy> allergyList = request.getAllergyList().stream()
                 .map(allergy -> {
@@ -96,14 +97,14 @@ public class MemberService {
     }
 
     @Transactional
-    public Member signup(MemberRequest.JoinDto request, String url) {
+    public Member signup(MemberRequestDTO.JoinDto request, String url) {
         Member member = memberRepository.findByPersonalId(request.getPersonalId())
                 .orElseGet(() -> this.joinMember(request, url));
 
         log.info("[login] 계정을 찾았습니다. " + member);
 
         //토큰 발급
-        MemberResponse.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
+        MemberResponseDTO.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
         if(tokenRepository.existsByMember(member)){
             RefreshToken refreshToken = tokenRepository.findByMember(member);
@@ -130,7 +131,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateMemberById(MemberRequest.fixMemberInfoDto request, String personalId) {
+    public Member updateMemberById(MemberRequestDTO.fixMemberInfoDto request, String personalId) {
         Member member = memberRepository.findByPersonalId(personalId)
                         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
@@ -166,12 +167,12 @@ public class MemberService {
     }
 
     @Transactional
-    public Member login(MemberLoginRequestDto.JoinLoginDto request){
+    public Member login(MemberLoginRequestDTO.JoinLoginDto request){
         Member member = memberRepository.findByPersonalId(request.getPersonalId())
                         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
         log.info("[login] 로그인 했습니다. " + member);
 
-        MemberResponse.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
+        MemberResponseDTO.JoinResultDto tokenDto = jwtProvider.generateTokenDto(request.getPersonalId());
 
         if(tokenRepository.existsByMember(member)){
             RefreshToken refreshToken = tokenRepository.findByMember(member);
@@ -188,7 +189,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Page<Post> getWrittenPostList(String personalId, Integer page) {
+    public ApiResponse<?> getWrittenPostList(String personalId, Integer page) {
         Page<Post> postPage;
         Pageable pageable = PageRequest.of(page, 10);
 
@@ -205,11 +206,19 @@ public class MemberService {
             else if(page == 0) throw new PostHandler(ErrorStatus.MEMBER_DONT_HAVE_POSTS);
         }
 
-        return postPage;
+        // memberLike 에서 찾으면 관심 눌렀던 게시글, 못 찾으면 관심 안 누른 게시글
+        Map<Long, Boolean> likeMap = new HashMap<>();
+        for (Post post : postPage) {
+            Boolean likeOrNot = memberLikesRepository.findByMemberAndPost(mem, post).isPresent();
+            likeMap.put(post.getId(), likeOrNot);
+        }
+
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostDTO(postPage, likeMap));
     }
 
+    //회원 관심글 보기
     @Transactional
-    public List<Post> getLikedPostList(String personalId, Integer page) {
+    public ApiResponse<?> getLikedPostList(String personalId, Integer page) {
         Page<MemberLikes> postIdPage;
         Pageable pageable = PageRequest.of(page, 10);
 
@@ -228,7 +237,7 @@ public class MemberService {
 
         List<Post> postList = new ArrayList<>();
         for(MemberLikes memberLikes : postIdPage.toList()){
-            Long id = memberLikes.getId();
+            Long id = memberLikes.getPost().getId();
             Post tmp = postRepository.findByStatusAndId(Status.POST, id);
             postList.add(tmp);
         }
@@ -237,13 +246,21 @@ public class MemberService {
             throw new MemberHandler(ErrorStatus.POST_NOT_FOUND);
         }
 
-        return postList;
+        // memberLike 에서 찾으면 관심 눌렀던 게시글, 못 찾으면 관심 안 누른 게시글
+        Map<Long, Boolean> likeMap = new HashMap<>();
+        for (Post post : postList) {
+            Boolean likeOrNot = memberLikesRepository.findByMemberAndPost(mem, post).isPresent();
+            likeMap.put(post.getId(), likeOrNot);
+        }
+
+        return ApiResponse.onSuccess(PostConverter.toGetAllPostListDTO(mem, postList, likeMap));
     }
 
+    //토큰 재발급
     @Transactional
     public Member refresh(Member member){
         if(tokenRepository.existsByMember(member)){ // 이미 refresh token이 있다면
-            MemberResponse.JoinResultDto token = jwtProvider.generateTokenDto(member.getPersonalId());
+            MemberResponseDTO.JoinResultDto token = jwtProvider.generateTokenDto(member.getPersonalId());
             RefreshToken refreshToken = tokenRepository.findByMember(member);
 
             refreshToken.updateToken(token.getRefreshToken());
@@ -251,6 +268,7 @@ public class MemberService {
         return member;
     }
 
+    //회원 탈퇴
     @Transactional
     public void deleteMember(String personalId){
         Optional<Member> member = memberRepository.findByPersonalId(personalId);

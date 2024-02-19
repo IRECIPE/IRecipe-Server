@@ -13,7 +13,7 @@ import umc.IRECIPE_Server.converter.ReviewConverter;
 import umc.IRECIPE_Server.dto.request.ReviewRequestDTO;
 import umc.IRECIPE_Server.dto.response.ReviewResponseDTO;
 import umc.IRECIPE_Server.entity.Review;
-import umc.IRECIPE_Server.service.ReviewService;
+import umc.IRECIPE_Server.service.reviewService.ReviewService;
 
 import java.io.IOException;
 import java.util.List;
@@ -64,8 +64,11 @@ public class ReviewController {
     public ApiResponse<ReviewResponseDTO.updateReviewResponseDTO> updatePostReview(@PathVariable("reviewId") Long reviewId,
                                           @RequestPart(name = "ReviewRequestDTO", required = false) ReviewRequestDTO.addReviewDTO request,
                                           @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        // memberId 값 세팅
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
 
-        reviewService.updatePostReview(reviewId, request, file);
+        reviewService.updatePostReview(memberId, reviewId, request, file);
         return ApiResponse.onSuccess(ReviewConverter.updateReviewResult(reviewId));
     }
 
@@ -76,7 +79,11 @@ public class ReviewController {
     )
     @DeleteMapping("/review/{reviewId}")
     public ApiResponse<ReviewResponseDTO.deleteReviewResponseDTO> deletePostReview(@PathVariable("reviewId") Long reviewId) {
-        reviewService.deletePostReview(reviewId);
+        // memberId 값 세팅
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
+
+        reviewService.deletePostReview(memberId, reviewId);
         return ApiResponse.onSuccess(ReviewConverter.deleteReviewResult());
     }
 }

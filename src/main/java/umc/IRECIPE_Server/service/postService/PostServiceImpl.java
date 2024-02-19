@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.service;
+package umc.IRECIPE_Server.service.postService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,7 +9,6 @@ import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import umc.IRECIPE_Server.apiPayLoad.ApiResponse;
 import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
 import umc.IRECIPE_Server.apiPayLoad.code.status.SuccessStatus;
@@ -18,35 +17,26 @@ import umc.IRECIPE_Server.common.enums.Category;
 import umc.IRECIPE_Server.common.enums.Status;
 import umc.IRECIPE_Server.converter.PostConverter;
 import umc.IRECIPE_Server.dto.request.PostRequestDTO;
-import umc.IRECIPE_Server.dto.response.PostResponseDTO;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberLikes;
 import umc.IRECIPE_Server.entity.Post;
-import umc.IRECIPE_Server.entity.Review;
 import umc.IRECIPE_Server.repository.MemberLikesRepository;
 import umc.IRECIPE_Server.repository.MemberRepository;
 import umc.IRECIPE_Server.repository.PostRepository;
 
 import umc.IRECIPE_Server.repository.StoredRecipeRepository;
 
-import javax.swing.text.StyledEditorKit;
-import javax.swing.text.html.Option;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PostService {
+public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final MemberLikesRepository memberLikesRepository;
-    private final StoredRecipeRepository storedRecipeRepository;
 
     // postId 로 Post 찾고 Null 이면 예외 출력하는 메소드
     public Post findByPostId(Long postId){
@@ -108,9 +98,18 @@ public class PostService {
 
         Post post = findByPostId(postId);
 
-        boolean likeOrNot = memberLikesRepository.findByMemberAndPost(post.getMember(), post).isPresent();
+        Member member = memberRepository.findByPersonalId(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, post.getMember(), likeOrNot));
+        boolean likeOrNot = memberLikesRepository.findByMemberAndPost(member, post).isPresent();
+
+        boolean myPost = false;
+
+        if(member == post.getMember()){
+            myPost = true;
+        }
+
+        return ApiResponse.onSuccess(PostConverter.toGetResponseDTO(post, post.getMember(), likeOrNot, myPost));
 
     }
 

@@ -1,9 +1,9 @@
 package umc.IRECIPE_Server.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +12,7 @@ import umc.IRECIPE_Server.converter.QnaConverter;
 import umc.IRECIPE_Server.dto.request.QnaRequestDTO;
 import umc.IRECIPE_Server.dto.response.QnaResponseDTO;
 import umc.IRECIPE_Server.entity.Qna;
-import umc.IRECIPE_Server.service.QnaService;
+import umc.IRECIPE_Server.service.qnaService.QnaService;
 
 import java.io.IOException;
 import java.util.List;
@@ -62,8 +62,11 @@ public class QnaController {
     public ApiResponse<QnaResponseDTO.updateQnaDTO> updateQna(@PathVariable("qnaId") Long qnaId,
                                                               @RequestPart(name = "QnaRequestDTO", required = false) QnaRequestDTO.updateQna request,
                                                               @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        // memberId 값 세팅
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
 
-        qnaService.updateQna(qnaId, request, file);
+        qnaService.updateQna(memberId, qnaId, request, file);
         return ApiResponse.onSuccess(QnaConverter.updateQnaResult(qnaId));
     }
 
@@ -74,7 +77,11 @@ public class QnaController {
     )
     @DeleteMapping("/qna/{qnaId}")
     public ApiResponse<QnaResponseDTO.deleteQnaDTO> deleteQna(@PathVariable("qnaId") Long qnaId) {
-        qnaService.deleteQna(qnaId);
+        // memberId 값 세팅
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String memberId = authentication.getName();
+
+        qnaService.deleteQna(memberId, qnaId);
         return ApiResponse.onSuccess(QnaConverter.deleteQnaResult());
     }
 }
