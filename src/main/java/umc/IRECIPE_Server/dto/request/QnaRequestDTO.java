@@ -16,7 +16,7 @@ public class QnaRequestDTO {
     public static class addQna {
         @Schema(description = "Qna 내용", defaultValue = "설탕 대신 알룰로스를...")
         private String content;
-        @Schema(description = "부모 댓글 Id", defaultValue = "0")
+        @Schema(description = "질문일 경우 0, 작성자 답변일 경우 질문 qna id", defaultValue = "0")
         private Long parentId;
     }
 

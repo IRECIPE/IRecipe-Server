@@ -1,6 +1,5 @@
 package umc.IRECIPE_Server.jwt;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -20,8 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
-import umc.IRECIPE_Server.dto.MemberRequest;
-import umc.IRECIPE_Server.dto.MemberResponse;
+
+import umc.IRECIPE_Server.dto.response.MemberResponseDTO;
 
 @Slf4j
 @Component
@@ -38,7 +37,7 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public MemberResponse.JoinResultDto generateTokenDto(String personalId) {
+    public MemberResponseDTO.JoinResultDto generateTokenDto(String personalId) {
 
         long now = (new Date()).getTime();
 
@@ -57,13 +56,14 @@ public class JwtProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        return MemberResponse.JoinResultDto.builder()
+        return MemberResponseDTO.JoinResultDto.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
                 .refreshToken(refreshToken)
                 .build();
     }
+
 
     public Authentication getAuthentication(String accessToken) {
 

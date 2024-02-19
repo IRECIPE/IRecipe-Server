@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.service;
+package umc.IRECIPE_Server.service.chatGptService;
 
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;

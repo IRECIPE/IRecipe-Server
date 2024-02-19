@@ -1,4 +1,4 @@
-package umc.IRECIPE_Server.dto;
+package umc.IRECIPE_Server.dto.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +12,7 @@ import umc.IRECIPE_Server.validation.annotation.ExistAllergies;
 import umc.IRECIPE_Server.validation.annotation.ExistNickname;
 import umc.IRECIPE_Server.validation.annotation.ExistPersonalId;
 
-public class MemberRequest {
+public class MemberRequestDTO {
     @Builder
     @Getter
     @NoArgsConstructor
@@ -26,7 +26,6 @@ public class MemberRequest {
         Integer gender;
         @NotNull
         Integer age;
-        String imageUrl;
         Boolean important;
         Boolean activity;
         Boolean event;

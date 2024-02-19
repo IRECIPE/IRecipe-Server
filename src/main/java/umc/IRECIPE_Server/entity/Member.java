@@ -49,7 +49,7 @@ public class Member extends BaseEntity {
     private Age age;
 
     // 회원 고유 id
-    @Column(updatable = false, unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String personalId;
 
     // 중요 알림 온오프여부
@@ -116,5 +116,19 @@ public class Member extends BaseEntity {
     }
     public void updateUrl(String url){
         this.profileImage = url;
+    }
+
+    public void delMember(){
+        this.name = null;
+        this.nickname = null;
+        this.age = null;
+        this.gender = null;
+        this.important = null;
+        this.event = null;
+        this.activity = null;
+        this.memberAllergyList = null;
+        this.personalId = "deleted";
+        this.role = null;
+        this.profileImage = null;
     }
 }

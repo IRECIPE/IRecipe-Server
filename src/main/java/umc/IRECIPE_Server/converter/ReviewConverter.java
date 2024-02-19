@@ -39,7 +39,7 @@ public class ReviewConverter {
         return reviewList.stream()
                 .map(m -> ReviewResponseDTO.getReviewResponseDTO.builder()
                         .reviewId(m.getId())
-                        .memberId(m.getMember().getId())
+                        .memberId(m.getMember().getPersonalId())
                         .memberNickname(m.getMember().getNickname())
                         .memberImage(m.getMember().getProfileImage())
                         .context(m.getContext())
