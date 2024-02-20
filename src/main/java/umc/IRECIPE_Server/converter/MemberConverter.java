@@ -3,11 +3,14 @@ package umc.IRECIPE_Server.converter;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
+import umc.IRECIPE_Server.apiPayLoad.code.status.ErrorStatus;
+import umc.IRECIPE_Server.apiPayLoad.exception.handler.AllergyHandler;
 import umc.IRECIPE_Server.common.enums.Age;
 import umc.IRECIPE_Server.common.enums.Gender;
 import umc.IRECIPE_Server.common.enums.Role;
 import umc.IRECIPE_Server.dto.request.MemberRequestDTO;
 import umc.IRECIPE_Server.dto.response.MemberResponseDTO;
+import umc.IRECIPE_Server.entity.Allergy;
 import umc.IRECIPE_Server.entity.Member;
 import umc.IRECIPE_Server.entity.MemberAllergy;
 import umc.IRECIPE_Server.entity.Post;
@@ -58,9 +61,14 @@ public class MemberConverter {
     public static MemberResponseDTO.getMemberResultDto getMemberResult(Member member){
         List<MemberAllergy> allergyList = member.getMemberAllergyList();
 
-        List<Long> allergyIds = allergyList.stream()
-                .map(MemberAllergy::getId)
+        List<Allergy> allergyIds = allergyList.stream()
+                .map(MemberAllergy::getAllergy)
                 .toList();
+
+        List<Long> allergies = allergyIds.stream()
+                .map(Allergy::getId)
+                .toList();
+
 
         return MemberResponseDTO.getMemberResultDto.builder()
                 .name(member.getName())
@@ -70,7 +78,7 @@ public class MemberConverter {
                 .activity(member.getActivity())
                 .important(member.getImportant())
                 .event(member.getEvent())
-                .allergyList(allergyIds)
+                .allergyList(allergies)
                 .build();
     }
 
