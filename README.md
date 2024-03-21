@@ -40,10 +40,24 @@
 
 ## ✨ Member
 <div align="center">
-
-| <img src="https://avatars.githubusercontent.com/Iaminjae" width="100" />       | <img src="https://avatars.githubusercontent.com/longrunBiin" width="100" />       | <img src="https://avatars.githubusercontent.com/jun23314" width="100" />       | <img src="https://avatars.githubusercontent.com/alsrudursla" width="100" />       |
-| ---------- | ---------- | ---------- | ---------- |
-| <p align="center">**전민제**</p> | <p align="center">**장수빈**</p> | <p align="center">**이준희**</p> | <p align="center">**이민경**</p> |
-| https://github.com/Iaminjae | https://github.com/longrunBiin | https://github.com/jun23314 | https://github.com/alsrudursla | 
-
+  <table>
+    <tr>
+      <td align="center"><img src="https://avatars.githubusercontent.com/Iaminjae" width="100" height="100" /></td>
+      <td align="center"><img src="https://avatars.githubusercontent.com/longrunBiin" width="100" height="100" /></td>
+      <td align="center"><img src="https://avatars.githubusercontent.com/jun23314" width="100" height="100" /></td>
+      <td align="center"><img src="https://avatars.githubusercontent.com/alsrudursla" width="100" height="100" /></td>
+    </tr>
+    <tr>
+      <td align="center"><b>전민제</b></td>
+      <td align="center"><b>장수빈</b></td>
+      <td align="center"><b>이준희</b></td>
+      <td align="center"><b>이민경</b></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="https://github.com/Iaminjae">https://github.com/Iaminjae</a></td>
+      <td align="center"><a href="https://github.com/longrunBiin">https://github.com/longrunBiin</a></td>
+      <td align="center"><a href="https://github.com/jun23314">https://github.com/jun23314</a></td>
+      <td align="center"><a href="https://github.com/alsrudursla">https://github.com/alsrudursla</a></td>
+    </tr>
+  </table>
 </div>
